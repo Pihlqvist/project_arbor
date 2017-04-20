@@ -16,6 +16,10 @@ import java.util.Calendar;
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-20.
+ *
+ *
+ * This class is for parsing SMHIS API and returning relevant information that this
+ * class decides
  */
 
 public class SMHIParser {
@@ -26,6 +30,9 @@ public class SMHIParser {
     private int VERSION = 2;
     private String START_URL = "http://opendata-download-metfcst.smhi.se";
 
+
+    // Returns a list of Forecast objects, this method will make a connection with SMHI
+    // and parse the results and store them in a array
     public Environment.Forecast[] getForecast() throws Exception {
         String url = START_URL;
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
@@ -48,6 +55,8 @@ public class SMHIParser {
         return parseJSON(result);
     }
 
+    // This method parses a string with JSON format from the SMHI webpage and returns an array
+    // of Forecast objects
     private Environment.Forecast[] parseJSON(String result) throws JSONException {
         JSONObject jsonObject = new JSONObject(result);
         JSONArray timeSeries = jsonObject.getJSONArray("timeSeries");
@@ -67,7 +76,7 @@ public class SMHIParser {
             wsymb = parameters.getJSONObject(18);
 
             temp = temprature.getJSONArray("values").getDouble(0);
-            weather = encodeWeather(wsymb.getJSONArray("values").getInt(0));
+            weather = decodeWeather(wsymb.getJSONArray("values").getInt(0));
 
             forecasts[i] = new Environment.Forecast(date, temp, weather);
         }
@@ -75,7 +84,8 @@ public class SMHIParser {
         return forecasts;
     }
 
-
+    // Takes a string with time information from SMHI API JSON file and returns a
+    // Calender object with the information excluding minutes and seconds
     private Calendar jsonTimeParser(String jsonTime) {
         Calendar calendar = Calendar.getInstance();
 
@@ -90,13 +100,14 @@ public class SMHIParser {
         return calendar;
     }
 
-    private Environment.Weather encodeWeather(int code) {
+    // Decode an int between 1-15 to a specific ENUM
+    private Environment.Weather decodeWeather(int code) {
         // TODO get this to return the right thing
         return Environment.Weather.CLOUDY;
     }
 
 
-    @Test
+    @Test // for testing only
     public void testParser() throws Exception {
         Environment.Forecast[] forecasts = getForecast();
         for (Environment.Forecast f : forecasts) {

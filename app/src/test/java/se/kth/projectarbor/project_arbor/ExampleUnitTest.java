@@ -91,4 +91,10 @@ public class ExampleUnitTest {
 
         return calendar;
     }
+
+    @Test
+    public void linktin() {
+        Environment environment = new Environment();
+        System.out.println(environment.getWeather());
+    }
 }
