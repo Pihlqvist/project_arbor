@@ -3,6 +3,7 @@ package se.kth.projectarbor.project_arbor;
 import android.util.Log;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 
@@ -25,9 +26,9 @@ public class ExampleUnitTest {
     private static final String TAG = "TEST";
     private double LONG = 18.068581;
     private double LAT = 59.329323;
-    private String CAT = "mesan1g"; //"pmp2g";
-    private int VERSION = 1;
-    private String startURL = "http://opendata-download-metanalys.smhi.se";
+    private String CAT = "pmp2g"; // "mesan1g";
+    private int VERSION = 2;
+    private String startURL = "http://opendata-download-metfcst.smhi.se";
 
     @Test
     public void loadPage() throws Exception {
@@ -50,22 +51,23 @@ public class ExampleUnitTest {
             inputStream.close();
         }
 
-        System.out.println(result);
-        JSONObject jsonObject = new JSONObject(result);
-        System.out.println(jsonObject.toString());
+        JSONObject jsonObject = null;
+        try {
+            jsonObject = new JSONObject(result);
+        } catch (JSONException e) {
+            System.out.println("JSON ERROR: " + e.toString());
+        }
 
-//        //JSONObject JOA = jsonObject.getJSONObject("referenceTime");
-//        System.out.println(jsonObject.getString("referenceTime"));
-//
-//        JSONArray timeSeries = jsonObject.getJSONArray("timeSeries");
-//        System.out.println(timeSeries.length());
-//        JSONObject JO;
-//        JSONArray JA;
-////        for (int i=0; i<timeSeries.length(); i++) {
-////            JO = timeSeries.getJSONObject(i);
-//            JA = JO.getJSONArray("paramters");
-//            System.out.println(JA.getInt(JA.length()-1));
-//        }
+        JSONArray timeSeries = jsonObject.getJSONArray("timeSeries");
+        JSONObject JO;
+        JSONArray JA;
+        for (int i=0; i<timeSeries.length(); i++) {
+            JO = timeSeries.getJSONObject(i);
+            JA = JO.getJSONArray("parameters");
+            JSONObject object = JA.getJSONObject(JA.length()-1);
+            JSONArray array = object.getJSONArray("values");
+            System.out.println(array.getInt(0));
+        }
 
 
     }
