@@ -1,10 +1,8 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
 import android.location.Location;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -24,39 +22,18 @@ import com.google.android.gms.location.LocationServices;
 
 public class MainService extends Service implements LocationListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
-    private final IBinder binder = new ServiceBinder();
-
-    private ServiceHandler handler;
     final static int MSG_START_RUN = 0;
     final static int MSG_STOP_RUN = 1;
 
-    private static long LOCATION_UPDATE_INTERVAL = 20000;
+    private static long LOCATION_UPDATE_INTERVAL = 10000;
     private static int ERROR_MARGIN = 5;
 
+    private ServiceHandler handler;
     private float mTotalDistance;
     private Location mCurrentLocation;
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-
-    //Binder Service
-
-    public class ServiceBinder extends Binder {
-        //Provides Service bind methods
-
-        //getServiceInstance provides a instance of the Service
-        MainService getServiceInstance() {
-            return MainService.this;
-        }
-    }
-
-    @Override
-    public IBinder onBind(Intent intent) {
-        return binder;
-    }
-
-    // HandlerService
 
     private final class ServiceHandler extends Handler {
         public ServiceHandler(Looper looper) {
@@ -67,15 +44,17 @@ public class MainService extends Service implements LocationListener,
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case MSG_START_RUN:
-                    Toast.makeText(getApplicationContext(), "Service is tracking your activity", Toast.LENGTH_SHORT).show();
-                    // start tracking
+                    Toast.makeText(getApplicationContext(),
+                            "Service is tracking your activity", Toast.LENGTH_SHORT).show();
                     mGoogleApiClient.connect();
+                    break;
                 case MSG_STOP_RUN:
-                    // stop tracking
                     LocationServices.FusedLocationApi.removeLocationUpdates(
                             MainService.this.mGoogleApiClient, MainService.this);
                     MainService.this.mGoogleApiClient.disconnect();
-                    Toast.makeText(getApplicationContext(), "Service has stopped tracking your activity", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),
+                            "Service has stopped tracking your activity", Toast.LENGTH_SHORT).show();
+                    break;
                 default:
                     super.handleMessage(msg);
             }
@@ -83,8 +62,13 @@ public class MainService extends Service implements LocationListener,
     }
 
     @Override
-    public void onCreate(){
-        Toast.makeText(getApplicationContext(), "Service is starting", Toast.LENGTH_SHORT).show();
+    public IBinder onBind(Intent intent) {
+        return null;
+    }
+
+    @Override
+    public void onCreate() {
+        Toast.makeText(getApplicationContext(), "Service is starting...", Toast.LENGTH_SHORT).show();
 
         HandlerThread thread = new HandlerThread("StartedService", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
@@ -106,7 +90,6 @@ public class MainService extends Service implements LocationListener,
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-
         Message msg = handler.obtainMessage();
         msg.arg1 = startId;
         msg.what = intent.getExtras().getInt("MESSAGE_TYPE");
@@ -120,8 +103,8 @@ public class MainService extends Service implements LocationListener,
         Toast.makeText(this, "Connection Success", Toast.LENGTH_LONG).show();
 
         try {
-            // mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
-            // mGoogleApiClient);
+            mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    mGoogleApiClient);
             LocationServices.FusedLocationApi.requestLocationUpdates(
                     mGoogleApiClient, mLocationRequest, this);
         } catch (SecurityException ex) {}
@@ -144,7 +127,7 @@ public class MainService extends Service implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = mCurrentLocation == null ?  location : mCurrentLocation;
+        mCurrentLocation = mCurrentLocation == null ? location : mCurrentLocation;
 
         float delta;
         delta = mCurrentLocation.distanceTo(location);
@@ -157,7 +140,7 @@ public class MainService extends Service implements LocationListener,
         delta = results[0];
         */
 
-        if (delta > ERROR_MARGIN) {
+        if (delta >= ERROR_MARGIN) {
             mTotalDistance += delta;
             Toast.makeText(this, "mTotalDistance == " + mTotalDistance, Toast.LENGTH_LONG).show();
         } else {
@@ -167,3 +150,5 @@ public class MainService extends Service implements LocationListener,
         mCurrentLocation = location;
     }
 }
+
+// if (startService(intent) == null) return;
