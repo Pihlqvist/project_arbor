@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.os.Build;
 import android.provider.CalendarContract;
 
 import java.lang.reflect.Array;
@@ -10,14 +11,13 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by fredrik on 2017-04-20.
+ * Created by fredrik, johan and josef on 2017-04-20.
  */
 
 public class Environment {
 
-    Forecast[] forecasts = new Forecast[3];
+    Forecast[] forecasts;
 
-    Calendar calendar;
 
     public enum Weather {
         SUN, RAIN, CLOUDY
@@ -25,10 +25,12 @@ public class Environment {
 
     // returning the current weather
     public Weather getWeather() {
-        DateFormat dateFormat = new SimpleDateFormat("YYYY-MM-DD'T'HH:mm:ss.SSSZ");
-        String rightNow =dateFormat.format(Calendar.getInstance().getTime());
+        Calendar rightNow = Calendar.getInstance();
+        rightNow.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, Calendar.HOUR_OF_DAY, 0, 0);
         Weather weather = getWeatherFromForecast(rightNow);
-        return Weather.CLOUDY;
+
+
+        return Weather.CLOUDY; // weather;
     }
 
     // return the current temp
@@ -37,28 +39,42 @@ public class Environment {
     }
 
 
-    class Forecast {
-        String date;
-        int celsius;
+    public static class Forecast {
+        Calendar date;
+        double celsius;
         Weather weather;
 
-        public Forecast(String date, int celsius, Weather weather) {
+        public Forecast(Calendar date, double celsius, Weather weather) {
             this.date = date;
             this.celsius = celsius;
             this.weather = weather;
         }
 
-        public boolean dum() {
-            return true;
+        public String toString() {
+            return "DATE: " + date.getTime() + "\nTEMP: " + celsius + "\nWEATHER: "
+                    + weather.toString() + "\n";
         }
 
 
     }
 
-    private Weather getWeatherFromForecast(String rightNow) {
-        for (Forecast f : forecasts) {
-            rightNow.equals(f.date);
-        }
+    private Weather newForecast() {
+        // TODO use method from SMHIParser
         return Weather.CLOUDY;
+    }
+
+    private Weather getWeatherFromForecast(Calendar rightNow) {
+        Weather weather;
+        if (rightNow.equals(forecasts[0].date)) {
+            weather = forecasts[0].weather;
+        } else if (rightNow.equals(forecasts[1].date)) {
+            weather = forecasts[1].weather;
+        } else if (rightNow.equals(forecasts[2].date)) {
+            weather = forecasts[2].weather;
+        } else {
+            weather = newForecast();
+        }
+
+        return weather;
     }
 }

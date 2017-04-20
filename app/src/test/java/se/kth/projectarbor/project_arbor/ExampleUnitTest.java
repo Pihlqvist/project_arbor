@@ -77,25 +77,18 @@ public class ExampleUnitTest {
 
     }
 
-    @Test
-    public void trink() throws ParseException {
-        String jsonTime = "2017-04-20T15:00:00Z";
-        DateFormat format = new SimpleDateFormat("YYY-MM-DD'T'HH:mm:ss.SSSZ");
-        Date date = format.parse(jsonTime);
+
+    public Calendar jsonTimeParser(String jsonTime) {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
 
-        Calendar cal = Calendar.getInstance();
-        cal.set(2017, 4, 20, 15, 00, 00);
-
-        System.out.println(calendar.toString());
-    }
-
-    @Test
-    public void /* Calendar */ jsonTimeParser(/*String jsonTime*/) {
-        String jsonTime = "2017-04-20T15:00:00Z";
-        Calendar calendar = Calendar.getInstance();
         String[] strings = jsonTime.split("-|:|T|Z");
-        for (String s : strings) { System.out.println(s); }
+
+        int year = Integer.parseInt(strings[0]);
+        int month = Integer.parseInt(strings[1]);
+        int day = Integer.parseInt(strings[2]);
+        int hour = Integer.parseInt(strings[3]);
+        calendar.set(year, month, day, hour, 0, 0);
+
+        return calendar;
     }
 }
