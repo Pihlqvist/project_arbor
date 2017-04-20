@@ -29,7 +29,9 @@ public class MainActivity extends AppCompatActivity {
             isBound = false;
         }
     };
-    protected void onStart() {
+    protected void onStart
+
+    {
         super.onStart();
         Intent intent = new Intent(this, MainService.class);
         bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
