@@ -13,6 +13,11 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Array;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
@@ -70,5 +75,27 @@ public class ExampleUnitTest {
         }
 
 
+    }
+
+    @Test
+    public void trink() throws ParseException {
+        String jsonTime = "2017-04-20T15:00:00Z";
+        DateFormat format = new SimpleDateFormat("YYY-MM-DD'T'HH:mm:ss.SSSZ");
+        Date date = format.parse(jsonTime);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        Calendar cal = Calendar.getInstance();
+        cal.set(2017, 4, 20, 15, 00, 00);
+
+        System.out.println(calendar.toString());
+    }
+
+    @Test
+    public void /* Calendar */ jsonTimeParser(/*String jsonTime*/) {
+        String jsonTime = "2017-04-20T15:00:00Z";
+        Calendar calendar = Calendar.getInstance();
+        String[] strings = jsonTime.split("-|:|T|Z");
+        for (String s : strings) { System.out.println(s); }
     }
 }
