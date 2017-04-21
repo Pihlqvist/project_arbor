@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, MainService.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_START_RUN);
+                    bundle.putInt("MESSAGE_TYPE", LocationManager.MSG_START_RUN);
                     intent.putExtras(bundle);
                     startService(intent);
                 }
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, MainService.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_STOP_RUN);
+                    bundle.putInt("MESSAGE_TYPE", LocationManager.MSG_STOP_RUN);
                     intent.putExtras(bundle);
                     startService(intent);
                 }

@@ -19,10 +19,13 @@
             </intent-filter>
         </activity>
 
+        <!-- OBS! unsure about android:process=":mainservice" -->
+        <!-- OBS! case matters for android:process -->
         <service
             android:name=".MainService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" >
+        </service>
     </application>
 
 </manifest>
