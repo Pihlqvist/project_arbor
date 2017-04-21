@@ -22,17 +22,21 @@ public class TreeGame extends AppCompatActivity {
         else {
             startButton.setText("Start Walking");
         }
-
         TextView weather = (TextView) findViewById(R.id.tvWeather);
-        weather.setText("Weather: ".concat(getWeather()));
+        Environment E = new Environment(59.404890, 17.951595);
         TextView hp = (TextView) findViewById(R.id.tvHP);
         hp.setText("HP: ".concat(getHP()));
+        TextView temp = (TextView) findViewById(R.id.tvTemp);
+        double te = E.getTemp();
+        String t = Double.toString(te);
+        temp.setText("temp: ".concat(t));
+
     }
 
-    public String getWeather(){
-        return "CLOUDY";
-    }
-
+//    public String getWeather(){
+//        return "CLOUDY";
+//    }
+//
     public String getHP(){
         return "10";
     }
