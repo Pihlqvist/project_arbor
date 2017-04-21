@@ -1,5 +1,7 @@
 package se.kth.projectarbor.project_arbor;
 
+import java.io.Serializable;
+
 /**
  * Created by pethrus and lovisa on 2017-04-20.
  *
@@ -7,7 +9,9 @@ package se.kth.projectarbor.project_arbor;
  * The tree is a passive object. To communicate with the tree, use the interface methods below.
  */
 
-public class Tree {
+public class Tree implements Serializable {
+    // IMPORTANT for serialization, DO NOT REMOVE
+    private static final long serialVersionUID = 5911304372524803500L;
 
     //Seed phase constants
     private final int SEED_WATERBUFFER_MAX = 20;
@@ -41,7 +45,10 @@ public class Tree {
 
         //The buffer class keeps track of the buffer value that is an integer
         // between 0 and a max value that is dependent on the tree phase
-        private class Buffer {
+        private class Buffer implements Serializable {
+            // IMPORTANT for serialization, DO NOT REMOVE
+            private static final long serialVersionUID = 8087200635129916880L;
+
             private int max;
             private int value;
 

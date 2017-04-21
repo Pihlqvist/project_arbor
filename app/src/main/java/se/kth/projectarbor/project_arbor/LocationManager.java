@@ -13,7 +13,7 @@ import android.os.Message;
 import android.os.Process;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.widget.Toast;
+import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -27,23 +27,18 @@ import com.google.android.gms.location.LocationServices;
 
 class LocationManager implements LocationListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-    final static int MSG_START_RUN = 1;
-    final static int MSG_STOP_RUN = 2;
-
-    //private long LOCATION_UPDATE_INTERVAL = 10000;
-    //private int ERROR_MARGIN = 5;
 
     private float mTotalDistance;
     private Location mCurrentLocation;
-    private int errorMargin;
+    private int mErrorMargin;
 
-    private Context context;
+    private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
     public LocationManager(Context context, long locationUpdateInterval, int errorMargin) {
-        this.context = context;
-        this.errorMargin = errorMargin;
+        this.mContext = context;
+        this.mErrorMargin = errorMargin;
 
         mGoogleApiClient = new GoogleApiClient.Builder(context)
             .addConnectionCallbacks(this)
@@ -93,13 +88,11 @@ class LocationManager implements LocationListener,
         delta = results[0];
         */
 
-        if (delta >= errorMargin) {
+        if (delta >= mErrorMargin) {
             mTotalDistance += delta;
-            Toast.makeText(context,
-                    "mTotalDistance == " + mTotalDistance, Toast.LENGTH_SHORT).show();
+            Log.d("RAMCIN", "mTotalDistance == " + mTotalDistance);
         } else {
-            Toast.makeText(context,
-                    "ERROR MARGIN", Toast.LENGTH_SHORT).show();
+            Log.d("RAMCIN", "ERROR MARGIN");
         }
 
         mCurrentLocation = location;
@@ -127,11 +120,17 @@ class LocationManager implements LocationListener,
         return new Location(mCurrentLocation);
     }
 
+    protected void setTotalDistance(float d) {
+        mTotalDistance = d;
+    }
+
     public void setLocationUpdateInterval(long l) {
         mLocationRequest.setInterval(l);
     }
 
     public int setErrorMargin(int i) {
-        return errorMargin = i;
+        int old = mErrorMargin;
+        mErrorMargin = i;
+        return old;
     }
 }

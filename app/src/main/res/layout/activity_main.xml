@@ -3,17 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="se.kth.projectarbor.project_arbor.MainActivity">
+    tools:context="se.kth.projectarbor.project_arbor.MainActivity"
+    android:orientation="vertical">
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start service"
-        android:id="@+id/start_service_btn"/>
+        android:text="Start/resume activity"
+        android:id="@+id/start_btn"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Stop service"
-        android:id="@+id/stop_service_btn" />
+        android:text="Stop activity"
+        android:id="@+id/stop_btn" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create user"
+        android:id="@+id/create_btn" />
 </LinearLayout>

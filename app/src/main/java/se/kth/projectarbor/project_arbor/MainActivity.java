@@ -12,34 +12,48 @@ import android.widget.Button;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    private Button mStartService;
-    private Button mStopService;
+    private Button mStart;
+    private Button mStop;
+    private Button mCreate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mStartService = (Button) findViewById(R.id.start_service_btn);
-        mStartService.setOnClickListener(new View.OnClickListener() {
+        mStart = (Button) findViewById(R.id.start_btn);
+        mStart.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, MainService.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("MESSAGE_TYPE", LocationManager.MSG_START_RUN);
+                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_START);
                     intent.putExtras(bundle);
                     startService(intent);
                 }
             }
         );
 
-        mStopService = (Button) findViewById(R.id.stop_service_btn);
-        mStopService.setOnClickListener(new View.OnClickListener() {
+        mStop = (Button) findViewById(R.id.stop_btn);
+        mStop.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, MainService.class);
                     Bundle bundle = new Bundle();
-                    bundle.putInt("MESSAGE_TYPE", LocationManager.MSG_STOP_RUN);
+                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_STOP);
+                    intent.putExtras(bundle);
+                    startService(intent);
+                }
+            }
+        );
+
+        mCreate = (Button) findViewById(R.id.create_btn);
+        mCreate.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, MainService.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_CREATE);
                     intent.putExtras(bundle);
                     startService(intent);
                 }
