@@ -7,7 +7,7 @@ package se.kth.projectarbor.project_arbor;
  * The tree is a passive object. To communicate with the tree, use the interface methods below.
  */
 
-public class TestTree {
+public class Tree {
 
     //Seed phase constants
     private final int SEED_WATERBUFFER_MAX = 20;
@@ -19,7 +19,7 @@ public class TestTree {
     private final int SPROUT_SUNBUFFER_MAX = 182;
     private final int SPROUT_HEALTHBUFFER_MAX = 3;
 
-    //Spaling phase constants
+    //Sapling phase constants
     private final int SAPLING_WATERBUFFER_MAX = 472;
     private final int SAPLING_SUNBUFFER_MAX = 708;
     private final int SAPLING_HEALTHBUFFER_MAX = 10;
@@ -77,7 +77,7 @@ public class TestTree {
             }
         }
 
-    public TestTree(){
+    public Tree(){
         this.treePhase = Phase.SEED;
         this.waterBuffer = new Buffer(SEED_WATERBUFFER_MAX);
         this.sunBuffer = new Buffer(SEED_SUNBUFFER_MAX);
@@ -125,6 +125,7 @@ public class TestTree {
 
     //This method is called when it's time for the tree object to change phase
     //It changes the tree objects attributes to match the current phase
+    //and fills all the buffers to max
     public void changePhase(){
         switch(this.treePhase) {
             case SEED:
