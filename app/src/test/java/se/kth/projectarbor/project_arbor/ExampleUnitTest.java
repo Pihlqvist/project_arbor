@@ -34,7 +34,8 @@ public class ExampleUnitTest {
     private String CAT = "pmp2g"; // "mesan1g";
     private int VERSION = 2;
     private String startURL = "http://opendata-download-metfcst.smhi.se";
-
+    private double LONGTITUDE = 17.951595;
+    private double LATITUDE= 59.404890;
     @Test
     public void loadPage() throws Exception {
         StringBuilder url = new StringBuilder();
@@ -89,12 +90,26 @@ public class ExampleUnitTest {
         int hour = Integer.parseInt(strings[3]);
         calendar.set(year, month, day, hour, 0, 0);
 
+
         return calendar;
     }
 
     @Test
     public void linktin() {
-        Environment environment = new Environment();
+        Environment environment = new Environment(LATITUDE,LONGTITUDE);
         System.out.println(environment.getWeather());
+        System.out.println(environment.getTemp());
     }
+    @Test
+    public void  getWeather() {
+        Calendar rightNow = Calendar.getInstance();
+        System.out.println(rightNow.getTime());
+        System.out.println(rightNow.get(Calendar.YEAR));
+        rightNow.set(rightNow.get(Calendar.YEAR), rightNow.get(Calendar.MONTH),
+                rightNow.get(Calendar.DAY_OF_MONTH), rightNow.get(Calendar.HOUR_OF_DAY), 0, 0);
+        System.out.println(rightNow.YEAR);
+
+        System.out.println(rightNow.getTime());
+    }
+
 }

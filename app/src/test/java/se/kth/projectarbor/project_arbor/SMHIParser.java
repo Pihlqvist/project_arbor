@@ -24,16 +24,25 @@ import java.util.Calendar;
 
 public class SMHIParser {
 
-    private double LONGITUDE = 18.068581;
-    private double LATITUDE = 59.329323;
+    private double LONGITUDE = 17.951595 ;
+    private double LATITUDE = 59.404890;
     private String CATEGORY = "pmp2g";
     private int VERSION = 2;
     private String START_URL = "http://opendata-download-metfcst.smhi.se";
 
+    public SMHIParser() {
+
+    }
+
+    public SMHIParser(double LATITUDE, double LONGITUDE) {
+        this.LATITUDE = LATITUDE;
+        this.LONGITUDE = LONGITUDE;
+    }
+
 
     // Returns a list of Forecast objects, this method will make a connection with SMHI
     // and parse the results and store them in a array
-    public Environment.Forecast[] getForecast() throws Exception {
+    public Environment.Forecast[] getForecast(Calendar rightNow) throws Exception {
         String url = START_URL;
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + LONGITUDE + "/lat/"+ LATITUDE + "/data.json");
@@ -52,12 +61,12 @@ public class SMHIParser {
             inputStream.close();
         }
 
-        return parseJSON(result);
+        return parseJSON(result, rightNow);
     }
 
     // This method parses a string with JSON format from the SMHI webpage and returns an array
     // of Forecast objects
-    private Environment.Forecast[] parseJSON(String result) throws JSONException {
+    private Environment.Forecast[] parseJSON(String result, Calendar rightNow) throws JSONException {
         JSONObject jsonObject = new JSONObject(result);
         JSONArray timeSeries = jsonObject.getJSONArray("timeSeries");
         Environment.Forecast[] forecasts = new Environment.Forecast[3];
@@ -66,8 +75,18 @@ public class SMHIParser {
         Calendar date;
         double temp;
         Environment.Weather weather;
+        int plats = 0;
+        for (int i=0; i<timeSeries.length();i++){
+            serie = timeSeries.getJSONObject(i);
+            date = jsonTimeParser(serie.getString("validTime"));
+            if (date.after(rightNow)){
+                plats = i;
 
-        for (int i=0; i<3; i++) {
+                break;
+            }
+        }
+
+        for (int i=plats; i<plats+3; i++) {
             serie = timeSeries.getJSONObject(i);
             date = jsonTimeParser(serie.getString("validTime"));
 
@@ -78,7 +97,7 @@ public class SMHIParser {
             temp = temprature.getJSONArray("values").getDouble(0);
             weather = decodeWeather(wsymb.getJSONArray("values").getInt(0));
 
-            forecasts[i] = new Environment.Forecast(date, temp, weather);
+            forecasts[i-plats] = new Environment.Forecast(date, temp, weather);
         }
 
         return forecasts;
@@ -95,7 +114,7 @@ public class SMHIParser {
         int month = Integer.parseInt(strings[1]);
         int day = Integer.parseInt(strings[2]);
         int hour = Integer.parseInt(strings[3]);
-        calendar.set(year, month, day, hour, 0, 0);
+        calendar.set(year, month-1, day, hour, 0, 0);
 
         return calendar;
     }
@@ -114,11 +133,13 @@ public class SMHIParser {
     }
 
 
-    @Test // for testing only
-    public void testParser() throws Exception {
-        Environment.Forecast[] forecasts = getForecast();
-        for (Environment.Forecast f : forecasts) {
-            System.out.println(f.toString());
-        }
-    }
+// @Test // for testing only
+//   public void testParser() throws Exception {
+//     Calendar rightNow = Calendar.getInstance();
+//       Environment.Forecast[] forecasts = getForecast(rightNow);
+//       for (Environment.Forecast f : forecasts) {
+//           System.out.println(f.toString());
+//    }
+//   }
 }
+

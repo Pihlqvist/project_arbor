@@ -22,10 +22,16 @@ import java.util.Date;
 public class Environment {
 
     private Forecast[] forecasts;
+    SMHIParser parser;
+
 
     // Interpet SMHI symbol data
     public enum Weather {
         SUN, RAIN, CLOUDY
+    }
+
+    public Environment(double LATITUDE, double LONGITUDE) {
+        this.parser = new SMHIParser(LATITUDE, LONGITUDE);
     }
 
     public static class Forecast {
@@ -48,21 +54,20 @@ public class Environment {
     // returning the current weather
     public Weather getWeather() {
         Calendar rightNow = Calendar.getInstance();
-        rightNow.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, Calendar.HOUR_OF_DAY, 0, 0);
         return getWeatherFromForecast(rightNow);
     }
 
     // return the current temp
     public double getTemp() {
-        return 0;
+        Calendar rightNow = Calendar.getInstance();
+        return getTempFromForecast(rightNow);
     }
 
     // Ask the SMHIParser for new data and store it in the class.
-    private Weather newForecast() {
-        SMHIParser parser = new SMHIParser();
+    private Weather newForecast(Calendar rightNow) {
 
         try {
-            forecasts = parser.getForecast();
+            forecasts = parser.getForecast(rightNow);
         } catch (Exception e) {
             Log.e("ERROR", "error: " + e);
         }
@@ -70,10 +75,20 @@ public class Environment {
         return forecasts[0].weather;
     }
 
+    private double newTempForecast(Calendar rightNow) {
+
+        try {
+            forecasts = parser.getForecast(rightNow);
+        } catch (Exception e) {
+            Log.e("ERROR", "error: " + e);
+        }
+
+        return forecasts[0].celsius;
+    }
     // Looks trough the cached data and determins if its oke or new is needed
     private Weather getWeatherFromForecast(Calendar rightNow) {
         Weather weather;
-        if (forecasts == null) { newForecast(); }
+        if (forecasts == null) { newForecast(rightNow); }
 
         if (rightNow.equals(forecasts[0].date)) {
             weather = forecasts[0].weather;
@@ -82,9 +97,26 @@ public class Environment {
         } else if (rightNow.equals(forecasts[2].date)) {
             weather = forecasts[2].weather;
         } else {
-            weather = newForecast();
+            weather = newForecast(rightNow);
         }
 
         return weather;
+    }
+
+    public double getTempFromForecast(Calendar rightNow){
+        double temperature;
+        if (forecasts == null) { newForecast(rightNow); }
+
+        if (rightNow.equals(forecasts[0].date)) {
+            temperature = forecasts[0].celsius;
+        } else if (rightNow.equals(forecasts[1].date)) {
+            temperature = forecasts[1].celsius;
+        } else if (rightNow.equals(forecasts[2].date)) {
+            temperature = forecasts[2].celsius;
+        } else {
+            temperature = newTempForecast(rightNow);
+        }
+
+        return temperature;
     }
 }
