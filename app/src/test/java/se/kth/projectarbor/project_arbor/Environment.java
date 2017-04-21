@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by fredrik, johan and josef on 2017-04-20.
+ * Created by fredrik, johan and joseph on 2017-04-20.
  *
  * This class is taking care of everything around the tree, you are able to make calls to
  * this class without having to think about system resources. Information is being cached
