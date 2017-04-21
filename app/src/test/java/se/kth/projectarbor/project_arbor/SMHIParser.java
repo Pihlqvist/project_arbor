@@ -102,8 +102,15 @@ public class SMHIParser {
 
     // Decode an int between 1-15 to a specific ENUM
     private Environment.Weather decodeWeather(int code) {
-        // TODO get this to return the right thing
-        return Environment.Weather.CLOUDY;
+        if(code == 1 || code == 2 || code == 3 || code == 4){
+            return Environment.Weather.SUN;
+        }
+        else if(code == 5 || code == 6 || code == 7){
+            return Environment.Weather.CLOUDY;
+        }
+        else {
+            return Environment.Weather.RAIN;
+        }
     }
 
 
