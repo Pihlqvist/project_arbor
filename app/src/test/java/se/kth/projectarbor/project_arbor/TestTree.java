@@ -59,7 +59,6 @@ public class TestTree {
         }
 
     public TestTree(){
-        this.age = 0;
         this.treePhase = Phase.SEED;
         this.waterBuffer = new Buffer(SEED_WATERBUFFER_MAX);
         this.sunBuffer = new Buffer(SEED_SUNBUFFER_MAX);
