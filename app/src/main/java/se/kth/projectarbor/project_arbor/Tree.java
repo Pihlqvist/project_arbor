@@ -35,7 +35,7 @@ public class Tree {
     private Buffer sunBuffer;
     private Buffer healthBuffer;
 
-    private enum Phase {
+     public enum Phase {
         SEED, SPROUT, SAPLING, GROWN_TREE
     }
 
@@ -99,6 +99,10 @@ public class Tree {
         return healthBuffer.getValue();
     }
 
+    public Phase getTreePhase(){
+        return treePhase;
+    }
+
 
     //To increase a buffer with the amount given in the amount argument
     // the boolean arguments should be set to true, to decrease it should be false
@@ -160,5 +164,4 @@ public class Tree {
                 break;
         }
     }
-
 }
