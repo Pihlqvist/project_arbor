@@ -37,13 +37,11 @@ public class TreeGame extends AppCompatActivity {
         String t = Double.toString(te);
         temp.setText("temp: ".concat(t));
 
+        weather.setText("Weather: " + E.getWeather().toString());
+
 
     }
 
-//    public String getWeather(){
-//        return "CLOUDY";
-//    }
-//
     public String getHP(){
         return "10";
     }
