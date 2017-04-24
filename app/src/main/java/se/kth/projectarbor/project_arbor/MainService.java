@@ -76,7 +76,7 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d("RAMCIN", "OnCreate()");
+        Log.d(MainService.TAG, "OnCreate()");
 
         thread = new HandlerThread("StartedService", Process.THREAD_PRIORITY_BACKGROUND);
         thread.start();
@@ -89,7 +89,7 @@ public class MainService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d("RAMCIN", "onStartCommand()");
+        Log.d(MainService.TAG, "onStartCommand()");
 
         if (intent != null && intent.getExtras() != null) {
             Message msg = handler.obtainMessage();
@@ -102,7 +102,7 @@ public class MainService extends Service {
     }
 
     protected void saveState(String filename, Serializable... objects) {
-        Log.d("RAMCIN", "saveState: TreePhase==" + tree.getTreePhase() + ", TotalDistance==" + locationManager.getTotalDistance());
+        Log.d(MainService.TAG, "saveState: TreePhase==" + tree.getTreePhase() + ", TotalDistance==" + locationManager.getTotalDistance());
 
         FileOutputStream fileOutputStream;
         ObjectOutputStream objectOutputStream;
@@ -154,7 +154,7 @@ public class MainService extends Service {
         tree = (Tree) objects.get(0);
         locationManager.setTotalDistance((Float) objects.get(1));
 
-        Log.d("RAMCIN", "loadState: TreePhase==" + tree.getTreePhase() + ", TotalDistance==" + locationManager.getTotalDistance());
+        Log.d(MainService.TAG, "loadState: TreePhase==" + tree.getTreePhase() + ", TotalDistance==" + locationManager.getTotalDistance());
     }
 
     // Create and save game components
