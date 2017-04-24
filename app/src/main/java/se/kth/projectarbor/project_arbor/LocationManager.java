@@ -90,9 +90,9 @@ class LocationManager implements LocationListener,
 
         if (delta >= mErrorMargin) {
             mTotalDistance += delta;
-            Log.d("RAMCIN", "mTotalDistance == " + mTotalDistance);
+            Log.d(MainService.TAG, "mTotalDistance == " + mTotalDistance);
         } else {
-            Log.d("RAMCIN", "ERROR MARGIN");
+            Log.d(MainService.TAG, "ERROR MARGIN");
         }
 
         mCurrentLocation = location;

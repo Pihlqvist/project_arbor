@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainService extends Service {
+    final static String TAG = "ARBOR";
+
     // Don't use 0, it will mess up everything
     final static int MSG_START = 1;
     final static int MSG_STOP = 2;
@@ -47,21 +49,21 @@ public class MainService extends Service {
                 case MSG_START:
                     List<Object> objects = readState(filename);
                     loadState(objects);
-                    Log.d("RAMCIN", "Service is tracking your activity and state has been read");
+                    Log.d(MainService.TAG, "Service is tracking your activity and state has been read");
                     locationManager.connect();
                     break;
                 case MSG_STOP:
                     locationManager.disconnect();
                     // We must add all the game components that have to be saved
                     saveState(filename, tree, locationManager.getTotalDistance());
-                    Log.d("RAMCIN", "Service has stopped tracking your activity and state is saved");
+                    Log.d(MainService.TAG, "Service has stopped tracking your activity and state is saved");
                     break;
                 case MSG_CREATE:
                     createUser();
-                    Log.d("RAMCIN", "User created");
+                    Log.d(MainService.TAG, "User created");
                     break;
                 default:
-                    Log.d("RAMCIN", "default");
+                    Log.d(MainService.TAG, "default");
                     super.handleMessage(msg);
             }
         }
