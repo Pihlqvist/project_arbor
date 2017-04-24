@@ -47,7 +47,6 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(MainService.TAG, "OnCreate()");
         locationManager = new LocationManager(this, 10000, 5);
 
         List<Object> list = DataManager.readState(this, filename);
@@ -56,7 +55,6 @@ public class MainService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(MainService.TAG, "onStartCommand()");
 
         int msg = 0;
         if (intent.getExtras() != null) {
@@ -75,10 +73,12 @@ public class MainService extends Service {
             if (msg == MSG_STOP) {
                 locationManager.disconnect();
                 stopForeground(true);
-                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance());
+                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
+                        environment);
             } else if (msg == MSG_CREATE) {
                 tree = new Tree();
-                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance());
+                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
+                        environment);
             }
 
             PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);

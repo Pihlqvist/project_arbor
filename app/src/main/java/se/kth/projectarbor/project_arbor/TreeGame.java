@@ -7,18 +7,22 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import java.util.List;
 
 public class TreeGame extends Activity {
 
-    private Button mWalk;
+    private ToggleButton mWalk;
     private TextView weatherView;
     private TextView tempView;
     private TextView hpView;
     private TextView treeView;
+    private TextView distanceView;
 
+    private Float distance;
     private Tree tree;
     private Environment environment;
 
@@ -30,17 +34,21 @@ public class TreeGame extends Activity {
 
         setupValues();
 
-        mWalk = (Button) findViewById(R.id.walkButton);
-        mWalk.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(TreeGame.this, MainService.class);
-                Bundle bundle = new Bundle();
-                bundle.putInt("MESSAGE_TYPE", MainService.MSG_START);
-                intent.putExtras(bundle);
-                startService(intent);
-
-                mWalk.setText("STOP WALKING");
+        mWalk = (ToggleButton) findViewById(R.id.toggleButton);
+        mWalk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    // The toggle is enabled
+                    Intent intent = new Intent(TreeGame.this, MainService.class);
+                    intent.putExtra("MESSAGE_TYPE", MainService.MSG_START);
+                    startService(intent);
+                } else {
+                    // The toggle is disabled
+                    Intent intent = new Intent(TreeGame.this, MainService.class);
+                    intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
+                    startService(intent);
+                    setupValues();
+                }
             }
         });
 
@@ -82,17 +90,20 @@ public class TreeGame extends Activity {
         tempView = (TextView) findViewById(R.id.tvTemp);
         hpView = (TextView) findViewById(R.id.tvHP);
         treeView = (TextView) findViewById(R.id.tvTree);
+        distanceView = (TextView) findViewById(R.id.tvDistance);
 
         List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
 
         Log.d("ARBOR", "TreeGame, List.size() " + list.size());
         tree = (Tree) list.get(0);
+        distance = (Float) list.get(1);
         environment = (Environment) list.get(2);
 
         weatherView.setText("Weather: " + environment.getWeather().toString());
         tempView.setText("Temp: " + environment.getTemp());
         hpView.setText("HP: " + tree.getHealth());
         treeView.setText("Tree, Phase: " + tree.getTreePhase());
+        distanceView.setText("Distance: " + distance.toString());
 
 
     }
