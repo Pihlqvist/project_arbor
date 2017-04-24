@@ -16,7 +16,7 @@ public class Tree implements Serializable {
     //Seed phase constants
     private final int SEED_WATERBUFFER_MAX = 20;
     private final int SEED_SUNBUFFER_MAX = 40;
-    private final int SEED_HEALTHBUFFER_MAX = 0;
+    private final int SEED_HEALTHBUFFER_MAX = 1;
 
     //Sprout phase constants
     private final int SPROUT_WATERBUFFER_MAX = 114;

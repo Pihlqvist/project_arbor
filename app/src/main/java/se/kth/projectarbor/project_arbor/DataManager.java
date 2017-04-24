@@ -9,6 +9,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -59,7 +60,7 @@ final class DataManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
+        Log.d("ARBOR", "readState():  " + Arrays.toString(objects.toArray()));
         return objects;
     }
 
@@ -68,13 +69,12 @@ final class DataManager {
         Tree tree = new Tree();
         Float distance = new Float(0);
         // Insert here other elements
-        LocationManager lm = new LocationManager(context, 10000, 5);
-        lm.connect();
-        double latitude = lm.getCurrentLocation().getLatitude();
-        double longitude = lm.getCurrentLocation().getLongitude();
-        lm.disconnect();
-        Environment environment = new Environment(latitude, longitude);
+        // TODO: get coordinates from LocationManager
+        double LONGITUDE = 17.951595 ;
+        double LATITUDE = 59.404890;
+        Environment environment = new Environment(LATITUDE, LONGITUDE);
         // IMPORTANT: ORDER MATTERS
-        saveState(context, filename, tree, distance, environment);
+        Tree tree2 = new Tree();
+        saveState(context, filename, tree, distance, environment, tree2);
     }
 }

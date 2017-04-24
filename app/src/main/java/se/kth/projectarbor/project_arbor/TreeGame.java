@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -84,6 +85,7 @@ public class TreeGame extends Activity {
 
         List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
 
+        Log.d("ARBOR", "TreeGame, List.size() " + list.size());
         tree = (Tree) list.get(0);
         environment = (Environment) list.get(2);
 

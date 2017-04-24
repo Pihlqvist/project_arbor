@@ -27,7 +27,7 @@ import java.util.List;
 public class MainService extends Service {
     final static String TAG = "ARBOR";
     private final static int ALARM_TIME = 6;
-    final static String filename = "user.dat";
+    final static String filename = "user42.dat";
 
     // Don't use 0, it will mess up everything
     final static int MSG_START = 1;

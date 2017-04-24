@@ -136,4 +136,13 @@ class LocationManager implements LocationListener,
         mErrorMargin = i;
         return old;
     }
+
+    public double[] getLaLong() {
+        connect();
+        double lat = mCurrentLocation.getLatitude();
+        double lon = mCurrentLocation.getLongitude();
+        disconnect();
+        double[] kord = {lat, lon};
+        return kord;
+    }
 }

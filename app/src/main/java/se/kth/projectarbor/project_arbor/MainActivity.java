@@ -24,9 +24,9 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, MainService.class);
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_CREATE);
-                    intent.putExtras(bundle);
+                    //Bundle bundle = new Bundle();
+                    //bundle.putInt("MESSAGE_TYPE", MainService);
+                    //intent.putExtras(bundle);
                     DataManager.createUser(getApplicationContext(), MainService.filename);
                     startService(intent);
 
