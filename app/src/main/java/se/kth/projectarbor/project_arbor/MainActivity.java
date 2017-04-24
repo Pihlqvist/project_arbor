@@ -1,73 +1,55 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+/**
+ * Created by Project Arbor on 2017-04-24.
+ *
+ * This is the start page of the first iteration of the game "Arbor". This Activity
+ * controls the creation of a "Tree" ( the main game object ) and gives the player
+ * a choice in making a new tree or resuming the same tree. Only one tree can be
+ * active at one time.
+ *
+ */
 
+public class MainActivity extends Activity {
 
-public class MainActivity extends AppCompatActivity {
-    private Button mStart;
-    //private Button mStop;
-    //private Button mCreate;
+    // Declaring buttons used later
+    private Button mNewTree;
+    private Button mResume;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
-
-        mStart = (Button) findViewById(R.id.start_btn);
-        mStart.setOnClickListener(new View.OnClickListener() {
+        // This will create a new tree and start the game logic, it will then
+        // take the user to the main view of the tree
+        mNewTree = (Button) findViewById(R.id.start_button);
+        mNewTree.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = new Intent(MainActivity.this, MainService.class);
-                    //Bundle bundle = new Bundle();
-                    //bundle.putInt("MESSAGE_TYPE", MainService);
-                    //intent.putExtras(bundle);
                     DataManager.createUser(getApplicationContext(), MainService.filename);
-                    startService(intent);
 
+                    startService(new Intent(MainActivity.this, MainService.class));
                     startActivity(new Intent(MainActivity.this, TreeGame.class));
-
                 }
-            }
-        );
+        });
 
-//        mStop = (Button) findViewById(R.id.stop_btn);
-//        mStop.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(MainActivity.this, MainService.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_STOP);
-//                    intent.putExtras(bundle);
-//                    startService(intent);
-//                }
-//            }
-//        );
-//
-//        mCreate = (Button) findViewById(R.id.create_btn);
-//        mCreate.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Intent intent = new Intent(MainActivity.this, MainService.class);
-//                    Bundle bundle = new Bundle();
-//                    bundle.putInt("MESSAGE_TYPE", MainService.MSG_CREATE);
-//                    intent.putExtras(bundle);
-//                    DataManager.createUser(getApplicationContext(), MainService.filename);
-//                    startService(intent);
-//                }
-//            }
-//        );
+        // This will continue a game state and take the user to the main view of the tree
+        mResume = (Button) findViewById(R.id.resume_button);
+        mResume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startService(new Intent (MainActivity.this, MainService.class));
+            }
+        });
+
 
     }
-
-//   public void  goTillTree (View view){
-//       Intent intent = new Intent(this, TreeGame.class);
-//       startActivity(intent);
-//   }
 
 }

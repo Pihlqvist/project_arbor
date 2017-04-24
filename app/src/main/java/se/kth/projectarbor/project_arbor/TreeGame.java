@@ -2,7 +2,6 @@ package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -12,16 +11,28 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import java.util.List;
+/**
+ * Created by Project Arbor on 2017-04-24.
+ *
+ *  This class is the main view of the tree and gives information about it.
+ *  It is from this view that the user can stat a "Walk" to collect "distance"
+ *  that is treated like a currency of sort in game.
+ *
+ */
 
 public class TreeGame extends Activity {
 
+    // Declaring all views and buttons
     private ToggleButton mWalk;
     private TextView weatherView;
     private TextView tempView;
     private TextView hpView;
     private TextView treeView;
     private TextView distanceView;
+    private TextView sunView;
+    private TextView waterView;
 
+    // All objects used
     private Float distance;
     private Tree tree;
     private Environment environment;
@@ -32,8 +43,11 @@ public class TreeGame extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tree_game);
 
+        // Getting all the current values and precenting them on screen
         setupValues();
 
+
+        // The user can toggle to either collect "distance" or not
         mWalk = (ToggleButton) findViewById(R.id.toggleButton);
         mWalk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -55,46 +69,18 @@ public class TreeGame extends Activity {
 
     }
 
-//    public void onClick(View view){
-//
-//                Button startButton = (Button) findViewById(R.id.startButton);
-//                if(startButton.getText().equals("Start Walking")){
-//                    startButton.setText("Stop Walking");
-//                }
-//                else {
-//                    startButton.setText("Start Walking");
-//                }
-//
-//
-//
-//        TextView weather = (TextView) findViewById(R.id.tvWeather);
-//        Environment E = new Environment(59.404890, 17.951595);
-//        TextView hp = (TextView) findViewById(R.id.tvHP);
-//        hp.setText("HP: ".concat(getHP()));
-//        TextView temp = (TextView) findViewById(R.id.tvTemp);
-//        double te = E.getTemp();
-//        String t = Double.toString(te);
-//        temp.setText("temp: ".concat(t));
-//
-//        weather.setText("Weather: " + E.getWeather().toString());
-//
-//
-//    }
-
-    public String getHP(){
-        return "10";
-    }
-
+    // Getting all the current values and precenting them on screen
     private void setupValues() {
         weatherView = (TextView) findViewById(R.id.tvWeather);
         tempView = (TextView) findViewById(R.id.tvTemp);
         hpView = (TextView) findViewById(R.id.tvHP);
         treeView = (TextView) findViewById(R.id.tvTree);
         distanceView = (TextView) findViewById(R.id.tvDistance);
+        sunView = (TextView) findViewById(R.id.tvSun);
+        waterView = (TextView) findViewById(R.id.tvWater);
 
         List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
 
-        Log.d("ARBOR", "TreeGame, List.size() " + list.size());
         tree = (Tree) list.get(0);
         distance = (Float) list.get(1);
         environment = (Environment) list.get(2);
@@ -104,10 +90,9 @@ public class TreeGame extends Activity {
         hpView.setText("HP: " + tree.getHealth());
         treeView.setText("Tree, Phase: " + tree.getTreePhase());
         distanceView.setText("Distance: " + distance.toString());
-
+        sunView.setText("Sun Buffer: " + tree.getSunLevel());
+        waterView.setText("Water Buffer: " + tree.getWaterLevel());
 
     }
-
-
 
 }

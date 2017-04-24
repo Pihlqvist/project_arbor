@@ -26,13 +26,13 @@ import java.util.List;
 
 public class MainService extends Service {
     final static String TAG = "ARBOR";
-    private final static int ALARM_TIME = 6;
+    private final static int ALARM_TIME = 6;        // Time in seconds that it takes for the Service to repeat
     final static String filename = "user42.dat";
 
     // Don't use 0, it will mess up everything
     final static int MSG_START = 1;
     final static int MSG_STOP = 2;
-    final static int MSG_CREATE = 3;
+    final static int MSG_CYCLE= 3;
 
     // MainService works with following components
     private LocationManager locationManager;
@@ -75,17 +75,21 @@ public class MainService extends Service {
                 stopForeground(true);
                 DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
                         environment);
-            } else if (msg == MSG_CREATE) {
+            }
+            /*else if (msg == MSG_CREATE) {
                 tree = new Tree();
                 DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
                         environment);
-            }
+            } */
 
             PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             alarmManager.set(AlarmManager.RTC_WAKEUP,
                     System.currentTimeMillis() + (ALARM_TIME * 1000), pendingIntent);
         }
+
+        // TODO: Create a real alarm for the GameLogic, currently nothing affects "tree"
+
 
         return START_NOT_STICKY;
     }
@@ -94,8 +98,6 @@ public class MainService extends Service {
         tree = (Tree) objects.get(0);
         Float distance = (Float) objects.get(1);
         environment = (Environment) objects.get(2);
-
-
         locationManager.setTotalDistance(distance);
     }
 

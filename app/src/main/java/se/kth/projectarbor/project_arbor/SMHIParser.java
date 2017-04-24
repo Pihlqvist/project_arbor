@@ -17,14 +17,14 @@ import java.nio.charset.Charset;
 import java.util.Calendar;
 
 /**
- * Created by Fredrik Pihlqvist on 2017-04-20.
+ * Created by fredrik, johan and joseph on 2017-04-20.
  *
  *
  * This class is for parsing SMHIS API and returning relevant information that this
  * class decides
  */
 
-public class SMHIParser implements Serializable {
+class SMHIParser implements Serializable {
 
 
     private static final long serialVersionUID = 7746966029121214890L;
@@ -52,7 +52,7 @@ public class SMHIParser implements Serializable {
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + LONGITUDE + "/lat/"+ LATITUDE + "/data.json");
 
-        // TODO: waiting for other thred to be done, fixme later
+        // TODO: waiting for other thread to be done, fixme later
         new GetUrl().execute(url);
         while (forcasts == null) {
             try {
@@ -79,10 +79,6 @@ public class SMHIParser implements Serializable {
             return "";
         }
 
-        @Override
-        protected void onPostExecute(String result) {
-
-        }
     }
 
 
