@@ -12,7 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Created by fredrik, johan and josef on 2017-04-20.
+ * Created by fredrik, johan and joseph on 2017-04-20.
  *
  * This class is taking care of everything around the tree, you are able to make calls to
  * this class without having to think about system resources. Information is being cached
@@ -22,10 +22,16 @@ import java.util.Date;
 public class Environment {
 
     private Forecast[] forecasts;
+    private SMHIParser parser;
+
 
     // Interpet SMHI symbol data
     public enum Weather {
         SUN, RAIN, CLOUDY
+    }
+
+    public Environment(double LATITUDE, double LONGITUDE) {
+        this.parser = new SMHIParser(LATITUDE, LONGITUDE);
     }
 
     public static class Forecast {
@@ -48,21 +54,20 @@ public class Environment {
     // returning the current weather
     public Weather getWeather() {
         Calendar rightNow = Calendar.getInstance();
-        rightNow.set(Calendar.YEAR, Calendar.MONTH, Calendar.DATE, Calendar.HOUR_OF_DAY, 0, 0);
         return getWeatherFromForecast(rightNow);
     }
 
     // return the current temp
     public double getTemp() {
-        return 0;
+        Calendar rightNow = Calendar.getInstance();
+        return getTempFromForecast(rightNow);
     }
 
     // Ask the SMHIParser for new data and store it in the class.
-    private Weather newForecast() {
-        SMHIParser parser = new SMHIParser();
+    private Weather newForecast(Calendar rightNow) {
 
         try {
-            forecasts = parser.getForecast();
+            forecasts = parser.getForecast(rightNow);
         } catch (Exception e) {
             Log.e("ERROR", "error: " + e);
         }
@@ -70,21 +75,48 @@ public class Environment {
         return forecasts[0].weather;
     }
 
+    private double newTempForecast(Calendar rightNow) {
+
+        try {
+            forecasts = parser.getForecast(rightNow);
+        } catch (Exception e) {
+            Log.e("ARBOR", "catch " + e);
+        }
+
+        return forecasts[0].celsius;
+    }
     // Looks trough the cached data and determins if its oke or new is needed
     private Weather getWeatherFromForecast(Calendar rightNow) {
         Weather weather;
-        if (forecasts == null) { newForecast(); }
+        if (forecasts == null) { newForecast(rightNow); }
 
-        if (rightNow.equals(forecasts[0].date)) {
+        if (rightNow.before(forecasts[0].date)) {
             weather = forecasts[0].weather;
-        } else if (rightNow.equals(forecasts[1].date)) {
+        } else if (rightNow.before(forecasts[1].date)) {
             weather = forecasts[1].weather;
-        } else if (rightNow.equals(forecasts[2].date)) {
+        } else if (rightNow.before(forecasts[2].date)) {
             weather = forecasts[2].weather;
         } else {
-            weather = newForecast();
+            weather = newForecast(rightNow);
         }
 
         return weather;
+    }
+
+    public double getTempFromForecast(Calendar rightNow){
+        double temperature;
+        if (forecasts == null) { newTempForecast(rightNow); }
+
+        if (rightNow.before(forecasts[0].date)) {
+            temperature = forecasts[0].celsius;
+        } else if (rightNow.before(forecasts[1].date)) {
+            temperature = forecasts[1].celsius;
+        } else if (rightNow.before(forecasts[2].date)) {
+            temperature = forecasts[2].celsius;
+        } else {
+            temperature = newTempForecast(rightNow);
+        }
+
+        return temperature;
     }
 }
