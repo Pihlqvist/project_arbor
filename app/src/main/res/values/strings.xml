@@ -1,6 +1,4 @@
 <resources>
     <string name="app_name">Arbor</string>
-    <string name="fredrik">Fredrik Pihlqvist</string>
-    <string name="lovisa">Lovisa Josefsson</string>
-    <string name="potato">Potato MacPotatoFace</string>
+    <string name="content_text">Ongoing activity</string>
 </resources>
