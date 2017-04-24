@@ -103,9 +103,11 @@ class LocationManager implements LocationListener,
     }
 
     public void disconnect() {
-        LocationServices.FusedLocationApi.removeLocationUpdates(
-                mGoogleApiClient, this);
-        mGoogleApiClient.disconnect();
+        if (mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(
+                    mGoogleApiClient, this);
+            mGoogleApiClient.disconnect();
+        }
     }
 
     public float getTotalDistance() {

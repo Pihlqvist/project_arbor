@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putInt("MESSAGE_TYPE", MainService.MSG_CREATE);
                     intent.putExtras(bundle);
+                    DataManager.createUser(getApplicationContext(), MainService.filename);
                     startService(intent);
                 }
             }

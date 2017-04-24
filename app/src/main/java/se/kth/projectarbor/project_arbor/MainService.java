@@ -1,5 +1,8 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.AlarmManager;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -23,51 +26,18 @@ import java.util.List;
 
 public class MainService extends Service {
     final static String TAG = "ARBOR";
+    private final static int ALARM_TIME = 6;
+    final static String filename = "user.dat";
 
     // Don't use 0, it will mess up everything
     final static int MSG_START = 1;
     final static int MSG_STOP = 2;
     final static int MSG_CREATE = 3;
 
-    private final String filename = "user.dat";
-    private HandlerThread thread;
-    private ServiceHandler handler;
-
     // MainService works with following components
     private LocationManager locationManager;
     private Tree tree;
     // end
-
-    private final class ServiceHandler extends Handler {
-        public ServiceHandler(Looper looper) {
-            super(looper);
-        }
-
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_START:
-                    List<Object> objects = readState(filename);
-                    loadState(objects);
-                    Log.d(MainService.TAG, "Service is tracking your activity and state has been read");
-                    locationManager.connect();
-                    break;
-                case MSG_STOP:
-                    locationManager.disconnect();
-                    // We must add all the game components that have to be saved
-                    saveState(filename, tree, locationManager.getTotalDistance());
-                    Log.d(MainService.TAG, "Service has stopped tracking your activity and state is saved");
-                    break;
-                case MSG_CREATE:
-                    createUser();
-                    Log.d(MainService.TAG, "User created");
-                    break;
-                default:
-                    Log.d(MainService.TAG, "default");
-                    super.handleMessage(msg);
-            }
-        }
-    }
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -77,92 +47,65 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         Log.d(MainService.TAG, "OnCreate()");
-
-        thread = new HandlerThread("StartedService", Process.THREAD_PRIORITY_BACKGROUND);
-        thread.start();
-
-        Looper looper = thread.getLooper();
-        handler = new ServiceHandler(looper);
-
         locationManager = new LocationManager(this, 10000, 5);
+
+        List<Object> list = DataManager.readState(this, filename);
+        loadState(list);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(MainService.TAG, "onStartCommand()");
 
-        if (intent != null && intent.getExtras() != null) {
-            Message msg = handler.obtainMessage();
-            msg.arg1 = startId;
-            msg.what = intent.getExtras().getInt("MESSAGE_TYPE");
-            handler.sendMessage(msg);
+        int msg = 0;
+        if (intent.getExtras() != null) {
+            msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
+            intent.getExtras().remove("MESSAGE_TYPE");
         }
 
-        return START_STICKY;
-    }
+        if (msg == MSG_START) {
+            locationManager.connect();
+            List<Object> list = DataManager.readState(this, filename);
+            loadState(list);
+            startForeground();
 
-    protected void saveState(String filename, Serializable... objects) {
-        Log.d(MainService.TAG, "saveState: TreePhase==" + tree.getTreePhase() + ", TotalDistance==" + locationManager.getTotalDistance());
-
-        FileOutputStream fileOutputStream;
-        ObjectOutputStream objectOutputStream;
-
-        try {
-            fileOutputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-            objectOutputStream = new ObjectOutputStream(fileOutputStream);
-
-            for (Serializable o : objects) {
-                // OBS! Order matters for writing and reading
-                objectOutputStream.writeObject(o);
+            return START_STICKY;
+        } else {
+            if (msg == MSG_STOP) {
+                locationManager.disconnect();
+                stopForeground(true);
+                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance());
+            } else if (msg == MSG_CREATE) {
+                tree = new Tree();
+                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance());
             }
 
-            // OBS! OBS! null is written to mark the end-of-file
-            objectOutputStream.writeObject(null);
-
-            objectOutputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    protected List<Object> readState(String filename) {
-        FileInputStream fileInputStream;
-        ObjectInputStream objectInputStream;
-        List<Object> objects = null;
-
-        try {
-            fileInputStream = openFileInput(filename);
-            objectInputStream = new ObjectInputStream(fileInputStream);
-            objects = new ArrayList<>();
-            Object o;
-
-            // OBS! OBS! null is the end-of-file marker; it was written for this purpose
-            while ((o = objectInputStream.readObject()) != null) {
-                // OBS! Order matters for writing and reading
-                objects.add(o);
-            }
-
-            objectInputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + (ALARM_TIME * 1000), pendingIntent);
         }
 
-        return objects;
+        return START_NOT_STICKY;
     }
 
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
-        locationManager.setTotalDistance((Float) objects.get(1));
+        Float distance = (Float) objects.get(1);
 
-        Log.d(MainService.TAG, "loadState: TreePhase==" + tree.getTreePhase() + ", TotalDistance==" + locationManager.getTotalDistance());
+        locationManager.setTotalDistance(distance);
     }
 
-    // Create and save game components
-    protected void createUser() {
-        tree = new Tree();
+    private void startForeground() {
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle(getText(R.string.app_name))
+                .setContentText(getText(R.string.content_text))
+                //.setSmallIcon(R.drawable.icon)
+                //.setContentIntent(pendingIntent)
+                //.setTicker(getText(R.string.ticker_text))
+                .getNotification();
 
-        // IMPORTANT: ORDER MATTERS
-        saveState(filename, tree, new Float(0));
+        startForeground(1, notification);
     }
 }
 
