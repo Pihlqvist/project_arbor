@@ -4,6 +4,7 @@ import android.os.Build;
 import android.provider.CalendarContract;
 import android.util.Log;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -19,7 +20,9 @@ import java.util.Date;
  * by this class so that calls to public webpages are not frequent
  */
 
-public class Environment {
+public class Environment implements Serializable {
+
+    private static final long serialVersionUID = 2265456326653633040L;
 
     private Forecast[] forecasts;
     private SMHIParser parser;
@@ -34,7 +37,9 @@ public class Environment {
         this.parser = new SMHIParser(LATITUDE, LONGITUDE);
     }
 
-    public static class Forecast {
+    public static class Forecast implements Serializable {
+
+        private static final long serialVersionUID = 5714561621911257132L;
         Calendar date;
         double celsius;
         Weather weather;

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Calendar;
@@ -23,7 +24,10 @@ import java.util.Calendar;
  * class decides
  */
 
-public class SMHIParser {
+public class SMHIParser implements Serializable {
+
+
+    private static final long serialVersionUID = 7746966029121214890L;
 
     private double LONGITUDE = 17.951595 ;
     private double LATITUDE = 59.404890;
@@ -62,7 +66,9 @@ public class SMHIParser {
 
 
 
-    private class GetUrl extends AsyncTask<String, Void, String>{
+    private class GetUrl extends AsyncTask<String, Void, String> implements Serializable{
+        private static final long serialVersionUID = 4326855909443156638L;
+
         @Override
         protected String doInBackground(String... params) {
             try {

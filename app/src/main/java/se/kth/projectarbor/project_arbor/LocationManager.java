@@ -102,6 +102,7 @@ class LocationManager implements LocationListener,
         mGoogleApiClient.connect();
     }
 
+
     public void disconnect() {
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(

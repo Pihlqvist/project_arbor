@@ -68,8 +68,13 @@ final class DataManager {
         Tree tree = new Tree();
         Float distance = new Float(0);
         // Insert here other elements
-
+        LocationManager lm = new LocationManager(context, 10000, 5);
+        lm.connect();
+        double latitude = lm.getCurrentLocation().getLatitude();
+        double longitude = lm.getCurrentLocation().getLongitude();
+        lm.disconnect();
+        Environment environment = new Environment(latitude, longitude);
         // IMPORTANT: ORDER MATTERS
-        saveState(context, filename, tree, distance);
+        saveState(context, filename, tree, distance, environment);
     }
 }

@@ -37,6 +37,7 @@ public class MainService extends Service {
     // MainService works with following components
     private LocationManager locationManager;
     private Tree tree;
+    private Environment environment;
     // end
 
     @Override
@@ -92,6 +93,8 @@ public class MainService extends Service {
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
         Float distance = (Float) objects.get(1);
+        environment = (Environment) objects.get(2);
+
 
         locationManager.setTotalDistance(distance);
     }
