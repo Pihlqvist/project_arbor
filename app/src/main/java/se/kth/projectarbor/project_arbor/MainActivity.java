@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+
 public class MainActivity extends AppCompatActivity {
     private Button mStart;
     private Button mStop;
@@ -21,6 +23,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         mStart = (Button) findViewById(R.id.start_btn);
         mStart.setOnClickListener(new View.OnClickListener() {
@@ -61,5 +65,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         );
+
     }
+   public void  goTillTree (View view){
+       Intent intent = new Intent(this, TreeGame.class);
+       startActivity(intent);
+   }
 }
