@@ -12,16 +12,22 @@ public class TreeGame extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tree_game);
+
+
     }
 
     public void onClick(View view){
-        Button startButton = (Button) findViewById(R.id.startButton);
-        if(startButton.getText().equals("Start Walking")){
-            startButton.setText("Stop Walking");
-        }
-        else {
-            startButton.setText("Start Walking");
-        }
+
+                Button startButton = (Button) findViewById(R.id.startButton);
+                if(startButton.getText().equals("Start Walking")){
+                    startButton.setText("Stop Walking");
+                }
+                else {
+                    startButton.setText("Start Walking");
+                }
+
+
+
         TextView weather = (TextView) findViewById(R.id.tvWeather);
         Environment E = new Environment(59.404890, 17.951595);
         TextView hp = (TextView) findViewById(R.id.tvHP);
@@ -30,6 +36,7 @@ public class TreeGame extends AppCompatActivity {
         double te = E.getTemp();
         String t = Double.toString(te);
         temp.setText("temp: ".concat(t));
+
 
     }
 

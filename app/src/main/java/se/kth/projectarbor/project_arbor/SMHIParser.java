@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -29,6 +30,8 @@ public class SMHIParser {
     private String CATEGORY = "pmp2g";
     private int VERSION = 2;
     private String START_URL = "http://opendata-download-metfcst.smhi.se";
+    private Environment.Forecast[] forcasts;
+    private Calendar rightNow;
 
     public SMHIParser() {
 
@@ -39,15 +42,50 @@ public class SMHIParser {
         this.LONGITUDE = LONGITUDE;
     }
 
-
-    // Returns a list of Forecast objects, this method will make a connection with SMHI
-    // and parse the results and store them in a array
-    public Environment.Forecast[] getForecast(Calendar rightNow) throws Exception {
+    public Environment.Forecast[] getForecast(Calendar rightNow) {
+        this.rightNow = rightNow;
         String url = START_URL;
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + LONGITUDE + "/lat/"+ LATITUDE + "/data.json");
+
+        // TODO: waiting for other thred to be done, fixme later
+        new GetUrl().execute(url);
+        while (forcasts == null) {
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+        return forcasts;
+    }
+
+
+
+    private class GetUrl extends AsyncTask<String, Void, String>{
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                JSONtostring(params[0]);
+            } catch (Exception e) {
+                Log.e("ARBOR", e.toString());
+            }
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+        }
+    }
+
+
+    // Returns a list of Forecast objects, this method will make a connection with SMHI
+    // and parse the results and store them in a array
+    private void JSONtostring(String url) throws Exception {
         InputStream inputStream = new URL(url).openStream();
         String result;
+
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
@@ -61,12 +99,13 @@ public class SMHIParser {
             inputStream.close();
         }
 
-        return parseJSON(result, rightNow);
+
+        parseJSON(result);
     }
 
     // This method parses a string with JSON format from the SMHI webpage and returns an array
     // of Forecast objects
-    private Environment.Forecast[] parseJSON(String result, Calendar rightNow) throws JSONException {
+    private void parseJSON(String result) throws JSONException {
         JSONObject jsonObject = new JSONObject(result);
         JSONArray timeSeries = jsonObject.getJSONArray("timeSeries");
         Environment.Forecast[] forecasts = new Environment.Forecast[3];
@@ -100,7 +139,7 @@ public class SMHIParser {
             forecasts[i-plats] = new Environment.Forecast(date, temp, weather);
         }
 
-        return forecasts;
+        this.forcasts = forecasts;
     }
 
     // Takes a string with time information from SMHI API JSON file and returns a
@@ -132,13 +171,4 @@ public class SMHIParser {
         }
     }
 
-
-// @Test // for testing only
-//   public void testParser() throws Exception {
-//     Calendar rightNow = Calendar.getInstance();
-//       Environment.Forecast[] forecasts = getForecast(rightNow);
-//       for (Environment.Forecast f : forecasts) {
-//           System.out.println(f.toString());
-//    }
-//   }
 }

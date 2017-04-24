@@ -22,7 +22,7 @@ import java.util.Date;
 public class Environment {
 
     private Forecast[] forecasts;
-    SMHIParser parser;
+    private SMHIParser parser;
 
 
     // Interpet SMHI symbol data
@@ -80,7 +80,7 @@ public class Environment {
         try {
             forecasts = parser.getForecast(rightNow);
         } catch (Exception e) {
-            Log.e("ERROR", "error: " + e);
+            Log.e("ARBOR", "catch " + e);
         }
 
         return forecasts[0].celsius;
@@ -90,11 +90,11 @@ public class Environment {
         Weather weather;
         if (forecasts == null) { newForecast(rightNow); }
 
-        if (rightNow.equals(forecasts[0].date)) {
+        if (rightNow.before(forecasts[0].date)) {
             weather = forecasts[0].weather;
-        } else if (rightNow.equals(forecasts[1].date)) {
+        } else if (rightNow.before(forecasts[1].date)) {
             weather = forecasts[1].weather;
-        } else if (rightNow.equals(forecasts[2].date)) {
+        } else if (rightNow.before(forecasts[2].date)) {
             weather = forecasts[2].weather;
         } else {
             weather = newForecast(rightNow);
@@ -105,13 +105,13 @@ public class Environment {
 
     public double getTempFromForecast(Calendar rightNow){
         double temperature;
-        if (forecasts == null) { newForecast(rightNow); }
+        if (forecasts == null) { newTempForecast(rightNow); }
 
-        if (rightNow.equals(forecasts[0].date)) {
+        if (rightNow.before(forecasts[0].date)) {
             temperature = forecasts[0].celsius;
-        } else if (rightNow.equals(forecasts[1].date)) {
+        } else if (rightNow.before(forecasts[1].date)) {
             temperature = forecasts[1].celsius;
-        } else if (rightNow.equals(forecasts[2].date)) {
+        } else if (rightNow.before(forecasts[2].date)) {
             temperature = forecasts[2].celsius;
         } else {
             temperature = newTempForecast(rightNow);
