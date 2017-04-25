@@ -109,6 +109,7 @@ class LocationManager implements LocationListener,
                     mGoogleApiClient, this);
             mGoogleApiClient.disconnect();
         }
+        mCurrentLocation = null;
     }
 
     public float getTotalDistance() {

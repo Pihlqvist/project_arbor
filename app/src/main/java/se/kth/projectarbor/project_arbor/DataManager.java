@@ -60,7 +60,6 @@ final class DataManager {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.d("ARBOR", "readState():  " + Arrays.toString(objects.toArray()));
         return objects;
     }
 
@@ -75,6 +74,6 @@ final class DataManager {
         Environment environment = new Environment(LATITUDE, LONGITUDE);
         // IMPORTANT: ORDER MATTERS
         Tree tree2 = new Tree();
-        saveState(context, filename, tree, distance, environment, tree2);
+        saveState(context, filename, tree, distance, environment);
     }
 }
