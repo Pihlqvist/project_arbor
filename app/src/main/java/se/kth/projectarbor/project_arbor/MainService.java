@@ -113,5 +113,9 @@ public class MainService extends Service {
 
         startForeground(1, notification);
     }
+
+    public Float getDist() {
+        return locationManager.getTotalDistance();
+    }
 }
 

@@ -56,11 +56,39 @@ public class TreeGame extends Activity {
                     Intent intent = new Intent(TreeGame.this, MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_START);
                     startService(intent);
+
+                    /* EXTAR */
+//                    Thread t = new Thread() {
+//                        @Override
+//                        public void run() {
+//                            try {
+//                                while (!isInterrupted()) {
+//                                    Thread.sleep(1000);
+//                                    runOnUiThread(new Runnable() {
+//                                        @Override
+//                                        public void run() {
+//                                            // update TextView here!
+//                                            distanceView.setText("Distance: " + );
+//                                        }
+//                                    });
+//                                }
+//                            } catch (InterruptedException e) {
+//                            }
+//                        }
+//                    };
+//
+//                    t.start();
+                    /* */
                 } else {
                     // The toggle is disabled
                     Intent intent = new Intent(TreeGame.this, MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
                     startService(intent);
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     setupValues();
                 }
             }

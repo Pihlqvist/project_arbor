@@ -46,6 +46,7 @@ public class MainActivity extends Activity {
             @Override
             public void onClick(View v) {
                 startService(new Intent (MainActivity.this, MainService.class));
+                startActivity(new Intent(MainActivity.this, TreeGame.class));
             }
         });
 
