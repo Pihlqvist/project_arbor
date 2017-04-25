@@ -138,12 +138,8 @@ class LocationManager implements LocationListener,
         return old;
     }
 
-    public double[] getLaLong() {
-        connect();
-        double lat = mCurrentLocation.getLatitude();
-        double lon = mCurrentLocation.getLongitude();
-        disconnect();
-        double[] kord = {lat, lon};
-        return kord;
+    public double[] getCoordinates() {
+        // TODO: Implement this method
+        return new double[]{0,0};
     }
 }

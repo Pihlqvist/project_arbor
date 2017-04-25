@@ -115,6 +115,7 @@ public class MainService extends Service {
     }
 
     public Float getDist() {
+        // TODO: is this useful?, look at it later and se if a better implementation can be found
         return locationManager.getTotalDistance();
     }
 }

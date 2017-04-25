@@ -67,13 +67,12 @@ final class DataManager {
     static void createUser(Context context, String filename) {
         Tree tree = new Tree();
         Float distance = new Float(0);
-        // Insert here other elements
         // TODO: get coordinates from LocationManager
         double LONGITUDE = 17.951595 ;
         double LATITUDE = 59.404890;
         Environment environment = new Environment(LATITUDE, LONGITUDE);
+
         // IMPORTANT: ORDER MATTERS
-        Tree tree2 = new Tree();
         saveState(context, filename, tree, distance, environment);
     }
 }
