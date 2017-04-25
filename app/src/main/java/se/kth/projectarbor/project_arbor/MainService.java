@@ -32,7 +32,7 @@ public class MainService extends Service {
     // Don't use 0, it will mess up everything
     final static int MSG_START = 1;
     final static int MSG_STOP = 2;
-    final static int MSG_CYCLE= 3;
+    final static int MSG_UPDATE = 3;
 
     // MainService works with following components
     private LocationManager locationManager;
@@ -89,6 +89,7 @@ public class MainService extends Service {
         }
 
         // TODO: Create a real alarm for the GameLogic, currently nothing affects "tree"
+
 
 
         return START_NOT_STICKY;
