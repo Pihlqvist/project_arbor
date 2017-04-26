@@ -39,11 +39,11 @@ public class MainActivity extends Activity {
                     DataManager.createUser(getApplicationContext(), MainService.filename);
 
                     Intent intent = new Intent(MainActivity.this, MainService.class)
-                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_BEHOV);
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
                     PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP,
-                            System.currentTimeMillis() + (MainService.MSG_UPDATE_BEHOV * 1000), pendingIntent);
+                            System.currentTimeMillis() + (MainService.MSG_UPDATE_NEED * 1000), pendingIntent);
 
                     startActivity(new Intent(MainActivity.this, TreeGame.class));
                 }

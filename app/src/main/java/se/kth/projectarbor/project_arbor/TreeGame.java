@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -53,7 +54,8 @@ public class TreeGame extends Activity {
                 startService(new Intent(TreeGame.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
             }
-            distanceView.setText(dist.toString());
+
+            distanceView.setText("Distance: " + dist.toString());
         }
     }
 

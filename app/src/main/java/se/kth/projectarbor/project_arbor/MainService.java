@@ -6,22 +6,9 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainService extends Service {
@@ -35,7 +22,7 @@ public class MainService extends Service {
     // Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
     public final static int MSG_STOP = 2;
-    public final static int MSG_UPDATE_BEHOV = 3;
+    public final static int MSG_UPDATE_NEED = 3;
     public final static int MSG_UPDATE_HEALTH = 4;
     public final static int MSG_KM_DONE = 5;
 
@@ -54,10 +41,10 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         // IS_NEW
-        locationManager = new LocationManager(this, 5000, 0);
         Log.d(TAG, "onCreate()");
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
+        locationManager = new LocationManager(this, 10000, (float) 2.5, (float) 80.0, environment);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
@@ -97,11 +84,15 @@ public class MainService extends Service {
 
                 break;
 
-            case MSG_UPDATE_BEHOV:
+            case MSG_UPDATE_NEED:
                 // TODO: update the tree and give the information to the reciver in the activity
 
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
+
+                // TODO: Think about it... How to make the environment object persistent?
+                DataManager.saveState(this, filename, tree,
+                        locationManager.getTotalDistance(), environment);
 
                 break;
 
@@ -115,9 +106,10 @@ public class MainService extends Service {
 
             case MSG_KM_DONE:
                 // TODO: now we have walked 1 km and we want to update tree with it
+                Environment.Weather weather = environment.getWeather();
+                //tree.updateBuffer(weather);
 
                 break;
-
         }
 
 
