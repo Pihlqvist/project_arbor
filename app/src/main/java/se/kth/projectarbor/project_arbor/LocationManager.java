@@ -43,11 +43,11 @@ class LocationManager implements LocationListener,
     private LocationRequest mLocationRequest;
 
     public LocationManager(Context context, long locationUpdateInterval, float lowerLimit,
-                           float upperLimit, Environment environment) {
+                           float upperLimit) {
         this.mContext = context;
         this.mLowerLimit = lowerLimit;
         this.mUpperLimit = upperLimit;
-        this.mEnvironment = environment;
+        //TODO: this.mEnvironment = environment;
 
         mGoogleApiClient = new GoogleApiClient.Builder(context)
             .addConnectionCallbacks(this)

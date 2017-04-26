@@ -42,9 +42,9 @@ public class MainService extends Service {
     public void onCreate() {
         // IS_NEW
         Log.d(TAG, "onCreate()");
+        locationManager = new LocationManager(this, 10000, (float) 2.5, (float) 80.0);
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
-        locationManager = new LocationManager(this, 10000, (float) 2.5, (float) 80.0, environment);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
