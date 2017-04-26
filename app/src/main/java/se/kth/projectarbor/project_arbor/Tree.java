@@ -19,6 +19,8 @@ public class Tree implements Serializable {
     private final int SEED_HEALTHBUFFER_MAX = 1;
     private final int SEED_WATER_NEED = 1; // need per hour
     private final int SEED_SUN_NEED = 2; // need per hour
+    private final int SEED_WATER_INTAKE = 7; // intake per kilometer
+    private final int SEED_SUN_INTAKE = 14; // intake per kilometer
 
     //Sprout phase constants
     private final int SPROUT_WATERBUFFER_MAX = 114;
@@ -26,6 +28,8 @@ public class Tree implements Serializable {
     private final int SPROUT_HEALTHBUFFER_MAX = 3;
     private final int SPROUT_WATER_NEED = 5; // need per hour
     private final int SPROUT_SUN_NEED = 8; // need per hour
+    private final int SPROUT_WATER_INTAKE = 34; // intake per kilometer
+    private final int SPROUT_SUN_INTAKE = 55; // intake per kilometer
 
     //Sapling phase constants
     private final int SAPLING_WATERBUFFER_MAX = 472;
@@ -33,6 +37,8 @@ public class Tree implements Serializable {
     private final int SAPLING_HEALTHBUFFER_MAX = 10;
     private final int SAPLING_WATER_NEED = 20; // need per hour
     private final int SAPLING_SUN_NEED = 30; // need per hour
+    private final int SAPLING_WATER_INTAKE = 137; // intake per kilometer
+    private final int SAPLING_SUN_INTAKE = 206; // intake per kilometer
 
     //Grown tree phase constants
     private final int GROWN_TREE_WATERBUFFER_MAX = 950;
@@ -40,6 +46,8 @@ public class Tree implements Serializable {
     private final int GROWN_TREE_HEALTHBUFFER_MAX = 23;
     private final int GROWN_TREE_WATER_NEED = 40; // need per hour
     private final int GROWN_TREE_SUN_NEED = 50; // need per hour
+    private final int GROWN_TREE_WATER_INTAKE = 274; // intake per kilometer
+    private final int GROWN_TREE_SUN_INTAKE = 343; // intake per kilometer
 
     //Tree attributes
     private Phase treePhase;
@@ -58,44 +66,44 @@ public class Tree implements Serializable {
 
     //The buffer class keeps track of the buffer value that is an integer
     // between 0 and a max value that is dependent on the tree phase
-    private class Buffer implements Serializable {
-        // IMPORTANT for serialization, DO NOT REMOVE
-        private static final long serialVersionUID = 8087200635129916880L;
+        private class Buffer implements Serializable {
+            // IMPORTANT for serialization, DO NOT REMOVE
+            private static final long serialVersionUID = 8087200635129916880L;
 
-        private int max;
-        private int value;
+            private int max;
+            private int value;
 
-        public Buffer(int max){
-            this.max = max;
-            this.value = max;
+            public Buffer(int max){
+                this.max = max;
+                this.value = max;
+            }
+
+            public void setMax(int newMax) {
+                this.max = newMax;
+            }
+
+            public void setValue(int newValue) { this.value = newValue; };
+
+            public int getValue(){
+                return value;
+            }
+
+            //increases the buffer value, if the buffer is full the value is set to max
+            public void incrValue(int increaseBy){
+                if(value + increaseBy < max)
+                    value += increaseBy;
+                else
+                    value = max;
+            }
+
+            //decreases the buffer value, if the buffer is empty the value is set to zero
+            public void decrValue(int decreaseBy){
+                if(value - decreaseBy > 0)
+                    value -= decreaseBy;
+                else
+                    value = 0;
+            }
         }
-
-        public void setMax(int newMax) {
-            this.max = newMax;
-        }
-
-        public void setValue(int newValue) { this.value = newValue; };
-
-        public int getValue(){
-            return value;
-        }
-
-        //increases the buffer value, if the buffer is full the value is set to max
-        public void incrValue(int increaseBy){
-            if(value + increaseBy < max)
-                value += increaseBy;
-            else
-                value = max;
-        }
-
-        //decreases the buffer value, if the buffer is empty the value is set to zero
-        public void decrValue(int decreaseBy){
-            if(value - decreaseBy > 0)
-                value -= decreaseBy;
-            else
-                value = 0;
-        }
-    }
 
     public Tree(){
         this.treePhase = Phase.SEED;
@@ -141,10 +149,10 @@ public class Tree implements Serializable {
         return treePhase;
     }
 
-    // update() is called on every hour from MainService()
+    // update() is called on every hour from MainService(). Triggers bufferDecrease
     public boolean update() {
 
-        bufferDecrese();
+        bufferDecrease();
         if (timerFlag)
             time += 1;
         if (time == 24) {
@@ -156,9 +164,9 @@ public class Tree implements Serializable {
         return alive;
     }
 
-    // This method decreases both waterbuffer and sunbuffer when called by mainservice
-    // If one or both buffers reaches 0, it will also call on healthChange().
-    public void bufferDecrese(){
+    // bufferDecrease() decreases both waterbuffer and sunbuffer when called by mainservice every hour
+    // If one or both buffers reaches 0, it will also call on healthChange() to decrease HP.
+    public void bufferDecrease(){
         switch(this.treePhase){
             case SEED:
                 waterBuffer.decrValue(SEED_WATER_NEED);
@@ -189,6 +197,60 @@ public class Tree implements Serializable {
         }
     }
 
+    // bufferIncrease() is called from MainService every accomplished kilometer
+    public void bufferIncrease(Environment.Weather weather) {
+        switch(weather) {
+            case SUN:
+                addSunIntake();
+                if (getSunLevel() > getSunBufferMax())
+                    sunBuffer.setValue(getSunBufferMax());
+                break;
+            case RAIN:
+                addWaterIntake();
+                if (getWaterLevel() > getWaterBufferMax())
+                    waterBuffer.setValue(getWaterBufferMax());
+                break;
+            default: // if neither sun nor rain, cloudy
+                break;
+        }
+    }
+    // Help method to bufferIncrease
+    private void addSunIntake(){
+        Phase phase = getTreePhase();
+        switch(phase) {
+            case SEED:
+                sunBuffer.value += SEED_SUN_INTAKE;
+                break;
+            case SPROUT:
+                sunBuffer.value += SPROUT_SUN_INTAKE;
+                break;
+            case SAPLING:
+                sunBuffer.value += SAPLING_SUN_INTAKE;
+                break;
+            case GROWN_TREE:
+                sunBuffer.value += GROWN_TREE_SUN_INTAKE;
+                break;
+        }
+    }
+    // Help method to bufferIncrease
+    private void addWaterIntake(){
+        Phase phase = getTreePhase();
+        switch(phase) {
+            case SEED:
+                waterBuffer.value += SEED_WATER_INTAKE;
+                break;
+            case SPROUT:
+                waterBuffer.value += SPROUT_WATER_INTAKE;
+                break;
+            case SAPLING:
+                waterBuffer.value += SAPLING_WATER_INTAKE;
+                break;
+            case GROWN_TREE:
+                waterBuffer.value += GROWN_TREE_WATER_INTAKE;
+                break;
+        }
+    }
+    // Increases or decreases tree health and sets boolean alive to false if tree dies.
     private void healthChange(int valueOfChange){
         this.healthBuffer.value += valueOfChange;
         if(getHealth() <= 0) {
