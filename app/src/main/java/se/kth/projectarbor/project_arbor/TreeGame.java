@@ -77,12 +77,6 @@ public class TreeGame extends Activity {
                     Intent intent = new Intent(TreeGame.this, MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
                     startService(intent);
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    setupValues();
                 }
             }
         });

@@ -26,18 +26,23 @@ import java.util.List;
 
 public class MainService extends Service {
     final static String TAG = "ARBOR";
-    private final static int ALARM_TIME = 6;        // Time in seconds that it takes for the Service to repeat
     final static String filename = "user42.dat";
+
+    // Times in seconds that the alarm will take to repeat the service
+    private final static int ALARM_HOUR = 60 * 60;
+    private final static int ALARM_DAY = 24 * 60 * 60;
 
     // Don't use 0, it will mess up everything
     final static int MSG_START = 1;
     final static int MSG_STOP = 2;
-    final static int MSG_UPDATE = 3;
+    final static int MSG_UPDATE_BEHOV = 3;
+    final static int MSG_UPDATE_HEALTH = 4;
 
     // MainService works with following components
     private LocationManager locationManager;
     private Tree tree;
     private Environment environment;
+    private AlarmManager alarmManager;
     // end
 
     @Override
@@ -49,13 +54,74 @@ public class MainService extends Service {
     public void onCreate() {
         // IS_NEW
         locationManager = new LocationManager(this, 5000, 0);
-
+        Log.d(TAG, "onCreate()");
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+
+        Log.d(TAG, "onStartCommand()");
+
+        // NEW implementation
+
+
+
+        int msg = 0;
+        if (intent.getExtras() != null) {
+            msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
+            Log.d(TAG, "msg: " + msg);
+        }
+
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+
+
+        // Depending on the msg a different action is taken
+        switch (msg) {
+
+            // Start location manager and start a foreground
+            case MSG_START:
+                locationManager.connect();
+                List<Object> list = DataManager.readState(this, filename);
+                loadState(list);
+                startForeground();
+                break;
+
+            // Stop location manager and stop the foreground
+            case MSG_STOP:
+                locationManager.disconnect();
+                stopForeground(true);
+                DataManager.saveState(this, filename, tree,
+                        locationManager.getTotalDistance(), environment);
+
+                break;
+
+            case MSG_UPDATE_BEHOV:
+                // TODO: update the tree and give the information to the reciver in the activity
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
+
+                break;
+
+            case MSG_UPDATE_HEALTH:
+                // TODO: update the tree and give the information to the reciver in the activity
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (ALARM_DAY * 1000), pendingIntent);
+
+                break;
+
+
+        }
+
+
+
+        // End of new implementation
+
+        /*
 
         int msg = 0;
         if (intent.getExtras() != null) {
@@ -77,11 +143,6 @@ public class MainService extends Service {
                 DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
                         environment);
             }
-            /*else if (msg == MSG_CREATE) {
-                tree = new Tree();
-                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
-                        environment);
-            } */
 
             PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
             AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -89,8 +150,7 @@ public class MainService extends Service {
                     System.currentTimeMillis() + (ALARM_TIME * 1000), pendingIntent);
         }
 
-        // TODO: Create a real alarm for the GameLogic, currently nothing affects "tree"
-
+        */
 
 
         return START_NOT_STICKY;
