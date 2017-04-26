@@ -75,7 +75,7 @@ class LocationManager implements LocationListener,
 
     @Override
     public void onLocationChanged(Location location) {
-        mCurrentLocation = mCurrentLocation == null ? location : mCurrentLocation;
+        mCurrentLocation = (mCurrentLocation == null ? location : mCurrentLocation);
 
         float delta;
         delta = mCurrentLocation.distanceTo(location);
@@ -96,6 +96,12 @@ class LocationManager implements LocationListener,
         }
 
         mCurrentLocation = location;
+
+        // IS_NEW
+        Intent intent = new Intent();
+        intent.putExtra("DISTANCE", mTotalDistance);
+        intent.setAction("se.kth.projectarbor.project_arbor.intent.DISTANCE");
+        mContext.getApplicationContext().sendBroadcast(intent);
     }
 
     public void connect() {
