@@ -46,9 +46,11 @@ public class Tree implements Serializable {
     private Buffer waterBuffer;
     private Buffer sunBuffer;
     private Buffer healthBuffer;
+    private boolean alive;
 
     // Control variables
     private int time;
+    private boolean timerFlag;
 
     public enum Phase {
         SEED, SPROUT, SAPLING, GROWN_TREE
@@ -101,6 +103,8 @@ public class Tree implements Serializable {
         this.sunBuffer = new Buffer(SEED_SUNBUFFER_MAX);
         this.healthBuffer = new Buffer(SEED_HEALTHBUFFER_MAX);
         this.time = 0;
+        this.timerFlag = false;
+        this.alive = true;
     }
 
     //Returns the water buffer status
@@ -118,11 +122,42 @@ public class Tree implements Serializable {
         return healthBuffer.getValue();
     }
 
+    //Returns the water buffer status
+    public int getWaterBufferMax(){
+        return waterBuffer.max;
+    }
+
+    //Returns the sun buffer status
+    public int getSunBufferMax(){
+        return sunBuffer.max;
+    }
+
+    //Returns the health status
+    public int getHealthBufferMax(){
+        return healthBuffer.max;
+    }
+
     public Phase getTreePhase(){
         return treePhase;
     }
 
+    // update() is called on every hour from MainService()
+    public boolean update() {
+
+        bufferDecrese();
+        if (timerFlag)
+            time += 1;
+        if (time == 24) {
+            time = 0;
+            timerFlag = false;
+            if (getWaterLevel() > 0 && getSunLevel() > 0 && this.getHealth() < this.getHealthBufferMax())
+                healthChange(1);
+        }
+        return alive;
+    }
+
     // This method decreases both waterbuffer and sunbuffer when called by mainservice
+    // If one or both buffers reaches 0, it will also call on healthChange().
     public void bufferDecrese(){
         switch(this.treePhase){
             case SEED:
@@ -142,38 +177,24 @@ public class Tree implements Serializable {
                 sunBuffer.decrValue(GROWN_TREE_SUN_NEED);
                 break;
         }
-        // when buffers is 0 health should be decreased by 1 or 2 HP
-        if((this.waterBuffer.value <= 0) && (this.sunBuffer.value <= 0) ){
-            waterBuffer.setValue(0);
+        if(this.sunBuffer.value <= 0){
             sunBuffer.setValue(0);
-            healthChange(-2);
-        }
-        else if(this.sunBuffer.value <= 0){
-            sunBuffer.setValue(0);
+            timerFlag = true;
             healthChange(-1);
         }
-        else if(this.waterBuffer.value <= 0){
+        if(this.waterBuffer.value <= 0){
             waterBuffer.setValue(0);
+            timerFlag = true;
             healthChange(-1);
-        }
-        else {
-            healthChange(1);
         }
     }
 
     private void healthChange(int valueOfChange){
-        if(this.time == 0) {
-            this.healthBuffer.value = this.healthBuffer.value + valueOfChange;
-            this.time++;
+        this.healthBuffer.value += valueOfChange;
+        if(getHealth() <= 0) {
+            alive = false;
+            this.healthBuffer.value = 0;
         }
-        else if(this.time == 23){
-            this.time = 0;
-        }
-        else{
-            this.time++;
-        }
-
-
     }
 
     public void changeWaterBuffer(boolean increase, int amount){
@@ -191,10 +212,12 @@ public class Tree implements Serializable {
     }
 
     public void changeHealthBuffer(boolean increase, int amount){
-        if (increase)
-            healthBuffer.incrValue(amount);
-        else
-            healthBuffer.decrValue(amount);
+        if (!timerFlag) {
+            if (increase)
+                healthBuffer.incrValue(amount);
+            else
+                healthBuffer.decrValue(amount);
+        }
     }
 
     //This method is called when it's time for the tree object to change phase
