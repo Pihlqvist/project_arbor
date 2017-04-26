@@ -1,7 +1,10 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -37,11 +40,24 @@ public class TreeGame extends Activity {
     private Tree tree;
     private Environment environment;
 
+    // IS_NEW
+    private class DistanceReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Float dist = intent.getExtras().getFloat("DISTANCE", 0);
+            TreeGame.this.distanceView.setText(dist.toString());
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tree_game);
+
+        // IS_NEW
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("se.kth.projectarbor.project_arbor.intent.DISTANCE");
+        getApplicationContext().registerReceiver(this.new DistanceReceiver(), filter);
 
         // Getting all the current values and precenting them on screen
         setupValues();
@@ -56,29 +72,6 @@ public class TreeGame extends Activity {
                     Intent intent = new Intent(TreeGame.this, MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_START);
                     startService(intent);
-
-                    /* EXTAR */
-//                    Thread t = new Thread() {
-//                        @Override
-//                        public void run() {
-//                            try {
-//                                while (!isInterrupted()) {
-//                                    Thread.sleep(1000);
-//                                    runOnUiThread(new Runnable() {
-//                                        @Override
-//                                        public void run() {
-//                                            // update TextView here!
-//                                            distanceView.setText("Distance: " + );
-//                                        }
-//                                    });
-//                                }
-//                            } catch (InterruptedException e) {
-//                            }
-//                        }
-//                    };
-//
-//                    t.start();
-                    /* */
                 } else {
                     // The toggle is disabled
                     Intent intent = new Intent(TreeGame.this, MainService.class);

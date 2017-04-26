@@ -47,7 +47,8 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        locationManager = new LocationManager(this, 10000, 5);
+        // IS_NEW
+        locationManager = new LocationManager(this, 5000, 0);
 
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
