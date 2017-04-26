@@ -33,10 +33,10 @@ public class MainService extends Service {
     private final static int ALARM_DAY = 24 * 60 * 60;
 
     // Don't use 0, it will mess up everything
-    final static int MSG_START = 1;
-    final static int MSG_STOP = 2;
-    final static int MSG_UPDATE_BEHOV = 3;
-    final static int MSG_UPDATE_HEALTH = 4;
+    public final static int MSG_START = 1;
+    public final static int MSG_STOP = 2;
+    public final static int MSG_UPDATE_BEHOV = 3;
+    public final static int MSG_UPDATE_HEALTH = 4;
 
     // MainService works with following components
     private LocationManager locationManager;
@@ -66,8 +66,6 @@ public class MainService extends Service {
         Log.d(TAG, "onStartCommand()");
 
         // NEW implementation
-
-
 
         int msg = 0;
         if (intent.getExtras() != null) {
@@ -120,37 +118,6 @@ public class MainService extends Service {
 
 
         // End of new implementation
-
-        /*
-
-        int msg = 0;
-        if (intent.getExtras() != null) {
-            msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
-            intent.getExtras().remove("MESSAGE_TYPE");
-        }
-
-        if (msg == MSG_START) {
-            locationManager.connect();
-            List<Object> list = DataManager.readState(this, filename);
-            loadState(list);
-            startForeground();
-
-            return START_STICKY;
-        } else {
-            if (msg == MSG_STOP) {
-                locationManager.disconnect();
-                stopForeground(true);
-                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
-                        environment);
-            }
-
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + (ALARM_TIME * 1000), pendingIntent);
-        }
-
-        */
 
 
         return START_NOT_STICKY;
