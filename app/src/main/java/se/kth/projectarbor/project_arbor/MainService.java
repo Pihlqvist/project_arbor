@@ -37,6 +37,7 @@ public class MainService extends Service {
     public final static int MSG_STOP = 2;
     public final static int MSG_UPDATE_BEHOV = 3;
     public final static int MSG_UPDATE_HEALTH = 4;
+    public final static int MSG_KM_DONE = 5;
 
     // MainService works with following components
     private LocationManager locationManager;
@@ -112,6 +113,10 @@ public class MainService extends Service {
 
                 break;
 
+            case MSG_KM_DONE:
+                // TODO: now we have walked 1 km and we want to update tree with it
+
+                break;
 
         }
 

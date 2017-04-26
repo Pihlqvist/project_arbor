@@ -38,8 +38,8 @@ public class MainActivity extends Activity {
                 public void onClick(View v) {
                     DataManager.createUser(getApplicationContext(), MainService.filename);
 
-                    Intent intent = new Intent(MainActivity.this, MainService.class);
-                    intent.putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_BEHOV);
+                    Intent intent = new Intent(MainActivity.this, MainService.class)
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_BEHOV);
                     PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP,

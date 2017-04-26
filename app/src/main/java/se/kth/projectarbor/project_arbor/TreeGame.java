@@ -42,10 +42,18 @@ public class TreeGame extends Activity {
 
     // IS_NEW
     private class DistanceReceiver extends BroadcastReceiver {
+        private int oneUpdate = 0;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Float dist = intent.getExtras().getFloat("DISTANCE", 0);
-            TreeGame.this.distanceView.setText(dist.toString());
+            oneUpdate += dist.intValue();
+            if (oneUpdate > 1000) {
+                oneUpdate -= 1000;
+                startService(new Intent(TreeGame.this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
+            }
+            distanceView.setText(dist.toString());
         }
     }
 
