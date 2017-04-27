@@ -43,7 +43,7 @@ public class MainActivity extends Activity {
                     PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
                     AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                     alarmManager.set(AlarmManager.RTC_WAKEUP,
-                            System.currentTimeMillis() + (MainService.MSG_UPDATE_NEED * 1000), pendingIntent);
+                            System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
 
                     startActivity(new Intent(MainActivity.this, TreeGame.class));
                 }

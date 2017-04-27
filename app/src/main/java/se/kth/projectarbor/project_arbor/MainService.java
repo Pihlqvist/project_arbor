@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 
@@ -16,8 +17,9 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    private final static int ALARM_HOUR = 60 * 60;
-    private final static int ALARM_DAY = 24 * 60 * 60;
+    public final static int ALARM_HOUR = 4;  // TODO: changed to min for testing
+    public final static int ALARM_DAY = 24 * 60 * 60;
+    public final static int ALARM_TEST = 7;
 
     // Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -86,7 +88,8 @@ public class MainService extends Service {
 
             case MSG_UPDATE_NEED:
                 // TODO: update the tree and give the information to the reciver in the activity
-
+                tree.update();
+                sendToView();
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
 
@@ -106,8 +109,8 @@ public class MainService extends Service {
 
             case MSG_KM_DONE:
                 // TODO: now we have walked 1 km and we want to update tree with it
-                Environment.Weather weather = environment.getWeather();
-                //tree.updateBuffer(weather);
+                tree.bufferIncrease(environment.getWeather());
+                sendToView();
 
                 break;
         }
@@ -142,6 +145,23 @@ public class MainService extends Service {
     public Float getDist() {
         // TODO: is this useful?, look at it later and se if a better implementation can be found
         return locationManager.getTotalDistance();
+    }
+
+    // TODO: Fix this with bundle
+    public void sendToView() {
+        Log.d(TAG, "sendToView()");
+        Intent intent = new Intent();
+        Bundle extras = new Bundle();
+        extras.putInt("SUN", tree.getSunLevel());
+        extras.putInt("WATER", tree.getWaterLevel());
+        extras.putInt("HP", tree.getHealth());
+        extras.putString("PHASE", tree.getTreePhase().toString());
+        extras.putFloat("DISTANCE", new Float(0));
+        intent.putExtras(extras);
+        intent.setAction("se.kth.projectarbor.project_arbor.intent.VIEW_DATA");
+
+        getApplicationContext().sendBroadcast(intent);
+
     }
 }
 
