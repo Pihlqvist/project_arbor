@@ -66,13 +66,12 @@ final class DataManager {
     // Create and save game components
     static void createUser(Context context, String filename) {
         Tree tree = new Tree();
-        Float distance = new Float(0);
         // TODO: get coordinates from LocationManager
         double LONGITUDE = 17.951595;
         double LATITUDE = 59.404890;
         Environment environment = new Environment(LATITUDE, LONGITUDE);
 
         // IMPORTANT: ORDER MATTERS
-        saveState(context, filename, tree, distance, environment);
+        saveState(context, filename, tree, environment, new Double(0));
     }
 }

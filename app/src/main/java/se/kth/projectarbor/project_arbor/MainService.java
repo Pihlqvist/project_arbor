@@ -13,11 +13,13 @@ import android.util.Log;
 import java.util.List;
 
 public class MainService extends Service {
+    public final static String TREE_DATA = "se.kth.projectarbor.project_arbor.intent.TREE_DATA";
+
     final static String TAG = "ARBOR";
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 4;  // TODO: changed to min for testing
+    public final static int ALARM_HOUR = 60 * 60;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
     public final static int ALARM_TEST = 7;
 
@@ -29,11 +31,16 @@ public class MainService extends Service {
     public final static int MSG_KM_DONE = 5;
 
     // MainService works with following components
-    private LocationManager locationManager;
+    private Pedometer pedometer;
     private Tree tree;
     private Environment environment;
     private AlarmManager alarmManager;
+    private double totalDistance;
     // end
+
+    // User information
+    private static double userLength = 1.8;
+    private static Pedometer.Gender userGender = Pedometer.Gender.MALE;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -42,20 +49,15 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        // IS_NEW
-        Log.d(TAG, "onCreate()");
-        locationManager = new LocationManager(this, 10000, (float) 2.5, (float) 80.0);
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
+        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Log.d(TAG, "onStartCommand()");
-
-        // NEW implementation
 
         int msg = 0;
         if (intent.getExtras() != null) {
@@ -71,7 +73,7 @@ public class MainService extends Service {
 
             // Start location manager and start a foreground
             case MSG_START:
-                locationManager.connect();
+                pedometer.resetAndRegister();
                 List<Object> list = DataManager.readState(this, filename);
                 loadState(list);
                 startForeground();
@@ -79,15 +81,14 @@ public class MainService extends Service {
 
             // Stop location manager and stop the foreground
             case MSG_STOP:
-                locationManager.disconnect();
+                pedometer.unregister();
                 stopForeground(true);
                 DataManager.saveState(this, filename, tree,
-                        locationManager.getTotalDistance(), environment);
+                        environment, pedometer.getTotalDistance());
 
                 break;
 
             case MSG_UPDATE_NEED:
-                // TODO: update the tree and give the information to the reciver in the activity
                 tree.update();
                 sendToView();
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
@@ -95,7 +96,7 @@ public class MainService extends Service {
 
                 // TODO: Think about it... How to make the environment object persistent?
                 DataManager.saveState(this, filename, tree,
-                        locationManager.getTotalDistance(), environment);
+                        environment, pedometer.getTotalDistance());
 
                 break;
 
@@ -108,7 +109,6 @@ public class MainService extends Service {
                 break;
 
             case MSG_KM_DONE:
-                // TODO: now we have walked 1 km and we want to update tree with it
                 tree.bufferIncrease(environment.getWeather());
                 sendToView();
 
@@ -117,17 +117,13 @@ public class MainService extends Service {
 
 
 
-        // End of new implementation
-
-
         return START_NOT_STICKY;
     }
 
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
-        Float distance = (Float) objects.get(1);
-        environment = (Environment) objects.get(2);
-        locationManager.setTotalDistance(distance);
+        environment = (Environment) objects.get(1);
+        totalDistance = (Double) objects.get(2);
     }
 
     private void startForeground() {
@@ -142,10 +138,6 @@ public class MainService extends Service {
         startForeground(1, notification);
     }
 
-    public Float getDist() {
-        // TODO: is this useful?, look at it later and se if a better implementation can be found
-        return locationManager.getTotalDistance();
-    }
 
     // TODO: Fix this with bundle
     public void sendToView() {
@@ -156,9 +148,8 @@ public class MainService extends Service {
         extras.putInt("WATER", tree.getWaterLevel());
         extras.putInt("HP", tree.getHealth());
         extras.putString("PHASE", tree.getTreePhase().toString());
-        extras.putFloat("DISTANCE", new Float(0));
         intent.putExtras(extras);
-        intent.setAction("se.kth.projectarbor.project_arbor.intent.VIEW_DATA");
+        intent.setAction(TREE_DATA);
 
         getApplicationContext().sendBroadcast(intent);
 
