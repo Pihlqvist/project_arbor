@@ -25,10 +25,97 @@ public class ExampleUnitTest {
             tree.update();
         }
     }
+
     @Test
-    public void addition_isCorrect() throws Exception {
-        assertEquals(4, 2 + 2);
+    public void testNeedsDecr_NeedsIncr_HealthDecr(){
+        Tree tree = new Tree();
+        tree.changePhase();
+        // tree.changePhase();
+        Environment.Weather sun = Environment.Weather.SUN;
+        Environment.Weather rain = Environment.Weather.RAIN;
+        for (int i = 0; i < 25; i++){
+            System.out.println("Health: " + tree.getHealth());
+            System.out.println("Sun " + tree.getSunLevel());
+            System.out.println("Water " + tree.getWaterLevel());
+            System.out.println();
+            tree.update();
+        }
+        System.out.println("Add water and sun: ");
+        for (int i = 0; i < 10; i++){
+            tree.bufferIncrease(sun);
+            tree.bufferIncrease(rain);
+            System.out.println("Health: " + tree.getHealth());
+            System.out.println("Sun " + tree.getSunLevel());
+            System.out.println("Water " + tree.getWaterLevel());
+            System.out.println();
+        }
+        System.out.println("Update every hour: ");
+
+        for (int i = 0; i < 30; i++){
+            tree.update();
+            System.out.println("Health: " + tree.getHealth());
+            System.out.println("Sun " + tree.getSunLevel());
+            System.out.println("Water " + tree.getWaterLevel());
+            System.out.println();
+        }
     }
+    @Test
+    public void test(){
+        Tree tree = new Tree();
+        Environment.Weather sun = Environment.Weather.SUN;
+        Environment.Weather rain = Environment.Weather.RAIN;
+        tree.changePhase();
+        int n = 0;
+        while (tree.update()) {
+            System.out.println(++n);
+            System.out.println("Health: " + tree.getHealth());
+            System.out.println("Sun " + tree.getSunLevel());
+            System.out.println("Water " + tree.getWaterLevel());
+            System.out.println();
+            if (n > 25 ) {
+                System.out.println("Add water and sun: ");
+                tree.bufferIncrease(sun);
+                tree.bufferIncrease(rain);
+            }
+        if(n > 100)
+            break;
+        }
+
+    }
+
+    @Test
+    public void changeOfPhaseTest(){
+        Tree tree = new Tree(); // SEED
+        Environment.Weather sun = Environment.Weather.SUN;
+        Environment.Weather rain = Environment.Weather.RAIN;
+        for (int i = 1; i <= 200; i++) {
+            tree.bufferIncrease(sun);
+            System.out.println("Km: " + i);
+            System.out.println("Phase " + tree.getTreePhase());
+            System.out.println();
+        }
+    }
+    @Test
+    public void testIncrBuffersStore(){
+        Tree tree = new Tree(); // SEED
+        System.out.println("Sun " + tree.getSunLevel());
+        System.out.println("Water " + tree.getWaterLevel());
+        System.out.println();
+        for(int i = 0; i < 10; i++){
+            tree.update();
+            System.out.println("Sun " + tree.getSunLevel());
+            System.out.println("Water " + tree.getWaterLevel());
+            System.out.println();
+        }
+        Environment.Weather sun = Environment.Weather.SUN;
+        Environment.Weather rain = Environment.Weather.RAIN;
+        tree.bufferIncreaseStore(sun, 13);
+        tree.bufferIncreaseStore(rain, 7);
+        System.out.println("Sun " + tree.getSunLevel());
+        System.out.println("Water " + tree.getWaterLevel());
+        System.out.println();
+    }
+
     @Test
     public void bufferTest(){
 
@@ -88,62 +175,6 @@ public class ExampleUnitTest {
         buffer.decrValue(17);
         System.out.println("Buffer value after decr: " + buffer.getValue());
 
-
-    }
-    @Test
-    public void testNeedsDecr_NeedsIncr_HealthDecr(){
-        Tree tree = new Tree();
-        tree.changePhase();
-        // tree.changePhase();
-        Environment.Weather sun = Environment.Weather.SUN;
-        Environment.Weather rain = Environment.Weather.RAIN;
-        for (int i = 0; i < 25; i++){
-            System.out.println("Health: " + tree.getHealth());
-            System.out.println("Sun " + tree.getSunLevel());
-            System.out.println("Water " + tree.getWaterLevel());
-            System.out.println();
-            tree.update();
-        }
-        System.out.println("Add water and sun: ");
-        for (int i = 0; i < 10; i++){
-            tree.bufferIncrease(sun);
-            tree.bufferIncrease(rain);
-            System.out.println("Health: " + tree.getHealth());
-            System.out.println("Sun " + tree.getSunLevel());
-            System.out.println("Water " + tree.getWaterLevel());
-            System.out.println();
-        }
-        System.out.println("Update every hour: ");
-
-        for (int i = 0; i < 30; i++){
-            tree.update();
-            System.out.println("Health: " + tree.getHealth());
-            System.out.println("Sun " + tree.getSunLevel());
-            System.out.println("Water " + tree.getWaterLevel());
-            System.out.println();
-        }
-    }
-    @Test
-    public void test(){
-        Tree tree = new Tree();
-        Environment.Weather sun = Environment.Weather.SUN;
-        Environment.Weather rain = Environment.Weather.RAIN;
-        tree.changePhase();
-        int n = 0;
-        while (tree.update()) {
-            System.out.println(++n);
-            System.out.println("Health: " + tree.getHealth());
-            System.out.println("Sun " + tree.getSunLevel());
-            System.out.println("Water " + tree.getWaterLevel());
-            System.out.println();
-            if (n > 25 ) {
-                System.out.println("Add water and sun: ");
-                tree.bufferIncrease(sun);
-                tree.bufferIncrease(rain);
-            }
-        if(n > 100)
-            break;
-        }
 
     }
 

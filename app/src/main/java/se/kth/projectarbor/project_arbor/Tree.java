@@ -21,6 +21,7 @@ public class Tree implements Serializable {
     private final int SEED_SUN_NEED = 2; // need per hour
     private final int SEED_WATER_INTAKE = 7; // intake per kilometer
     private final int SEED_SUN_INTAKE = 14; // intake per kilometer
+    private final int SEED_NEXT_PHASE = 7; // number of km where SEED goes into next phase
 
     //Sprout phase constants
     private final int SPROUT_WATERBUFFER_MAX = 114;
@@ -30,6 +31,7 @@ public class Tree implements Serializable {
     private final int SPROUT_SUN_NEED = 8; // need per hour
     private final int SPROUT_WATER_INTAKE = 34; // intake per kilometer
     private final int SPROUT_SUN_INTAKE = 55; // intake per kilometer
+    private final int SPROUT_NEXT_PHASE = 20; // number of km where SPROUT goes into next phase
 
     //Sapling phase constants
     private final int SAPLING_WATERBUFFER_MAX = 472;
@@ -39,6 +41,7 @@ public class Tree implements Serializable {
     private final int SAPLING_SUN_NEED = 30; // need per hour
     private final int SAPLING_WATER_INTAKE = 137; // intake per kilometer
     private final int SAPLING_SUN_INTAKE = 206; // intake per kilometer
+    private final int SAPLING_NEXT_PHASE = 50; // number of km where SAPLING goes into next phase
 
     //Grown tree phase constants
     private final int GROWN_TREE_WATERBUFFER_MAX = 950;
@@ -58,6 +61,7 @@ public class Tree implements Serializable {
 
     // Control variables
     private int time;
+    private int dist;
     private boolean timerFlag;
 
     public enum Phase {
@@ -113,6 +117,7 @@ public class Tree implements Serializable {
         this.time = 0;
         this.timerFlag = false;
         this.alive = true;
+        this.dist = 0;
     }
 
     //Returns the water buffer status
@@ -188,7 +193,6 @@ public class Tree implements Serializable {
     }
 
     // update() is called on every hour from MainService(). Triggers bufferDecrease
-
     public boolean update() {
         bufferDecrease();
         System.out.println("Timerflag: " + timerFlag);
@@ -243,8 +247,20 @@ public class Tree implements Serializable {
     // bufferIncrease() is called from MainService every accomplished kilometer
     public void bufferIncrease(Environment.Weather weather) {
 
-        // TODO: change phase here, fixme later
-
+        // Update phase if needed.
+        dist++;
+        switch(dist) {
+            case SEED_NEXT_PHASE:
+                this.changePhase();
+                break;
+            case SPROUT_NEXT_PHASE:
+                this.changePhase();
+                break;
+            case SAPLING_NEXT_PHASE:
+                this.changePhase();
+                break;
+        }
+        // Add fixed amount of resources depending on weather and phase.
         switch(weather) {
             case SUN:
                 addSunIntake();
@@ -260,42 +276,62 @@ public class Tree implements Serializable {
                 break;
         }
     }
-    // Help method to bufferIncrease
-    private void addSunIntake(){
-        Phase phase = getTreePhase();
-        switch(phase) {
-            case SEED:
-                sunBuffer.value += SEED_SUN_INTAKE;
-                break;
-            case SPROUT:
-                sunBuffer.value += SPROUT_SUN_INTAKE;
-                break;
-            case SAPLING:
-                sunBuffer.value += SAPLING_SUN_INTAKE;
-                break;
-            case GROWN_TREE:
-                sunBuffer.value += GROWN_TREE_SUN_INTAKE;
-                break;
+        // Add sun amount depending on phase.
+        private void addSunIntake(){
+            Phase phase = getTreePhase();
+            switch(phase) {
+                case SEED:
+                    sunBuffer.value += SEED_SUN_INTAKE;
+                    break;
+                case SPROUT:
+                    sunBuffer.value += SPROUT_SUN_INTAKE;
+                    break;
+                case SAPLING:
+                    sunBuffer.value += SAPLING_SUN_INTAKE;
+                    break;
+                case GROWN_TREE:
+                    sunBuffer.value += GROWN_TREE_SUN_INTAKE;
+                    break;
+            }
+        }
+
+        // Add water amount per km depending on phase.
+        private void addWaterIntake(){
+            Phase phase = getTreePhase();
+            switch(phase) {
+                case SEED:
+                    waterBuffer.value += SEED_WATER_INTAKE;
+                    break;
+                case SPROUT:
+                    waterBuffer.value += SPROUT_WATER_INTAKE;
+                    break;
+                case SAPLING:
+                    waterBuffer.value += SAPLING_WATER_INTAKE;
+                    break;
+                case GROWN_TREE:
+                    waterBuffer.value += GROWN_TREE_WATER_INTAKE;
+                    break;
+            }
+        }
+
+    // bufferIncreaseStore is called if resources for the tree has been bought and then added to tree
+    public void bufferIncreaseStore (Environment.Weather weather, int amount){
+        switch(weather){
+            case SUN:
+                addSunIntakeStore(amount);
+            case RAIN:
+                addWaterIntakeStore(amount);
         }
     }
-    // Help method to bufferIncrease
-    private void addWaterIntake(){
-        Phase phase = getTreePhase();
-        switch(phase) {
-            case SEED:
-                waterBuffer.value += SEED_WATER_INTAKE;
-                break;
-            case SPROUT:
-                waterBuffer.value += SPROUT_WATER_INTAKE;
-                break;
-            case SAPLING:
-                waterBuffer.value += SAPLING_WATER_INTAKE;
-                break;
-            case GROWN_TREE:
-                waterBuffer.value += GROWN_TREE_WATER_INTAKE;
-                break;
+        // Add sun amount that has been bought in store.
+        private void addSunIntakeStore(int amount){
+            changeSunBuffer(true, amount);
         }
-    }
+        // Add water amount that has been bought in store.
+        private void addWaterIntakeStore(int amount){
+            changeWaterBuffer(true, amount);
+        }
+
     // Increases or decreases tree health and sets boolean alive to false if tree dies.
     private void healthChange(int valueOfChange){
         if(valueOfChange < 0)
@@ -308,6 +344,7 @@ public class Tree implements Serializable {
             this.healthBuffer.value = 0;
         }
     }
+
 
     public void changeWaterBuffer(boolean increase, int amount){
         if (increase)
