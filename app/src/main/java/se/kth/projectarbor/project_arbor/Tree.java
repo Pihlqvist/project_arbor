@@ -195,7 +195,6 @@ public class Tree implements Serializable {
     // update() is called on every hour from MainService(). Triggers bufferDecrease
     public boolean update() {
         bufferDecrease();
-        System.out.println("Timerflag: " + timerFlag);
         if (timerFlag) {
             time += 1;
         } else {
@@ -215,7 +214,6 @@ public class Tree implements Serializable {
             System.out.println(timerFlag);
             if (getWaterLevel() > 0 && getSunLevel() > 0 && this.getHealth() < this.getHealthBufferMax()) {
                 healthChange(1);
-                System.out.println("Timerflag: " + timerFlag + "and time: " + time);
             }
         }
         return alive;

@@ -1,6 +1,8 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -45,6 +47,7 @@ public class TreeGame extends Activity {
     private class DistanceReceiver extends BroadcastReceiver {
         private int oneUpdate = 0;
 
+        /*
         @Override
         public void onReceive(Context context, Intent intent) {
             Float dist = intent.getExtras().getFloat("DISTANCE", 0);
@@ -55,7 +58,23 @@ public class TreeGame extends Activity {
                         .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
             }
 
-            distanceView.setText("Distance: " + dist.toString());
+            // TODO: Update views with Receiver
+
+
+        }
+        */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d("ARBOR", "on receive");
+            Bundle extras = intent.getExtras();
+
+            weatherView.setText("Weather: " + environment.getWeather().toString());
+            tempView.setText("Temp: " + environment.getTemp());
+            hpView.setText("HP: " + extras.getInt("HP"));
+            treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+            distanceView.setText("Distance: " + extras.getFloat("DISTANCE"));
+            sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
+            waterView.setText("Water Buffer: " + extras.getInt("WATER"));
         }
     }
 
@@ -66,7 +85,8 @@ public class TreeGame extends Activity {
 
         // IS_NEW
         IntentFilter filter = new IntentFilter();
-        filter.addAction("se.kth.projectarbor.project_arbor.intent.DISTANCE");
+        //filter.addAction("se.kth.projectarbor.project_arbor.intent.DISTANCE");
+        filter.addAction("se.kth.projectarbor.project_arbor.intent.VIEW_DATA");
         getApplicationContext().registerReceiver(this.new DistanceReceiver(), filter);
 
         // Getting all the current values and precenting them on screen
