@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Arbor</string>
     <string name="content_text">Ongoing activity</string>
+    <string name="distance_broadcast">se.kth.projectarbor.project_arbor.intent.DISTANCE</string>
 </resources>

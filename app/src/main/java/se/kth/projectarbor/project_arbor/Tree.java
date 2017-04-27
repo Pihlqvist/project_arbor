@@ -188,8 +188,8 @@ public class Tree implements Serializable {
     // is put to false after 24 hours and both buffers are not 0, 1 HP is added to HPBuffer.
     public boolean update() {
         bufferDecrease();
-        System.out.println("Timerflag: " + timerFlag);
         // timerFlag is true so HP cannot be decreased during this time.
+
         if (timerFlag) {
             time += 1;
         } else {
@@ -209,7 +209,6 @@ public class Tree implements Serializable {
             System.out.println(timerFlag);
             if (getWaterLevel() > 0 && getSunLevel() > 0 && this.getHealth() < this.getHealthBufferMax()) {
                 healthChange(1);
-                System.out.println("Timerflag: " + timerFlag + "and time: " + time);
             }
         }
         return alive;

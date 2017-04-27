@@ -1,10 +1,13 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,10 +45,41 @@ public class TreeGame extends Activity {
 
     // IS_NEW
     private class DistanceReceiver extends BroadcastReceiver {
+        private int oneUpdate = 0;
+
+        /*
         @Override
         public void onReceive(Context context, Intent intent) {
             Float dist = intent.getExtras().getFloat("DISTANCE", 0);
-            TreeGame.this.distanceView.setText(dist.toString());
+            oneUpdate += dist.intValue();
+            if (oneUpdate > 1000) {
+                oneUpdate -= 1000;
+                startService(new Intent(TreeGame.this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
+            }
+
+            // TODO: Update views with Receiver
+
+
+        }
+        */
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Bundle extras = intent.getExtras();
+
+            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+                distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
+            }
+
+
+            if (intent.getAction().equals(MainService.TREE_DATA)) {
+                weatherView.setText("Weather: " + environment.getWeather().toString());
+                tempView.setText("Temp: " + environment.getTemp());
+                hpView.setText("HP: " + extras.getInt("HP"));
+                treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+                sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
+                waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+            }
         }
     }
 
@@ -56,7 +90,8 @@ public class TreeGame extends Activity {
 
         // IS_NEW
         IntentFilter filter = new IntentFilter();
-        filter.addAction("se.kth.projectarbor.project_arbor.intent.DISTANCE");
+        filter.addAction(Pedometer.DISTANCE_BROADCAST);
+        filter.addAction(MainService.TREE_DATA);
         getApplicationContext().registerReceiver(this.new DistanceReceiver(), filter);
 
         // Getting all the current values and precenting them on screen
@@ -77,12 +112,6 @@ public class TreeGame extends Activity {
                     Intent intent = new Intent(TreeGame.this, MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
                     startService(intent);
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    setupValues();
                 }
             }
         });
@@ -103,14 +132,12 @@ public class TreeGame extends Activity {
         List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
 
         tree = (Tree) list.get(0);
-        distance = (Float) list.get(1);
-        environment = (Environment) list.get(2);
+        environment = (Environment) list.get(1);
 
         weatherView.setText("Weather: " + environment.getWeather().toString());
         tempView.setText("Temp: " + environment.getTemp());
         hpView.setText("HP: " + tree.getHealth());
         treeView.setText("Tree, Phase: " + tree.getTreePhase());
-        distanceView.setText("Distance: " + distance.toString());
         sunView.setText("Sun Buffer: " + tree.getSunLevel());
         waterView.setText("Water Buffer: " + tree.getWaterLevel());
 
