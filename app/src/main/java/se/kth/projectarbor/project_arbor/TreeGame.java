@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,10 +43,19 @@ public class TreeGame extends Activity {
 
     // IS_NEW
     private class DistanceReceiver extends BroadcastReceiver {
+        private int oneUpdate = 0;
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Float dist = intent.getExtras().getFloat("DISTANCE", 0);
-            TreeGame.this.distanceView.setText(dist.toString());
+            oneUpdate += dist.intValue();
+            if (oneUpdate > 1000) {
+                oneUpdate -= 1000;
+                startService(new Intent(TreeGame.this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
+            }
+
+            distanceView.setText("Distance: " + dist.toString());
         }
     }
 
@@ -77,12 +87,6 @@ public class TreeGame extends Activity {
                     Intent intent = new Intent(TreeGame.this, MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
                     startService(intent);
-                    try {
-                        Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    setupValues();
                 }
             }
         });

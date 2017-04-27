@@ -1,6 +1,9 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -35,7 +38,13 @@ public class MainActivity extends Activity {
                 public void onClick(View v) {
                     DataManager.createUser(getApplicationContext(), MainService.filename);
 
-                    startService(new Intent(MainActivity.this, MainService.class));
+                    Intent intent = new Intent(MainActivity.this, MainService.class)
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
+                    PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.RTC_WAKEUP,
+                            System.currentTimeMillis() + (MainService.MSG_UPDATE_NEED * 1000), pendingIntent);
+
                     startActivity(new Intent(MainActivity.this, TreeGame.class));
                 }
         });
@@ -45,7 +54,6 @@ public class MainActivity extends Activity {
         mResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startService(new Intent (MainActivity.this, MainService.class));
                 startActivity(new Intent(MainActivity.this, TreeGame.class));
             }
         });

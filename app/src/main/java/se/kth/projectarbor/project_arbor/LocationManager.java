@@ -28,17 +28,26 @@ import com.google.android.gms.location.LocationServices;
 class LocationManager implements LocationListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+    static final float ENV_MAX_DISTANCE = 5000;
+
     private float mTotalDistance;
     private Location mCurrentLocation;
-    private int mErrorMargin;
+    private Location mEnvironmentLocation;
+    private Environment mEnvironment;
+
+    private float mLowerLimit;
+    private float mUpperLimit;
 
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
 
-    public LocationManager(Context context, long locationUpdateInterval, int errorMargin) {
+    public LocationManager(Context context, long locationUpdateInterval, float lowerLimit,
+                           float upperLimit) {
         this.mContext = context;
-        this.mErrorMargin = errorMargin;
+        this.mLowerLimit = lowerLimit;
+        this.mUpperLimit = upperLimit;
+        //TODO: this.mEnvironment = environment;
 
         mGoogleApiClient = new GoogleApiClient.Builder(context)
             .addConnectionCallbacks(this)
@@ -77,6 +86,17 @@ class LocationManager implements LocationListener,
     public void onLocationChanged(Location location) {
         mCurrentLocation = (mCurrentLocation == null ? location : mCurrentLocation);
 
+        // TODO
+        /*
+        mEnvironmentLocation =
+                (mEnvironmentLocation == null ? location : mEnvironmentLocation);
+
+        if (mEnvironmentLocation.distanceTo(mCurrentLocation) >= ENV_MAX_DISTANCE)
+            // TODO: see next line
+            //mEnvironment.changeCoordinatesAndDownload
+        ;
+        */
+
         float delta;
         delta = mCurrentLocation.distanceTo(location);
 
@@ -88,7 +108,7 @@ class LocationManager implements LocationListener,
         delta = results[0];
         */
 
-        if (delta >= mErrorMargin) {
+        if (delta >= mLowerLimit && delta < mUpperLimit) {
             mTotalDistance += delta;
             Log.d(MainService.TAG, "mTotalDistance == " + mTotalDistance);
         } else {
@@ -138,11 +158,7 @@ class LocationManager implements LocationListener,
         mLocationRequest.setInterval(l);
     }
 
-    public int setErrorMargin(int i) {
-        int old = mErrorMargin;
-        mErrorMargin = i;
-        return old;
-    }
+    // TODO: Accessor methods for limits
 
     public double[] getCoordinates() {
         // TODO: Implement this method

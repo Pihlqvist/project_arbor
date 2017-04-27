@@ -6,38 +6,31 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.IBinder;
-import android.os.Looper;
-import android.os.Message;
-import android.os.Process;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainService extends Service {
     final static String TAG = "ARBOR";
-    private final static int ALARM_TIME = 6;        // Time in seconds that it takes for the Service to repeat
     final static String filename = "user42.dat";
 
+    // Times in seconds that the alarm will take to repeat the service
+    private final static int ALARM_HOUR = 60 * 60;
+    private final static int ALARM_DAY = 24 * 60 * 60;
+
     // Don't use 0, it will mess up everything
-    final static int MSG_START = 1;
-    final static int MSG_STOP = 2;
-    final static int MSG_UPDATE = 3;
+    public final static int MSG_START = 1;
+    public final static int MSG_STOP = 2;
+    public final static int MSG_UPDATE_NEED = 3;
+    public final static int MSG_UPDATE_HEALTH = 4;
+    public final static int MSG_KM_DONE = 5;
 
     // MainService works with following components
     private LocationManager locationManager;
     private Tree tree;
     private Environment environment;
+    private AlarmManager alarmManager;
     // end
 
     @Override
@@ -48,49 +41,80 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         // IS_NEW
-        locationManager = new LocationManager(this, 5000, 0);
-
+        Log.d(TAG, "onCreate()");
+        locationManager = new LocationManager(this, 10000, (float) 2.5, (float) 80.0);
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
+        alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
+        Log.d(TAG, "onStartCommand()");
+
+        // NEW implementation
+
         int msg = 0;
         if (intent.getExtras() != null) {
             msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
-            intent.getExtras().remove("MESSAGE_TYPE");
+            Log.d(TAG, "msg: " + msg);
         }
 
-        if (msg == MSG_START) {
-            locationManager.connect();
-            List<Object> list = DataManager.readState(this, filename);
-            loadState(list);
-            startForeground();
+        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
-            return START_STICKY;
-        } else {
-            if (msg == MSG_STOP) {
+
+        // Depending on the msg a different action is taken
+        switch (msg) {
+
+            // Start location manager and start a foreground
+            case MSG_START:
+                locationManager.connect();
+                List<Object> list = DataManager.readState(this, filename);
+                loadState(list);
+                startForeground();
+                break;
+
+            // Stop location manager and stop the foreground
+            case MSG_STOP:
                 locationManager.disconnect();
                 stopForeground(true);
-                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
-                        environment);
-            }
-            /*else if (msg == MSG_CREATE) {
-                tree = new Tree();
-                DataManager.saveState(this, filename, tree, locationManager.getTotalDistance(),
-                        environment);
-            } */
+                DataManager.saveState(this, filename, tree,
+                        locationManager.getTotalDistance(), environment);
 
-            PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + (ALARM_TIME * 1000), pendingIntent);
+                break;
+
+            case MSG_UPDATE_NEED:
+                // TODO: update the tree and give the information to the reciver in the activity
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
+
+                // TODO: Think about it... How to make the environment object persistent?
+                DataManager.saveState(this, filename, tree,
+                        locationManager.getTotalDistance(), environment);
+
+                break;
+
+            case MSG_UPDATE_HEALTH:
+                // TODO: update the tree and give the information to the reciver in the activity
+
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (ALARM_DAY * 1000), pendingIntent);
+
+                break;
+
+            case MSG_KM_DONE:
+                // TODO: now we have walked 1 km and we want to update tree with it
+                Environment.Weather weather = environment.getWeather();
+                //tree.updateBuffer(weather);
+
+                break;
         }
 
-        // TODO: Create a real alarm for the GameLogic, currently nothing affects "tree"
 
+
+        // End of new implementation
 
 
         return START_NOT_STICKY;

@@ -68,7 +68,7 @@ final class DataManager {
         Tree tree = new Tree();
         Float distance = new Float(0);
         // TODO: get coordinates from LocationManager
-        double LONGITUDE = 17.951595 ;
+        double LONGITUDE = 17.951595;
         double LATITUDE = 59.404890;
         Environment environment = new Environment(LATITUDE, LONGITUDE);
 
