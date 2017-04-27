@@ -70,42 +70,42 @@ public class Tree implements Serializable {
 
     //The buffer class keeps track of the buffer value that is an integer
     // between 0 and a max value that is dependent on the tree phase
-        public class Buffer implements Serializable {
-            // IMPORTANT for serialization, DO NOT REMOVE
-            private static final long serialVersionUID = 8087200635129916880L;
+    private class Buffer implements Serializable {
+        // IMPORTANT for serialization, DO NOT REMOVE
+        private static final long serialVersionUID = 8087200635129916880L;
 
-            private int max;
-            private int value;
+        private int max;
+        private int value;
 
-            public Buffer(int max){
-                this.max = max;
-                this.value = max;
-            }
-
-            public void setMax(int newMax) {
-                this.max = newMax;
-            }
-
-            public void setValue(int newValue) { this.value = newValue; };
-
-            public int getValue(){
-                return value;
-            }
-            //increases the buffer value, if the buffer is full the value is set to max
-            public void incrValue(int increaseBy){
-                if((value + increaseBy) < max)
-                    value += increaseBy;
-                else
-                    value = max;
-            }
-            //decreases the buffer value, if the buffer is empty the value is set to zero
-            public void decrValue(int decreaseBy){
-                if((value - decreaseBy) > 0)
-                    value -= decreaseBy;
-                else
-                    value = 0;
-            }
+        public Buffer(int max){
+            this.max = max;
+            this.value = max;
         }
+
+        public void setMax(int newMax) {
+            this.max = newMax;
+        }
+
+        public void setValue(int newValue) { this.value = newValue; };
+
+        public int getValue(){
+            return value;
+        }
+        //increases the buffer value, if the buffer is full the value is set to max
+        public void incrValue(int increaseBy){
+            if((value + increaseBy) < max)
+                value += increaseBy;
+            else
+                value = max;
+        }
+        //decreases the buffer value, if the buffer is empty the value is set to zero
+        public void decrValue(int decreaseBy){
+            if((value - decreaseBy) > 0)
+                value -= decreaseBy;
+            else
+                value = 0;
+        }
+    }
 
     public Tree(){
         this.treePhase = Phase.SEED;
