@@ -147,4 +147,17 @@ public class ExampleUnitTest {
 
     }
 
+    @Test
+    public void changeOfPhaseTest(){
+        Tree tree = new Tree(); // SEED
+        Environment.Weather sun = Environment.Weather.SUN;
+        Environment.Weather rain = Environment.Weather.RAIN;
+        for (int i = 1; i <= 200; i++) {
+            tree.bufferIncrease(sun);
+            System.out.println("Km: " + i);
+            System.out.println("Phase " + tree.getTreePhase());
+            System.out.println();
+        }
+    }
+
 }

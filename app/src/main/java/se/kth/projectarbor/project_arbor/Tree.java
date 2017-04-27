@@ -21,6 +21,7 @@ public class Tree implements Serializable {
     private final int SEED_SUN_NEED = 2; // need per hour
     private final int SEED_WATER_INTAKE = 7; // intake per kilometer
     private final int SEED_SUN_INTAKE = 14; // intake per kilometer
+    private final int SEED_NEXT_PHASE = 7; // number of km where SEED goes into next phase
 
     //Sprout phase constants
     private final int SPROUT_WATERBUFFER_MAX = 114;
@@ -30,6 +31,7 @@ public class Tree implements Serializable {
     private final int SPROUT_SUN_NEED = 8; // need per hour
     private final int SPROUT_WATER_INTAKE = 34; // intake per kilometer
     private final int SPROUT_SUN_INTAKE = 55; // intake per kilometer
+    private final int SPROUT_NEXT_PHASE = 20; // number of km where SPROUT goes into next phase
 
     //Sapling phase constants
     private final int SAPLING_WATERBUFFER_MAX = 472;
@@ -39,6 +41,7 @@ public class Tree implements Serializable {
     private final int SAPLING_SUN_NEED = 30; // need per hour
     private final int SAPLING_WATER_INTAKE = 137; // intake per kilometer
     private final int SAPLING_SUN_INTAKE = 206; // intake per kilometer
+    private final int SAPLING_NEXT_PHASE = 50; // number of km where SAPLING goes into next phase
 
     //Grown tree phase constants
     private final int GROWN_TREE_WATERBUFFER_MAX = 950;
@@ -58,6 +61,7 @@ public class Tree implements Serializable {
 
     // Control variables
     private int time;
+    private int dist;
     private boolean timerFlag;
 
     public enum Phase {
@@ -113,6 +117,7 @@ public class Tree implements Serializable {
         this.time = 0;
         this.timerFlag = false;
         this.alive = true;
+        this.dist = 0;
     }
 
     //Returns the water buffer status
@@ -242,8 +247,18 @@ public class Tree implements Serializable {
 
     // bufferIncrease() is called from MainService every accomplished kilometer
     public void bufferIncrease(Environment.Weather weather) {
-
-        // TODO: change phase here, fixme later
+        dist++;
+        switch(dist) {
+            case SEED_NEXT_PHASE:
+                this.changePhase();
+                break;
+            case SPROUT_NEXT_PHASE:
+                this.changePhase();
+                break;
+            case SAPLING_NEXT_PHASE:
+                this.changePhase();
+                break;
+        }
 
         switch(weather) {
             case SUN:
