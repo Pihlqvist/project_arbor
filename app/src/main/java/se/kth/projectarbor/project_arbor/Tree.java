@@ -66,7 +66,7 @@ public class Tree implements Serializable {
 
     //The buffer class keeps track of the buffer value that is an integer
     // between 0 and a max value that is dependent on the tree phase
-        private class Buffer implements Serializable {
+        public class Buffer implements Serializable {
             // IMPORTANT for serialization, DO NOT REMOVE
             private static final long serialVersionUID = 8087200635129916880L;
 
@@ -90,7 +90,7 @@ public class Tree implements Serializable {
 
             //increases the buffer value, if the buffer is full the value is set to max
             public void incrValue(int increaseBy){
-                if(value + increaseBy < max)
+                if((value + increaseBy) < max)
                     value += increaseBy;
                 else
                     value = max;
@@ -98,7 +98,7 @@ public class Tree implements Serializable {
 
             //decreases the buffer value, if the buffer is empty the value is set to zero
             public void decrValue(int decreaseBy){
-                if(value - decreaseBy > 0)
+                if((value - decreaseBy) > 0)
                     value -= decreaseBy;
                 else
                     value = 0;
@@ -149,17 +149,70 @@ public class Tree implements Serializable {
         return treePhase;
     }
 
-    // update() is called on every hour from MainService(). Triggers bufferDecrease
-    public boolean update() {
+    //This method is called when it's time for the tree object to change phase
+    //It changes the tree objects attributes to match the current phase
+    //and fills all the buffers to max
+    public void changePhase(){
+        switch(this.treePhase) {
+            case SEED:
+                this.treePhase = Phase.SPROUT;
 
+                this.waterBuffer.setMax(SPROUT_WATERBUFFER_MAX);
+                this.waterBuffer.setValue(SPROUT_WATERBUFFER_MAX);
+                this.sunBuffer.setMax(SPROUT_SUNBUFFER_MAX);
+                this.sunBuffer.setValue(SPROUT_SUNBUFFER_MAX);
+                this.healthBuffer.setMax(SPROUT_HEALTHBUFFER_MAX);
+                this.healthBuffer.setValue(SPROUT_HEALTHBUFFER_MAX);
+                break;
+            case SPROUT:
+                this.treePhase = Phase.SAPLING;
+
+                this.waterBuffer.setMax(SAPLING_WATERBUFFER_MAX);
+                this.waterBuffer.setValue(SAPLING_WATERBUFFER_MAX);
+                this.sunBuffer.setMax(SAPLING_SUNBUFFER_MAX);
+                this.sunBuffer.setValue(SAPLING_SUNBUFFER_MAX);
+                this.healthBuffer.setMax(SAPLING_HEALTHBUFFER_MAX);
+                this.healthBuffer.setValue(SAPLING_HEALTHBUFFER_MAX);
+                break;
+            case SAPLING:
+                this.treePhase = Phase.GROWN_TREE;
+
+                this.waterBuffer.setMax(GROWN_TREE_WATERBUFFER_MAX);
+                this.waterBuffer.setValue(GROWN_TREE_WATERBUFFER_MAX);
+                this.sunBuffer.setMax(GROWN_TREE_SUNBUFFER_MAX);
+                this.sunBuffer.setValue(GROWN_TREE_SUNBUFFER_MAX);
+                this.healthBuffer.setMax(GROWN_TREE_HEALTHBUFFER_MAX);
+                this.healthBuffer.setValue(GROWN_TREE_HEALTHBUFFER_MAX);
+                break;
+        }
+    }
+
+    // update() is called on every hour from MainService(). Triggers bufferDecrease
+
+    public boolean update() {
         bufferDecrease();
-        if (timerFlag)
+        System.out.println("Timerflag: " + timerFlag);
+        if (timerFlag) {
             time += 1;
+        } else {
+            if (this.sunBuffer.value <= 0) {
+                timerFlag = true;
+                healthChange(-1);
+            }
+            if (this.waterBuffer.value <= 0) {
+                timerFlag = true;
+                healthChange(-1);
+            }
+        }
+
         if (time == 24) {
             time = 0;
             timerFlag = false;
-            if (getWaterLevel() > 0 && getSunLevel() > 0 && this.getHealth() < this.getHealthBufferMax())
+            System.out.println(timerFlag);
+            if (getWaterLevel() > 0 && getSunLevel() > 0 && this.getHealth() < this.getHealthBufferMax()) {
                 healthChange(1);
+                System.out.println("Timerflag: " + timerFlag + "and time: " + time);
+            }
         }
         return alive;
     }
@@ -185,20 +238,13 @@ public class Tree implements Serializable {
                 sunBuffer.decrValue(GROWN_TREE_SUN_NEED);
                 break;
         }
-        if(this.sunBuffer.value <= 0){
-            sunBuffer.setValue(0);
-            timerFlag = true;
-            healthChange(-1);
-        }
-        if(this.waterBuffer.value <= 0){
-            waterBuffer.setValue(0);
-            timerFlag = true;
-            healthChange(-1);
-        }
     }
 
     // bufferIncrease() is called from MainService every accomplished kilometer
     public void bufferIncrease(Environment.Weather weather) {
+
+        // TODO: change phase here, fixme later
+
         switch(weather) {
             case SUN:
                 addSunIntake();
@@ -252,7 +298,11 @@ public class Tree implements Serializable {
     }
     // Increases or decreases tree health and sets boolean alive to false if tree dies.
     private void healthChange(int valueOfChange){
-        this.healthBuffer.value += valueOfChange;
+        if(valueOfChange < 0)
+            this.healthBuffer.decrValue(-valueOfChange);
+        else
+            this.healthBuffer.incrValue(valueOfChange);
+
         if(getHealth() <= 0) {
             alive = false;
             this.healthBuffer.value = 0;
@@ -282,41 +332,5 @@ public class Tree implements Serializable {
         }
     }
 
-    //This method is called when it's time for the tree object to change phase
-    //It changes the tree objects attributes to match the current phase
-    //and fills all the buffers to max
-    public void changePhase(){
-        switch(this.treePhase) {
-            case SEED:
-                this.treePhase = Phase.SPROUT;
 
-                this.waterBuffer.setMax(SPROUT_WATERBUFFER_MAX);
-                this.waterBuffer.setValue(SPROUT_WATERBUFFER_MAX);
-                this.sunBuffer.setMax(SPROUT_SUNBUFFER_MAX);
-                this.sunBuffer.setValue(SPROUT_SUNBUFFER_MAX);
-                this.healthBuffer.setMax(SPROUT_HEALTHBUFFER_MAX);
-                this.healthBuffer.setValue(SPROUT_HEALTHBUFFER_MAX);
-                break;
-            case SPROUT:
-                this.treePhase = Phase.SAPLING;
-
-                this.waterBuffer.setMax(SAPLING_WATERBUFFER_MAX);
-                this.waterBuffer.setValue(SAPLING_WATERBUFFER_MAX);
-                this.sunBuffer.setMax(SAPLING_SUNBUFFER_MAX);
-                this.sunBuffer.setValue(SAPLING_SUNBUFFER_MAX);
-                this.healthBuffer.setMax(SAPLING_HEALTHBUFFER_MAX);
-                this.healthBuffer.setValue(SAPLING_HEALTHBUFFER_MAX);
-                break;
-            case SAPLING:
-                this.treePhase = Phase.GROWN_TREE;
-
-                this.waterBuffer.setMax(GROWN_TREE_WATERBUFFER_MAX);
-                this.waterBuffer.setValue(GROWN_TREE_WATERBUFFER_MAX);
-                this.sunBuffer.setMax(GROWN_TREE_SUNBUFFER_MAX);
-                this.sunBuffer.setValue(GROWN_TREE_SUNBUFFER_MAX);
-                this.healthBuffer.setMax(GROWN_TREE_HEALTHBUFFER_MAX);
-                this.healthBuffer.setValue(GROWN_TREE_HEALTHBUFFER_MAX);
-                break;
-        }
-    }
 }
