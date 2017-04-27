@@ -107,10 +107,8 @@ public class ExampleUnitTest {
             System.out.println("Water " + tree.getWaterLevel());
             System.out.println();
         }
-        Environment.Weather sun = Environment.Weather.SUN;
-        Environment.Weather rain = Environment.Weather.RAIN;
-        tree.bufferIncreaseStore(sun, 13);
-        tree.bufferIncreaseStore(rain, 7);
+        tree.changeSunBuffer(true, 53);
+        tree.changeWaterBuffer(true, 7);
         System.out.println("Sun " + tree.getSunLevel());
         System.out.println("Water " + tree.getWaterLevel());
         System.out.println();

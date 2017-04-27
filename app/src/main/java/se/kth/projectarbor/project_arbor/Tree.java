@@ -6,7 +6,7 @@ import java.io.Serializable;
  * Created by pethrus and lovisa on 2017-04-20.
  *
  * The tree class is only instantiated once in the beginning of the game lifecycle.
- * The tree is a passive object. To communicate with the tree, use the interface methods below.
+ * To communicate with the tree, use the methods below.
  */
 
 public class Tree implements Serializable {
@@ -91,7 +91,6 @@ public class Tree implements Serializable {
             public int getValue(){
                 return value;
             }
-
             //increases the buffer value, if the buffer is full the value is set to max
             public void incrValue(int increaseBy){
                 if((value + increaseBy) < max)
@@ -99,7 +98,6 @@ public class Tree implements Serializable {
                 else
                     value = max;
             }
-
             //decreases the buffer value, if the buffer is empty the value is set to zero
             public void decrValue(int decreaseBy){
                 if((value - decreaseBy) > 0)
@@ -120,32 +118,26 @@ public class Tree implements Serializable {
         this.dist = 0;
     }
 
-    //Returns the water buffer status
     public int getWaterLevel(){
         return waterBuffer.getValue();
     }
 
-    //Returns the sun buffer status
     public int getSunLevel(){
         return sunBuffer.getValue();
     }
 
-    //Returns the health status
     public int getHealth(){
         return healthBuffer.getValue();
     }
 
-    //Returns the water buffer status
     public int getWaterBufferMax(){
         return waterBuffer.max;
     }
 
-    //Returns the sun buffer status
     public int getSunBufferMax(){
         return sunBuffer.max;
     }
 
-    //Returns the health status
     public int getHealthBufferMax(){
         return healthBuffer.max;
     }
@@ -153,7 +145,6 @@ public class Tree implements Serializable {
     public Phase getTreePhase(){
         return treePhase;
     }
-
     //This method is called when it's time for the tree object to change phase
     //It changes the tree objects attributes to match the current phase
     //and fills all the buffers to max
@@ -191,11 +182,14 @@ public class Tree implements Serializable {
                 break;
         }
     }
-
-    // update() is called on every hour from MainService(). Triggers bufferDecrease
+    // update() is used to decrease water/sun buffers every hour. If at least one buffer reaches
+    // is 0, 1 HP is withdrawn and a "timer" is started and a timerFlag set to true.
+    // Until timer reaches 24, timerFlag will be true and block withdrawing of HP:s. When timerFlag
+    // is put to false after 24 hours and both buffers are not 0, 1 HP is added to HPBuffer.
     public boolean update() {
         bufferDecrease();
         System.out.println("Timerflag: " + timerFlag);
+        // timerFlag is true so HP cannot be decreased during this time.
         if (timerFlag) {
             time += 1;
         } else {
@@ -208,7 +202,7 @@ public class Tree implements Serializable {
                 healthChange(-1);
             }
         }
-
+        // timerFlag is turned to false and HP ma be added if buffers are not 0.
         if (time == 24) {
             time = 0;
             timerFlag = false;
@@ -220,7 +214,6 @@ public class Tree implements Serializable {
         }
         return alive;
     }
-
     // bufferDecrease() decreases both waterbuffer and sunbuffer when called by mainservice every hour
     // If one or both buffers reaches 0, it will also call on healthChange() to decrease HP.
     public void bufferDecrease(){
@@ -243,7 +236,6 @@ public class Tree implements Serializable {
                 break;
         }
     }
-
     // bufferIncrease() is called from MainService every accomplished kilometer
     public void bufferIncrease(Environment.Weather weather) {
 
@@ -313,53 +305,34 @@ public class Tree implements Serializable {
                     break;
             }
         }
+            // Increases or decreases tree health and sets boolean alive to false if tree dies.
+            // Used by update()
+            private void healthChange(int valueOfChange){
+                if(valueOfChange < 0)
+                    this.healthBuffer.decrValue(-valueOfChange);
+                else
+                    this.healthBuffer.incrValue(valueOfChange);
 
-    // bufferIncreaseStore is called if resources for the tree has been bought and then added to tree
-    public void bufferIncreaseStore (Environment.Weather weather, int amount){
-        switch(weather){
-            case SUN:
-                addSunIntakeStore(amount);
-            case RAIN:
-                addWaterIntakeStore(amount);
-        }
-    }
-        // Add sun amount that has been bought in store.
-        private void addSunIntakeStore(int amount){
-            changeSunBuffer(true, amount);
-        }
-        // Add water amount that has been bought in store.
-        private void addWaterIntakeStore(int amount){
-            changeWaterBuffer(true, amount);
-        }
-
-    // Increases or decreases tree health and sets boolean alive to false if tree dies.
-    private void healthChange(int valueOfChange){
-        if(valueOfChange < 0)
-            this.healthBuffer.decrValue(-valueOfChange);
-        else
-            this.healthBuffer.incrValue(valueOfChange);
-
-        if(getHealth() <= 0) {
-            alive = false;
-            this.healthBuffer.value = 0;
-        }
-    }
-
-
+                if(getHealth() <= 0) {
+                    alive = false;
+                    this.healthBuffer.value = 0;
+                }
+            }
+    // Used by main service when buying water in store
     public void changeWaterBuffer(boolean increase, int amount){
         if (increase)
             waterBuffer.incrValue(amount);
         else
             waterBuffer.decrValue(amount);
     }
-
+    // Used by main service when buying sun in store
     public void changeSunBuffer(boolean increase, int amount){
         if (increase)
             sunBuffer.incrValue(amount);
         else
             sunBuffer.decrValue(amount);
     }
-
+    // Not used yet.
     public void changeHealthBuffer(boolean increase, int amount){
         if (!timerFlag) {
             if (increase)
@@ -368,6 +341,4 @@ public class Tree implements Serializable {
                 healthBuffer.decrValue(amount);
         }
     }
-
-
 }
