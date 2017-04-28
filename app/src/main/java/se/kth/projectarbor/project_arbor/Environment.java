@@ -1,15 +1,11 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.app.PendingIntent;
+
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.*;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
@@ -28,9 +24,9 @@ import java.util.Calendar;
 public class Environment implements android.location.LocationListener {
 
     // private static final long serialVersionUID = 2265456326653633040L;
-    private final long LOCATION_UPDATE_INTERVAL = 5000; // 1000*60*5;
+    private final long LOCATION_UPDATE_INTERVAL = 2 * 1000; // 1000*60*5;
     private final long LOCATION_UPDATE_INTERVAL_FAST = 5000; // 1000*60*4;
-    private final float DISPLACEMENT_LIMIT = 0; // 2000;
+    private final float DISPLACEMENT_LIMIT = 2000; // 2000;
 
     private Forecast[] forecasts = {};
     private SMHIParser parser;
@@ -40,6 +36,11 @@ public class Environment implements android.location.LocationListener {
 
     private android.location.LocationManager locationManager;
     private boolean isNetworkEnabled;
+
+    // Interpet SMHI symbol data
+    public enum Weather {
+        SUN, RAIN, CLOUDY, NAN
+    }
 
     public Environment(Context context) {
         this(context, new Forecast[]{});
@@ -57,21 +58,19 @@ public class Environment implements android.location.LocationListener {
                 Log.d("ARBOR_ENV", "requestLocationUpdates() done");
             } else {
                 // TODO: request permission from user
-                //ActivityCompat.requestPermissions(context, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
-                //        this.MY_PERMISSION_ACCESS_COURSE_LOCATION);
+                // UPPSALA
+                newLocation = new Location("");
+                newLocation.setLatitude(59.858563);
+                newLocation.setLongitude(17.638926);
+                Log.d("ARBOR_ENV", "dint get permission");
             }
         }
 
-        // UPPSALA
-        /*newLocation = new Location("");
-        newLocation.setLatitude(59.858563);
-        newLocation.setLongitude(17.638926);*/
-        // TODO
         this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
 
-        Calendar rightNow = Calendar.getInstance();
+        // TODO: ask for permission from the user to use internet
         if (forecasts.length < 1) {
-            this.forecasts = parser.getForecast(rightNow);
+            this.forecasts = parser.getForecast(Calendar.getInstance());
         } else {
             this.forecasts = forecasts;
         }
@@ -88,25 +87,16 @@ public class Environment implements android.location.LocationListener {
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
-
-    }
+    public void onStatusChanged(String provider, int status, Bundle extras) { }
 
     @Override
-    public void onProviderEnabled(String provider) {
-
-    }
+    public void onProviderEnabled(String provider) { }
 
     @Override
-    public void onProviderDisabled(String provider) {
-
-    }
+    public void onProviderDisabled(String provider) { }
 
 
-    // Interpet SMHI symbol data
-    public enum Weather {
-        SUN, RAIN, CLOUDY
-    }
+
 
     public static class Forecast implements Serializable {
 
@@ -129,14 +119,12 @@ public class Environment implements android.location.LocationListener {
     }
     // returning the current weather
     public Weather getWeather() {
-        Calendar rightNow = Calendar.getInstance();
-        return getWeatherFromForecast(rightNow);
+        return getWeatherFromForecast(Calendar.getInstance());
     }
 
     // return the current temp
     public double getTemp() {
-        Calendar rightNow = Calendar.getInstance();
-        return getTempFromForecast(rightNow);
+        return getTempFromForecast(Calendar.getInstance());
     }
 
     public Forecast[] getForecasts() {
@@ -150,11 +138,10 @@ public class Environment implements android.location.LocationListener {
             forecasts = parser.getForecast(rightNow);
             return forecasts[0].weather;
         } catch (Exception e) {
-            Log.e("ARBOR", "error: " + e);
+            Log.e("ARBOR_ENV", "catch: " + e);
         }
 
-        Log.d("ARBOR", "getForecast() failed");
-        return Weather.CLOUDY;
+        return Weather.NAN;
     }
 
     private double newTempForecast(Calendar rightNow) {
@@ -163,17 +150,16 @@ public class Environment implements android.location.LocationListener {
             forecasts = parser.getForecast(rightNow);
             return forecasts[0].celsius;
         } catch (Exception e) {
-            Log.e("ARBOR_ENV", "catch " + e);
+            Log.e("ARBOR_ENV", "catch: " + e);
         }
 
         return Double.NaN;
     }
-    // Looks trough the cached data and determins if its oke or new is needed
+    // Looks trough the cached data and determine if its relevant or new data is needed
     private Weather getWeatherFromForecast(Calendar rightNow) {
         Weather weather;
 
         if (displacementExceeded) {
-            Log.d("ARBOR_ENV", "LOCATION == " + newLocation.toString());
             parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
             displacementExceeded = false;
             return newForecast(rightNow);
@@ -193,7 +179,6 @@ public class Environment implements android.location.LocationListener {
             weather = newForecast(rightNow);
         }
 
-        Log.d("ARBOR_ENV", "WEATHER == " + weather.toString());
         return weather;
     }
 
@@ -201,7 +186,6 @@ public class Environment implements android.location.LocationListener {
         double temperature;
 
         if (displacementExceeded) {
-            Log.d("ARBOR_ENV", "LOCATION == " + newLocation.toString());
             parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
             displacementExceeded = false;
             return newTempForecast(rightNow);
@@ -221,7 +205,6 @@ public class Environment implements android.location.LocationListener {
             temperature = newTempForecast(rightNow);
         }
 
-        Log.d("ARBOR_ENV", "TEMP == " + temperature);
         return temperature;
     }
 }

@@ -1,17 +1,12 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -44,23 +39,7 @@ public class TreeGame extends Activity {
     private Environment environment;
 
     // IS_NEW
-    private class DistanceReceiver extends BroadcastReceiver {
-        private int oneUpdate = 0;
-
-        /*
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Float dist = intent.getExtras().getFloat("DISTANCE", 0);
-            oneUpdate += dist.intValue();
-            if (oneUpdate > 1000) {
-                oneUpdate -= 1000;
-                startService(new Intent(TreeGame.this, MainService.class)
-                        .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
-            }
-
-            // TODO: Update views with Receiver
-        }
-        */
+    private class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -91,22 +70,16 @@ public class TreeGame extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tree_game);
 
-        // IS_NEW
+        setupValues();
+
+        // Setup a filter for
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
-        getApplicationContext().registerReceiver(this.new DistanceReceiver(), filter);
+        getApplicationContext().registerReceiver(this.new Receiver(), filter);
 
-        // Getting all the current values and precenting them on screen
-        // setupValues();
 
-        weatherView = (TextView) findViewById(R.id.tvWeather);
-        tempView = (TextView) findViewById(R.id.tvTemp);
-        hpView = (TextView) findViewById(R.id.tvHP);
-        treeView = (TextView) findViewById(R.id.tvTree);
-        distanceView = (TextView) findViewById(R.id.tvDistance);
-        sunView = (TextView) findViewById(R.id.tvSun);
-        waterView = (TextView) findViewById(R.id.tvWater);
+        setupValues();
 
         Intent intent = getIntent();
         Bundle extras = intent.getExtras();
@@ -138,7 +111,7 @@ public class TreeGame extends Activity {
 
     }
 
-    // Getting all the current values and precenting them on screen
+    // Setup all the views
     private void setupValues() {
         weatherView = (TextView) findViewById(R.id.tvWeather);
         tempView = (TextView) findViewById(R.id.tvTemp);
@@ -147,19 +120,6 @@ public class TreeGame extends Activity {
         distanceView = (TextView) findViewById(R.id.tvDistance);
         sunView = (TextView) findViewById(R.id.tvSun);
         waterView = (TextView) findViewById(R.id.tvWater);
-
-        List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
-
-        tree = (Tree) list.get(0);
-        /* environment = (Environment) list.get(1);
-
-        weatherView.setText("Weather: " + environment.getWeather().toString());
-        tempView.setText("Temp: " + environment.getTemp()); */
-        hpView.setText("HP: " + tree.getHealth());
-        treeView.setText("Tree, Phase: " + tree.getTreePhase());
-        sunView.setText("Sun Buffer: " + tree.getSunLevel());
-        waterView.setText("Water Buffer: " + tree.getWaterLevel());
-
     }
 
 }
