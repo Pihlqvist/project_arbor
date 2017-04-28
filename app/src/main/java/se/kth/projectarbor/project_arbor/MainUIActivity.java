@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class MainUIActivity extends AppCompatActivity {
+    private boolean isTreeDead = true;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -40,6 +42,18 @@ public class MainUIActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
+
+        Intent intent = this.getIntent();
+        if (intent.getExtras() != null) {
+            isTreeDead = intent.getExtras().getBoolean("New_tree_created");
+        }
+
+        //open create new tree activity if no tree exists
+        if (isTreeDead) {
+            Intent myIntent = new Intent(MainUIActivity.this, NewTreeActivity.class);
+            MainUIActivity.this.startActivity(myIntent);
+        }
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -107,5 +121,8 @@ public class MainUIActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+    @Override
+    public void onBackPressed() {
     }
 }

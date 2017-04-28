@@ -36,6 +36,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".NewTreeActivity"
+            android:label="New Tree"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

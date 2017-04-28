@@ -12,9 +12,8 @@ import android.view.ViewGroup;
  */
 
 public class Tab3 extends Fragment {
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.tab3, container, false);
     }
 }
