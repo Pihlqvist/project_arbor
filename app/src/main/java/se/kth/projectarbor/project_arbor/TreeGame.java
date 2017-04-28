@@ -59,13 +59,14 @@ public class TreeGame extends Activity {
             }
 
             // TODO: Update views with Receiver
-
-
         }
         */
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
+
+            Log.d("ARBOR", "onReceive()");
 
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
@@ -73,12 +74,14 @@ public class TreeGame extends Activity {
 
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                weatherView.setText("Weather: " + environment.getWeather().toString());
-                tempView.setText("Temp: " + environment.getTemp());
+                Log.d("ARBOR", "MainService.TREE_DATA");
+
                 hpView.setText("HP: " + extras.getInt("HP"));
                 treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
                 sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
                 waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+                tempView.setText("Temperature: " + extras.getDouble("TEMP"));
+                weatherView.setText("Weather: " + extras.getString("WEATHER"));
             }
         }
     }
@@ -95,8 +98,24 @@ public class TreeGame extends Activity {
         getApplicationContext().registerReceiver(this.new DistanceReceiver(), filter);
 
         // Getting all the current values and precenting them on screen
-        setupValues();
+        // setupValues();
 
+        weatherView = (TextView) findViewById(R.id.tvWeather);
+        tempView = (TextView) findViewById(R.id.tvTemp);
+        hpView = (TextView) findViewById(R.id.tvHP);
+        treeView = (TextView) findViewById(R.id.tvTree);
+        distanceView = (TextView) findViewById(R.id.tvDistance);
+        sunView = (TextView) findViewById(R.id.tvSun);
+        waterView = (TextView) findViewById(R.id.tvWater);
+
+        Intent intent = getIntent();
+        Bundle extras = intent.getExtras();
+        hpView.setText("HP: " + extras.getInt("HP"));
+        treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+        sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
+        waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+        tempView.setText("Temp: " + extras.getDouble("TEMP"));
+        weatherView.setText("Weather: " + extras.getString("WEATHER"));
 
         // The user can toggle to either collect "distance" or not
         mWalk = (ToggleButton) findViewById(R.id.toggleButton);
@@ -132,10 +151,10 @@ public class TreeGame extends Activity {
         List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
 
         tree = (Tree) list.get(0);
-        environment = (Environment) list.get(1);
+        /* environment = (Environment) list.get(1);
 
         weatherView.setText("Weather: " + environment.getWeather().toString());
-        tempView.setText("Temp: " + environment.getTemp());
+        tempView.setText("Temp: " + environment.getTemp()); */
         hpView.setText("HP: " + tree.getHealth());
         treeView.setText("Tree, Phase: " + tree.getTreePhase());
         sunView.setText("Sun Buffer: " + tree.getSunLevel());

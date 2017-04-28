@@ -29,6 +29,8 @@ public class MainService extends Service {
     public final static int MSG_UPDATE_NEED = 3;
     public final static int MSG_UPDATE_HEALTH = 4;
     public final static int MSG_KM_DONE = 5;
+    public final static int MSG_UPDATE_VIEW = 6;
+    public final static int MSG_TREE_GAME = 7;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -51,6 +53,8 @@ public class MainService extends Service {
     public void onCreate() {
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
+        // TODO: Define the order of (de)serializing objects
+        environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
         pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
@@ -84,7 +88,7 @@ public class MainService extends Service {
                 pedometer.unregister();
                 stopForeground(true);
                 DataManager.saveState(this, filename, tree,
-                        environment, pedometer.getTotalDistance());
+                        environment.getForecasts(), pedometer.getTotalDistance());
 
                 break;
 
@@ -96,7 +100,7 @@ public class MainService extends Service {
 
                 // TODO: Think about it... How to make the environment object persistent?
                 DataManager.saveState(this, filename, tree,
-                        environment, pedometer.getTotalDistance());
+                        environment.getForecasts(), pedometer.getTotalDistance());
 
                 break;
 
@@ -113,16 +117,32 @@ public class MainService extends Service {
                 sendToView();
 
                 break;
+
+            case MSG_UPDATE_VIEW:
+                sendToView();
+                break;
+
+            case MSG_TREE_GAME:
+
+                Intent intentToActivity = new Intent(this, TreeGame.class);
+                intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
+                intentToActivity.putExtra("TEMP", environment.getTemp());
+                intentToActivity.putExtra("SUN", tree.getSunLevel());
+                intentToActivity.putExtra("WATER", tree.getWaterLevel());
+                intentToActivity.putExtra("HP", tree.getHealth());
+                intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
+
+                startActivity(intentToActivity);
+                break;
         }
-
-
 
         return START_NOT_STICKY;
     }
 
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
-        environment = (Environment) objects.get(1);
         totalDistance = (Double) objects.get(2);
     }
 
@@ -143,16 +163,16 @@ public class MainService extends Service {
     public void sendToView() {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
-        Bundle extras = new Bundle();
-        extras.putInt("SUN", tree.getSunLevel());
-        extras.putInt("WATER", tree.getWaterLevel());
-        extras.putInt("HP", tree.getHealth());
-        extras.putString("PHASE", tree.getTreePhase().toString());
-        intent.putExtras(extras);
+
+        intent.putExtra("WEATHER", environment.getWeather().toString());
+        intent.putExtra("TEMP", environment.getTemp());
+        intent.putExtra("SUN", tree.getSunLevel());
+        intent.putExtra("WATER", tree.getWaterLevel());
+        intent.putExtra("HP", tree.getHealth());
+        intent.putExtra("PHASE", tree.getTreePhase().toString());
+
         intent.setAction(TREE_DATA);
-
         getApplicationContext().sendBroadcast(intent);
-
     }
 }
 
