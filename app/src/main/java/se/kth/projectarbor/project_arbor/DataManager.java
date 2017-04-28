@@ -62,12 +62,4 @@ final class DataManager {
         }
         return objects;
     }
-
-    // Create and save game components
-    static void createUser(Context context, String filename) {
-        Tree tree = new Tree();
-
-        // IMPORTANT: ORDER MATTERS
-        saveState(context, filename, tree, new Environment.Forecast[]{}, new Double(0));
-    }
 }

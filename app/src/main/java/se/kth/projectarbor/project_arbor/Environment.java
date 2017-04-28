@@ -68,7 +68,14 @@ public class Environment implements android.location.LocationListener {
         newLocation.setLongitude(17.638926);*/
         // TODO
         this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
-        this.forecasts = forecasts;
+
+        Calendar rightNow = Calendar.getInstance();
+        if (forecasts.length < 1) {
+            this.forecasts = parser.getForecast(rightNow);
+        } else {
+            this.forecasts = forecasts;
+        }
+
         this.context = context;
     }
 

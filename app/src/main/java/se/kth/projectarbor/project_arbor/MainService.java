@@ -30,6 +30,7 @@ public class MainService extends Service {
     public final static int MSG_UPDATE_HEALTH = 4;
     public final static int MSG_KM_DONE = 5;
     public final static int MSG_UPDATE_VIEW = 6;
+    public final static int MSG_TREE_GAME = 7;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -120,6 +121,21 @@ public class MainService extends Service {
             case MSG_UPDATE_VIEW:
                 sendToView();
                 break;
+
+            case MSG_TREE_GAME:
+
+                Intent intentToActivity = new Intent(this, TreeGame.class);
+                intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
+                intentToActivity.putExtra("TEMP", environment.getTemp());
+                intentToActivity.putExtra("SUN", tree.getSunLevel());
+                intentToActivity.putExtra("WATER", tree.getWaterLevel());
+                intentToActivity.putExtra("HP", tree.getHealth());
+                intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
+
+                startActivity(intentToActivity);
+                break;
         }
 
         return START_NOT_STICKY;
@@ -147,16 +163,15 @@ public class MainService extends Service {
     public void sendToView() {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
-        Bundle extras = new Bundle();
-        extras.putString("WEATHER", environment.getWeather().toString());
-        extras.putDouble("TEMP", environment.getTemp());
-        extras.putInt("SUN", tree.getSunLevel());
-        extras.putInt("WATER", tree.getWaterLevel());
-        extras.putInt("HP", tree.getHealth());
-        extras.putString("PHASE", tree.getTreePhase().toString());
-        intent.putExtras(extras);
-        intent.setAction(TREE_DATA);
 
+        intent.putExtra("WEATHER", environment.getWeather().toString());
+        intent.putExtra("TEMP", environment.getTemp());
+        intent.putExtra("SUN", tree.getSunLevel());
+        intent.putExtra("WATER", tree.getWaterLevel());
+        intent.putExtra("HP", tree.getHealth());
+        intent.putExtra("PHASE", tree.getTreePhase().toString());
+
+        intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
 }

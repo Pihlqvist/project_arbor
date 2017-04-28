@@ -36,7 +36,8 @@ public class MainActivity extends Activity {
         mNewTree.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DataManager.createUser(getApplicationContext(), MainService.filename);
+                    DataManager.saveState(getApplicationContext(), MainService.filename,
+                            new Tree(), new Environment.Forecast[]{}, new Double(0));
 
                     Intent intent = new Intent(MainActivity.this, MainService.class)
                             .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
@@ -46,10 +47,8 @@ public class MainActivity extends Activity {
                             System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
 
                     Intent updateIntent = new Intent(MainActivity.this, MainService.class)
-                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_VIEW);
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
                     startService(updateIntent);
-
-                    startActivity(new Intent(MainActivity.this, TreeGame.class));
                 }
         });
 
@@ -58,7 +57,9 @@ public class MainActivity extends Activity {
         mResume.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, TreeGame.class));
+                Intent updateIntent = new Intent(MainActivity.this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
+                startService(updateIntent);
             }
         });
 
