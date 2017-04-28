@@ -47,22 +47,6 @@ public class TreeGame extends Activity {
     private class DistanceReceiver extends BroadcastReceiver {
         private int oneUpdate = 0;
 
-        /*
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Float dist = intent.getExtras().getFloat("DISTANCE", 0);
-            oneUpdate += dist.intValue();
-            if (oneUpdate > 1000) {
-                oneUpdate -= 1000;
-                startService(new Intent(TreeGame.this, MainService.class)
-                        .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
-            }
-
-            // TODO: Update views with Receiver
-
-
-        }
-        */
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
@@ -115,7 +99,6 @@ public class TreeGame extends Activity {
                 }
             }
         });
-
 
     }
 
