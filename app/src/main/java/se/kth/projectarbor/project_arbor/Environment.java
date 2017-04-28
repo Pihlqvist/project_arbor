@@ -96,8 +96,6 @@ public class Environment implements android.location.LocationListener {
     public void onProviderDisabled(String provider) { }
 
 
-
-
     public static class Forecast implements Serializable {
 
         private static final long serialVersionUID = 5714561621911257132L;
@@ -207,4 +205,5 @@ public class Environment implements android.location.LocationListener {
 
         return temperature;
     }
+
 }
