@@ -57,6 +57,14 @@ public class MainActivity extends Activity {
                 startActivity(new Intent(MainActivity.this, TreeGame.class));
             }
         });
+        Button testUI = (Button) findViewById(R.id.testUI);
+        testUI.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent i = new Intent(MainActivity.this, MainUIActivity.class);
+                startActivity(i);
+            }
+        });
 
 
     }
