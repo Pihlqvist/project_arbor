@@ -2,14 +2,10 @@ package se.kth.projectarbor.project_arbor;
 import android.content.Intent;
 import android.view.View;
 import android.os.Bundle;
-
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.widget.Button;
-import android.view.View.OnClickListener;
 
-import se.kth.projectarbor.project_arbor.MainUIActivity;
 
 public class NewTreeActivity extends AppCompatActivity {
 
@@ -32,8 +28,6 @@ public class NewTreeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        //super.onBackPressed();
-    }
+    public void onBackPressed() {}
 
 }

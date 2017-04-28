@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,16 +16,16 @@ import android.widget.Button;
  * Created by Lazarko on 2017-04-27.
  */
 
-public class Tab1 extends Fragment {
+public class TreeTabFragment extends Fragment {
 
     private Button mNewTree;
     private Button mResume;
 
-    @Nullable
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.tab1, container, false);
+        View view = inflater.inflate(R.layout.tree_tab_fragment, container, false);
         // This will create a new tree and start the game logic, it will then
         // take the user to the main view of the tree
         mNewTree = (Button) view.findViewById(R.id.start_button);
