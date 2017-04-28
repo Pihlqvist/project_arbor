@@ -45,6 +45,10 @@ public class MainActivity extends Activity {
                     alarmManager.set(AlarmManager.RTC_WAKEUP,
                             System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
 
+                    Intent updateIntent = new Intent(MainActivity.this, MainService.class)
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_VIEW);
+                    startService(updateIntent);
+
                     startActivity(new Intent(MainActivity.this, TreeGame.class));
                 }
         });

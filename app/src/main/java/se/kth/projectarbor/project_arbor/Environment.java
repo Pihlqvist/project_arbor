@@ -1,17 +1,17 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.PendingIntent;
 import android.content.Context;
-import android.location.Location;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.*;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -25,80 +25,80 @@ import java.util.Calendar;
  * by this class so that calls to public webpages are not frequent
  */
 
-public class Environment implements LocationListener,
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class Environment implements android.location.LocationListener {
 
     // private static final long serialVersionUID = 2265456326653633040L;
-    private final long locationUpdateInterval = 1000*60*5;
-    private final float DISTANCE_LIMIT = 2000;
+    private final long LOCATION_UPDATE_INTERVAL = 5000; // 1000*60*5;
+    private final long LOCATION_UPDATE_INTERVAL_FAST = 5000; // 1000*60*4;
+    private final float DISPLACEMENT_LIMIT = 0; // 2000;
 
     private Forecast[] forecasts = {};
     private SMHIParser parser;
-    private Location oldLocation;
     private Location newLocation;
     private Context context;
-    private GoogleApiClient googleApiClient;
-    private LocationRequest locationRequest;
+    private boolean displacementExceeded = false;
 
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        try {
-            oldLocation = newLocation = LocationServices.FusedLocationApi.getLastLocation(
-                    googleApiClient);
-            LocationServices.FusedLocationApi.requestLocationUpdates(
-                    googleApiClient, locationRequest, this);
-        } catch (SecurityException ex) {
-            // TODO
+    private android.location.LocationManager locationManager;
+    private boolean isNetworkEnabled;
+
+    public Environment(Context context) {
+        this(context, new Forecast[]{});
+    }
+
+    public Environment(Context context, Forecast[] forecasts) {
+        locationManager = (android.location.LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        isNetworkEnabled = locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER);
+
+        if(isNetworkEnabled) {
+            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                newLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                Log.d("ARBOR_ENV", "Start Location: " + newLocation.getLatitude() + ", " + newLocation.getLongitude());
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_UPDATE_INTERVAL, DISPLACEMENT_LIMIT, this);
+                Log.d("ARBOR_ENV", "requestLocationUpdates() done");
+            } else {
+                // TODO: request permission from user
+                //ActivityCompat.requestPermissions(context, new String[] { android.Manifest.permission.ACCESS_COARSE_LOCATION },
+                //        this.MY_PERMISSION_ACCESS_COURSE_LOCATION);
+            }
         }
-    }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // UPPSALA
+        /*newLocation = new Location("");
+        newLocation.setLatitude(59.858563);
+        newLocation.setLongitude(17.638926);*/
         // TODO
-        try {
-            Thread.sleep(1000);
-            googleApiClient.connect();
-        } catch (InterruptedException ex) { }
+        this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
+        this.forecasts = forecasts;
+        this.context = context;
     }
 
     @Override
     public void onLocationChanged(Location location) {
         Log.d("ARBOR_ENV", "onLocationChanged()");
+        Log.d("ARBOR_ENV", "Coordinates: " + location.getLatitude() + ", " + location.getLongitude());
+        displacementExceeded = true;
         newLocation = location;
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
     }
 
 
     // Interpet SMHI symbol data
     public enum Weather {
         SUN, RAIN, CLOUDY
-    }
-
-    public Environment(Context context) {
-        // this.forecasts = getForecasts();
-        this(context, new Forecast[]{});
-    }
-
-    public Environment(Context context, Forecast[] forecasts) {
-        // TODO
-        this.parser = new SMHIParser();
-        this.forecasts = forecasts;
-
-        this.context = context;
-        //TODO: this.mEnvironment = environment;
-
-        googleApiClient = new GoogleApiClient.Builder(context)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        locationRequest = LocationRequest.create();
-        locationRequest.setInterval(locationUpdateInterval);
     }
 
     public static class Forecast implements Serializable {
@@ -156,7 +156,7 @@ public class Environment implements LocationListener,
             forecasts = parser.getForecast(rightNow);
             return forecasts[0].celsius;
         } catch (Exception e) {
-            Log.e("ARBOR", "catch " + e);
+            Log.e("ARBOR_ENV", "catch " + e);
         }
 
         return Double.NaN;
@@ -165,9 +165,10 @@ public class Environment implements LocationListener,
     private Weather getWeatherFromForecast(Calendar rightNow) {
         Weather weather;
 
-        if (oldLocation.distanceTo(newLocation) > DISTANCE_LIMIT) {
+        if (displacementExceeded) {
+            Log.d("ARBOR_ENV", "LOCATION == " + newLocation.toString());
             parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
-            oldLocation = newLocation;
+            displacementExceeded = false;
             return newForecast(rightNow);
         }
 
@@ -185,19 +186,23 @@ public class Environment implements LocationListener,
             weather = newForecast(rightNow);
         }
 
+        Log.d("ARBOR_ENV", "WEATHER == " + weather.toString());
         return weather;
     }
 
     public double getTempFromForecast(Calendar rightNow){
         double temperature;
 
-        if (oldLocation.distanceTo(newLocation) > DISTANCE_LIMIT) {
+        if (displacementExceeded) {
+            Log.d("ARBOR_ENV", "LOCATION == " + newLocation.toString());
             parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
-            oldLocation = newLocation;
+            displacementExceeded = false;
             return newTempForecast(rightNow);
         }
 
-        if (forecasts == null || forecasts.length < 1) { newTempForecast(rightNow); }
+        if (forecasts == null || forecasts.length < 1) {
+            return newTempForecast(rightNow);
+        }
 
         if (rightNow.before(forecasts[0].date)) {
             temperature = forecasts[0].celsius;
@@ -209,6 +214,7 @@ public class Environment implements LocationListener,
             temperature = newTempForecast(rightNow);
         }
 
+        Log.d("ARBOR_ENV", "TEMP == " + temperature);
         return temperature;
     }
 }

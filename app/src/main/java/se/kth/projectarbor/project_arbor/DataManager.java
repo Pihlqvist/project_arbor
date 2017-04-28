@@ -67,15 +67,8 @@ final class DataManager {
     static void createUser(Context context, String filename) {
         Tree tree = new Tree();
         // TODO: get coordinates from LocationManager
-        Environment environment = new Environment(context);
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        environment.getWeather();
 
         // IMPORTANT: ORDER MATTERS
-        saveState(context, filename, tree, environment.getForecasts(), new Double(0));
+        saveState(context, filename, tree, new Environment.Forecast[]{}, new Double(0));
     }
 }

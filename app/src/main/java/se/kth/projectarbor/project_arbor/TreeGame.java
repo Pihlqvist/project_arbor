@@ -67,6 +67,8 @@ public class TreeGame extends Activity {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
 
+            Log.d("ARBOR", "onReceive()");
+
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
             }
@@ -79,6 +81,8 @@ public class TreeGame extends Activity {
                 treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
                 sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
                 waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+                tempView.setText("Temperature: " + extras.getDouble("TEMP"));
+                weatherView.setText("Weather: " + extras.getString("WEATHER"));
             }
         }
     }
@@ -95,7 +99,7 @@ public class TreeGame extends Activity {
         getApplicationContext().registerReceiver(this.new DistanceReceiver(), filter);
 
         // Getting all the current values and precenting them on screen
-        setupValues();
+        // setupValues();
 
 
         // The user can toggle to either collect "distance" or not
@@ -132,10 +136,10 @@ public class TreeGame extends Activity {
         List<Object> list = DataManager.readState(getApplicationContext(), MainService.filename);
 
         tree = (Tree) list.get(0);
-        environment = (Environment) list.get(1);
+        /* environment = (Environment) list.get(1);
 
         weatherView.setText("Weather: " + environment.getWeather().toString());
-        tempView.setText("Temp: " + environment.getTemp());
+        tempView.setText("Temp: " + environment.getTemp()); */
         hpView.setText("HP: " + tree.getHealth());
         treeView.setText("Tree, Phase: " + tree.getTreePhase());
         sunView.setText("Sun Buffer: " + tree.getSunLevel());

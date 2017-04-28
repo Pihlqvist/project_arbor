@@ -26,18 +26,17 @@ import java.util.Calendar;
 
 class SMHIParser implements Serializable {
 
-
     private static final long serialVersionUID = 7746966029121214890L;
 
-    private double LATITUDE = 90;
-    private double LONGITUDE = 0;
+    private double LATITUDE;
+    private double LONGITUDE;
     private String CATEGORY = "pmp2g";
     private int VERSION = 2;
     private String START_URL = "http://opendata-download-metfcst.smhi.se";
     private Environment.Forecast[] forcasts;
     private Calendar rightNow;
 
-    public SMHIParser() {
+    private SMHIParser() {
     }
 
     public SMHIParser(double LATITUDE, double LONGITUDE) {
@@ -48,8 +47,12 @@ class SMHIParser implements Serializable {
     public Environment.Forecast[] getForecast(Calendar rightNow) {
         this.rightNow = rightNow;
         String url = START_URL;
+
+        String longitude = String.format("%.6f", LONGITUDE);
+        String latitude = String.format("%.6f", LATITUDE);
+
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
-                "/geotype/point/lon/" + LONGITUDE + "/lat/"+ LATITUDE + "/data.json");
+                "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
 
         // TODO: waiting for other thread to be done, fixme later
         new GetUrl().execute(url);

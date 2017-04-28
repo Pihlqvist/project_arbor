@@ -29,6 +29,7 @@ public class MainService extends Service {
     public final static int MSG_UPDATE_NEED = 3;
     public final static int MSG_UPDATE_HEALTH = 4;
     public final static int MSG_KM_DONE = 5;
+    public final static int MSG_UPDATE_VIEW = 6;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -115,16 +116,24 @@ public class MainService extends Service {
                 sendToView();
 
                 break;
+
+            case MSG_UPDATE_VIEW:
+                // TODO: Not good practice
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                sendToView();
+                break;
         }
-
-
 
         return START_NOT_STICKY;
     }
 
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
-        Environment.Forecast[] forecasts = (Environment.Forecast[]) objects.get(1);
         totalDistance = (Double) objects.get(2);
     }
 
@@ -146,6 +155,8 @@ public class MainService extends Service {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
         Bundle extras = new Bundle();
+        extras.putString("WEATHER", environment.getWeather().toString());
+        extras.putDouble("TEMP", environment.getTemp());
         extras.putInt("SUN", tree.getSunLevel());
         extras.putInt("WATER", tree.getWaterLevel());
         extras.putInt("HP", tree.getHealth());
