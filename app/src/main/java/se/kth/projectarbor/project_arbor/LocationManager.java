@@ -31,13 +31,13 @@ class LocationManager implements LocationListener,
     static final float ENV_MAX_DISTANCE = 5000;
 
     private float mTotalDistance;
-    private Location mCurrentLocation;
     private Location mEnvironmentLocation;
     private Environment mEnvironment;
 
     private float mLowerLimit;
     private float mUpperLimit;
 
+    private Location mCurrentLocation;
     private Context mContext;
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
@@ -77,9 +77,8 @@ class LocationManager implements LocationListener,
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         try {
             Thread.sleep(1000);
+            mGoogleApiClient.connect();
         } catch (InterruptedException ex) { }
-
-        mGoogleApiClient.connect();
     }
 
     @Override

@@ -1,16 +1,21 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.os.Build;
-import android.provider.CalendarContract;
+import android.content.Context;
+import android.location.Location;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+
 import java.io.Serializable;
-import java.lang.reflect.Array;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by fredrik, johan and joseph on 2017-04-20.
@@ -20,12 +25,52 @@ import java.util.Date;
  * by this class so that calls to public webpages are not frequent
  */
 
-public class Environment implements Serializable {
+public class Environment implements LocationListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final long serialVersionUID = 2265456326653633040L;
+    // private static final long serialVersionUID = 2265456326653633040L;
+    private final long locationUpdateInterval = 1000*60*5;
+    private final float DISTANCE_LIMIT = 2000;
 
-    private Forecast[] forecasts;
+    private Forecast[] forecasts = {};
     private SMHIParser parser;
+    private Location oldLocation;
+    private Location newLocation;
+    private Context context;
+    private GoogleApiClient googleApiClient;
+    private LocationRequest locationRequest;
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        try {
+            oldLocation = newLocation = LocationServices.FusedLocationApi.getLastLocation(
+                    googleApiClient);
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    googleApiClient, locationRequest, this);
+        } catch (SecurityException ex) {
+            // TODO
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // TODO
+        try {
+            Thread.sleep(1000);
+            googleApiClient.connect();
+        } catch (InterruptedException ex) { }
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d("ARBOR_ENV", "onLocationChanged()");
+        newLocation = location;
+    }
 
 
     // Interpet SMHI symbol data
@@ -33,16 +78,35 @@ public class Environment implements Serializable {
         SUN, RAIN, CLOUDY
     }
 
-    public Environment(double LATITUDE, double LONGITUDE) {
-        this.parser = new SMHIParser(LATITUDE, LONGITUDE);
+    public Environment(Context context) {
+        // this.forecasts = getForecasts();
+        this(context, new Forecast[]{});
+    }
+
+    public Environment(Context context, Forecast[] forecasts) {
+        // TODO
+        this.parser = new SMHIParser();
+        this.forecasts = forecasts;
+
+        this.context = context;
+        //TODO: this.mEnvironment = environment;
+
+        googleApiClient = new GoogleApiClient.Builder(context)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(locationUpdateInterval);
     }
 
     public static class Forecast implements Serializable {
 
         private static final long serialVersionUID = 5714561621911257132L;
-        Calendar date;
-        double celsius;
-        Weather weather;
+        private Calendar date;
+        private double celsius;
+        private Weather weather;
 
         public Forecast(Calendar date, double celsius, Weather weather) {
             this.date = date;
@@ -68,32 +132,48 @@ public class Environment implements Serializable {
         return getTempFromForecast(rightNow);
     }
 
+    public Forecast[] getForecasts() {
+        return Arrays.<Forecast>copyOf(forecasts, forecasts.length);
+    }
+
     // Ask the SMHIParser for new data and store it in the class.
     private Weather newForecast(Calendar rightNow) {
 
         try {
             forecasts = parser.getForecast(rightNow);
+            return forecasts[0].weather;
         } catch (Exception e) {
-            Log.e("ERROR", "error: " + e);
+            Log.e("ARBOR", "error: " + e);
         }
 
-        return forecasts[0].weather;
+        Log.d("ARBOR", "getForecast() failed");
+        return Weather.CLOUDY;
     }
 
     private double newTempForecast(Calendar rightNow) {
 
         try {
             forecasts = parser.getForecast(rightNow);
+            return forecasts[0].celsius;
         } catch (Exception e) {
             Log.e("ARBOR", "catch " + e);
         }
 
-        return forecasts[0].celsius;
+        return Double.NaN;
     }
     // Looks trough the cached data and determins if its oke or new is needed
     private Weather getWeatherFromForecast(Calendar rightNow) {
         Weather weather;
-        if (forecasts == null) { newForecast(rightNow); }
+
+        if (oldLocation.distanceTo(newLocation) > DISTANCE_LIMIT) {
+            parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
+            oldLocation = newLocation;
+            return newForecast(rightNow);
+        }
+
+        if (forecasts == null || forecasts.length < 1) {
+            return newForecast(rightNow);
+        }
 
         if (rightNow.before(forecasts[0].date)) {
             weather = forecasts[0].weather;
@@ -110,7 +190,14 @@ public class Environment implements Serializable {
 
     public double getTempFromForecast(Calendar rightNow){
         double temperature;
-        if (forecasts == null) { newTempForecast(rightNow); }
+
+        if (oldLocation.distanceTo(newLocation) > DISTANCE_LIMIT) {
+            parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
+            oldLocation = newLocation;
+            return newTempForecast(rightNow);
+        }
+
+        if (forecasts == null || forecasts.length < 1) { newTempForecast(rightNow); }
 
         if (rightNow.before(forecasts[0].date)) {
             temperature = forecasts[0].celsius;

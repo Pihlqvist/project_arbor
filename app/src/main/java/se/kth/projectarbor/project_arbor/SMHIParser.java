@@ -29,8 +29,8 @@ class SMHIParser implements Serializable {
 
     private static final long serialVersionUID = 7746966029121214890L;
 
-    private double LONGITUDE = 17.951595 ;
-    private double LATITUDE = 59.404890;
+    private double LATITUDE = 90;
+    private double LONGITUDE = 0;
     private String CATEGORY = "pmp2g";
     private int VERSION = 2;
     private String START_URL = "http://opendata-download-metfcst.smhi.se";
@@ -38,7 +38,6 @@ class SMHIParser implements Serializable {
     private Calendar rightNow;
 
     public SMHIParser() {
-
     }
 
     public SMHIParser(double LATITUDE, double LONGITUDE) {

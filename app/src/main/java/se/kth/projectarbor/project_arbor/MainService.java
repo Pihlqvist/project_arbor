@@ -51,6 +51,8 @@ public class MainService extends Service {
     public void onCreate() {
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
+        // TODO: Define the order of (de)serializing objects
+        environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
         pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance);
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
@@ -84,7 +86,7 @@ public class MainService extends Service {
                 pedometer.unregister();
                 stopForeground(true);
                 DataManager.saveState(this, filename, tree,
-                        environment, pedometer.getTotalDistance());
+                        environment.getForecasts(), pedometer.getTotalDistance());
 
                 break;
 
@@ -96,7 +98,7 @@ public class MainService extends Service {
 
                 // TODO: Think about it... How to make the environment object persistent?
                 DataManager.saveState(this, filename, tree,
-                        environment, pedometer.getTotalDistance());
+                        environment.getForecasts(), pedometer.getTotalDistance());
 
                 break;
 
@@ -122,7 +124,7 @@ public class MainService extends Service {
 
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
-        environment = (Environment) objects.get(1);
+        Environment.Forecast[] forecasts = (Environment.Forecast[]) objects.get(1);
         totalDistance = (Double) objects.get(2);
     }
 
