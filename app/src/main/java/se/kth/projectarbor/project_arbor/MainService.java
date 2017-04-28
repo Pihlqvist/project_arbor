@@ -118,13 +118,6 @@ public class MainService extends Service {
                 break;
 
             case MSG_UPDATE_VIEW:
-                // TODO: Not good practice
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 sendToView();
                 break;
         }
@@ -165,7 +158,6 @@ public class MainService extends Service {
         intent.setAction(TREE_DATA);
 
         getApplicationContext().sendBroadcast(intent);
-
     }
 }
 

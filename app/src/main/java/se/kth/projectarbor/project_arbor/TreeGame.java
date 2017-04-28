@@ -75,6 +75,8 @@ public class TreeGame extends Activity {
 
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
+                Log.d("ARBOR", "MainService.TREE_DATA");
+
                 weatherView.setText("Weather: " + environment.getWeather().toString());
                 tempView.setText("Temp: " + environment.getTemp());
                 hpView.setText("HP: " + extras.getInt("HP"));

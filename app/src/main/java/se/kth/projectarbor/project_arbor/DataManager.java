@@ -66,7 +66,6 @@ final class DataManager {
     // Create and save game components
     static void createUser(Context context, String filename) {
         Tree tree = new Tree();
-        // TODO: get coordinates from LocationManager
 
         // IMPORTANT: ORDER MATTERS
         saveState(context, filename, tree, new Environment.Forecast[]{}, new Double(0));
