@@ -168,7 +168,7 @@ public class MainService extends Service {
     }
 
     public void startGame() {
-        Intent intentToActivity = new Intent(this, TreeGame.class);
+        Intent intentToActivity = new Intent(this, MainUIActivity.class);
         intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
@@ -177,6 +177,8 @@ public class MainService extends Service {
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
+
+        intentToActivity.putExtra("NEW_TREE", false);
 
         startActivity(intentToActivity);
     }

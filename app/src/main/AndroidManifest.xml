@@ -13,7 +13,24 @@
         android:roundIcon="@mipmap/ic_launcher_a"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
+
+        </activity>
+        <activity
+            android:name=".TreeGame"
+            android:screenOrientation="portrait" />
+
+        <service
+            android:name=".MainService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".MainUIActivity"
+            android:label="@string/title_activity_main_ui"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,18 +38,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".TreeGame"
-            android:screenOrientation="portrait">
-
-        </activity>
-
-        <service
-            android:name=".MainService"
-            android:enabled="true"
-            android:exported="true" >
-        </service>
-
+        <activity
+            android:name=".NewTreeActivity"
+            android:label="@string/title_activity_new_tree"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
