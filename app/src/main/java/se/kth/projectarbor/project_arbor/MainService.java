@@ -178,8 +178,6 @@ public class MainService extends Service {
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
 
-        intentToActivity.putExtra("NEW_TREE", false);
-
         startActivity(intentToActivity);
     }
 }

@@ -1,9 +1,11 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.SharedPreferencesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -33,7 +35,7 @@ public class MainUIActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     // Creates new tree if true
-    private static boolean isTreeDead = true;
+    SharedPreferences sharedPreferences = null;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -45,19 +47,20 @@ public class MainUIActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
 
-        Intent intent = this.getIntent();
-        if (intent.getExtras() != null) {
-            isTreeDead = intent.getExtras().getBoolean("NEW_TREE", true);
-        }
-
-        if (isTreeDead) {
+        // Makes sure the tree is alive, if not make a tree
+        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+        if (sharedPreferences.getBoolean("FIRST_TREE", true)) {
+            sharedPreferences.edit().putBoolean("FIRST_TREE", false).commit();
             startActivity(new Intent(MainUIActivity.this, NewTreeActivity.class));
         }
 
-/*
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-*/
+        // TODO: load the views after first use also
+
+        Intent updateIntent = new Intent(MainUIActivity.this, MainService.class)
+                .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_VIEW);
+        startService(updateIntent);
+
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());

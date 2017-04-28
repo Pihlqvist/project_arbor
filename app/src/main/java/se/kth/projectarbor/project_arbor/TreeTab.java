@@ -69,12 +69,14 @@ public class TreeTab extends Fragment {
 
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
-        hpView.setText("HP: " + extras.getInt("HP"));
-        treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
-        sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
-        waterView.setText("Water Buffer: " + extras.getInt("WATER"));
-        tempView.setText("Temp: " + extras.getDouble("TEMP"));
-        weatherView.setText("Weather: " + extras.getString("WEATHER"));
+        if (extras != null) {
+            hpView.setText("HP: " + extras.getInt("HP"));
+            treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+            sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
+            waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+            tempView.setText("Temp: " + extras.getDouble("TEMP"));
+            weatherView.setText("Weather: " + extras.getString("WEATHER"));
+        }
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
