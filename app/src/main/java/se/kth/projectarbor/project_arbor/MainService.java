@@ -50,6 +50,7 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d("ARBOR_SERVICE", "Service onCreate()");
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
         // TODO: Define the order of (de)serializing objects

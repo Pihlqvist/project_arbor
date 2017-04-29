@@ -48,27 +48,11 @@ public class MainUIActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
 
-        // Makes sure the tree is alive, if not make a tree
-        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
-        if (sharedPreferences.getBoolean("FIRST_TREE", true)) {
-            sharedPreferences.edit().putBoolean("FIRST_TREE", false).commit();
-            Log.d("ARBOR_MAINUI", "sharedPref true");
-            startActivity(new Intent(MainUIActivity.this, NewTreeActivity.class));
-        }
-        // TODO: load the views after first use also
-
-
-
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        if (!sharedPreferences.getBoolean("FIRST_TREE", true)) {
-            Intent updateIntent = new Intent(MainUIActivity.this, MainService.class)
-                    .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_VIEW);
-            startService(updateIntent);
-        }
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
@@ -105,7 +89,6 @@ public class MainUIActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             switch(position) {
                 case 0:
-                    Log.d("ARBOR_MAINUI", "new TreeTab()");
                     return new TreeTab();
                 case 1:
                     return new StatsTab();
