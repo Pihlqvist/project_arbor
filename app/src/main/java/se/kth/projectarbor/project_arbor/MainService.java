@@ -21,7 +21,6 @@ public class MainService extends Service {
     // Times in seconds that the alarm will take to repeat the service
     public final static int ALARM_HOUR = 60 * 60;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
-    public final static int ALARM_TEST = 7;
 
     // Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -51,6 +50,7 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
+        Log.d("ARBOR_SERVICE", "Service onCreate()");
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
         // TODO: Define the order of (de)serializing objects
@@ -62,11 +62,10 @@ public class MainService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-
         int msg = 0;
         if (intent.getExtras() != null) {
             msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
-            Log.d(TAG, "msg: " + msg);
+            Log.d(TAG, "MSG: " + msg);
         }
 
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
@@ -92,49 +91,43 @@ public class MainService extends Service {
 
                 break;
 
+            // Updates the tree every our, will lower the trees needs and set a timer to do it again
             case MSG_UPDATE_NEED:
                 tree.update();
                 sendToView();
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
 
-                // TODO: Think about it... How to make the environment object persistent?
                 DataManager.saveState(this, filename, tree,
                         environment.getForecasts(), pedometer.getTotalDistance());
 
                 break;
 
             case MSG_UPDATE_HEALTH:
-                // TODO: update the tree and give the information to the reciver in the activity
+                // TODO: old now, might not be needed
 
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (ALARM_DAY * 1000), pendingIntent);
 
                 break;
 
+            // The user have traveled 1 km and the user trees buffers will increase
             case MSG_KM_DONE:
                 tree.bufferIncrease(environment.getWeather());
                 sendToView();
 
                 break;
 
+            // Update the tree view with new information
             case MSG_UPDATE_VIEW:
                 sendToView();
+
                 break;
 
+            // Start the game, this is used when the tree is first created
             case MSG_TREE_GAME:
+                startGame();
 
-                Intent intentToActivity = new Intent(this, TreeGame.class);
-                intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
-                intentToActivity.putExtra("TEMP", environment.getTemp());
-                intentToActivity.putExtra("SUN", tree.getSunLevel());
-                intentToActivity.putExtra("WATER", tree.getWaterLevel());
-                intentToActivity.putExtra("HP", tree.getHealth());
-                intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
-
-                startActivity(intentToActivity);
                 break;
         }
 
@@ -174,5 +167,20 @@ public class MainService extends Service {
         intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
+
+    public void startGame() {
+        Intent intentToActivity = new Intent(this, MainUIActivity.class);
+        intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
+        intentToActivity.putExtra("TEMP", environment.getTemp());
+        intentToActivity.putExtra("SUN", tree.getSunLevel());
+        intentToActivity.putExtra("WATER", tree.getWaterLevel());
+        intentToActivity.putExtra("HP", tree.getHealth());
+        intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
+
+        startActivity(intentToActivity);
+    }
 }
+
 

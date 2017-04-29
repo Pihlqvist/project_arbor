@@ -15,6 +15,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Calendar;
+import java.util.Locale;
 
 /**
  * Created by fredrik, johan and joseph on 2017-04-20.
@@ -24,9 +25,9 @@ import java.util.Calendar;
  * class decides
  */
 
-class SMHIParser implements Serializable {
+class SMHIParser /*implements Serializable */{
 
-    private static final long serialVersionUID = 7746966029121214890L;
+    //private static final long serialVersionUID = 7746966029121214890L;
 
     private double LATITUDE;
     private double LONGITUDE;
@@ -48,8 +49,8 @@ class SMHIParser implements Serializable {
         this.rightNow = rightNow;
         String url = START_URL;
 
-        String longitude = String.format("%.6f", LONGITUDE);
-        String latitude = String.format("%.6f", LATITUDE);
+        String longitude = String.format(Locale.ENGLISH, "%.6f", LONGITUDE);
+        String latitude = String.format(Locale.ENGLISH, "%.6f", LATITUDE);
 
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
@@ -68,8 +69,8 @@ class SMHIParser implements Serializable {
 
 
 
-    private class GetUrl extends AsyncTask<String, Void, String> implements Serializable{
-        private static final long serialVersionUID = 4326855909443156638L;
+    private class GetUrl extends AsyncTask<String, Void, String> /*implements Serializable */{
+       // private static final long serialVersionUID = 4326855909443156638L;
 
         @Override
         protected String doInBackground(String... params) {
