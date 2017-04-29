@@ -50,6 +50,8 @@ public class Environment implements android.location.LocationListener {
         locationManager = (android.location.LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         isNetworkEnabled = locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER);
 
+        Log.d("ARBOR_ENV", "is NetworkEnable: "+isNetworkEnabled);
+
         if(isNetworkEnabled) {
             if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                 newLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -64,6 +66,12 @@ public class Environment implements android.location.LocationListener {
                 newLocation.setLongitude(17.638926);
                 Log.d("ARBOR_ENV", "dint get permission");
             }
+        }else {
+            // UPPSALA
+            newLocation = new Location("");
+            newLocation.setLatitude(59.858563);
+            newLocation.setLongitude(17.638926);
+            Log.d("ARBOR_ENV", "dint get permission");
         }
 
         Log.d("ARBOR_ENV", "before parser");
