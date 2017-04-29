@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.Button;
 import android.view.View;
 
@@ -24,6 +25,7 @@ public class NewTreeActivity extends AppCompatActivity {
             public void onClick(View v) {
                 DataManager.saveState(getApplicationContext(), MainService.filename,
                         new Tree(), new Environment.Forecast[]{}, new Double(0));
+                Log.d("ARBOR_NEWTREE", "Tree made");
 
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
@@ -34,6 +36,7 @@ public class NewTreeActivity extends AppCompatActivity {
 
                 Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
+                Log.d("ARBOR_NEWTREE", "startService()");
                 startService(updateIntent);
             }
         });

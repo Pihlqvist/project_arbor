@@ -4,9 +4,11 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +40,8 @@ public class TreeTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
 
+            Log.d("ARBOR_TREETAB", "onReceive()");
+
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
             }
@@ -67,6 +71,21 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
+        Log.d("ARBOR_TREETAB", "filter done");
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences
+                ("se.kth.projectarbor.project_arbor", getActivity().MODE_PRIVATE);
+        if (!sharedPreferences.getBoolean("FIRST_TREE", false)) {
+            Intent updateIntent = new Intent(getActivity(), MainService.class)
+                    .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_VIEW);
+            getActivity().startService(updateIntent);
+        }
+/*
+        Intent updateIntent = new Intent(getActivity(), MainService.class)
+                .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_VIEW);
+        getActivity().startService(updateIntent);
+*/
+/*
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
@@ -77,6 +96,7 @@ public class TreeTab extends Fragment {
             tempView.setText("Temp: " + extras.getDouble("TEMP"));
             weatherView.setText("Weather: " + extras.getString("WEATHER"));
         }
+*/
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
