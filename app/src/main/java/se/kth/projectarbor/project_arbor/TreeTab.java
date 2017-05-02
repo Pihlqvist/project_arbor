@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.ToggleButton;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
@@ -31,6 +34,8 @@ public class TreeTab extends Fragment {
     private TextView sunView;
     private TextView waterView;
     private View view;
+
+    private SharedPreferences sharedPreferences;
 
 
     private class Receiver extends BroadcastReceiver {
@@ -72,6 +77,9 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
+                , MODE_PRIVATE);
+
 
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
@@ -87,6 +95,9 @@ public class TreeTab extends Fragment {
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
+        if (sharedPreferences.contains("TOGGLE")) {
+            walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
+        }
         walkBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -100,6 +111,9 @@ public class TreeTab extends Fragment {
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
                     getActivity().startService(intent);
                 }
+
+                sharedPreferences.edit().putBoolean("TOGGLE", isChecked).apply();
+
             }
         });
 

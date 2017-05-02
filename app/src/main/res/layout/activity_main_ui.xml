@@ -39,7 +39,7 @@
         android:layout_margin="@dimen/fab_margin"
         android:tint="@android:color/black"
         android:visibility="visible"
-        app:backgroundTint="@drawable/cast_abc_scrubber_control_to_pressed_mtrl_000"
+        app:backgroundTint="@color/cast_expanded_controller_ad_label_background_color"
         app:elevation="4dp"
         app:fabSize="mini"
         app:rippleColor="@color/cast_expanded_controller_ad_container_white_stripe_color"

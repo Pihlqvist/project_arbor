@@ -6,8 +6,11 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.List;
@@ -31,6 +34,8 @@ public class MainService extends Service {
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
+
+    public final static int MAIN_FOREGROUND = 111;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -150,15 +155,19 @@ public class MainService extends Service {
     }
 
     private void startForeground() {
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle(getText(R.string.app_name))
-                .setContentText(getText(R.string.content_text))
-                //.setSmallIcon(R.drawable.icon)
-                //.setContentIntent(pendingIntent)
-                //.setTicker(getText(R.string.ticker_text))
-                .getNotification();
+        Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
-        startForeground(1, notification);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);
+
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.mipmap.ic_launcher_a)
+                .setLargeIcon(bitmap)
+                .setContentTitle("Arbor")
+                .setContentText(getText(R.string.content_text))
+                .setContentIntent(resumePending);
+
+        startForeground(MAIN_FOREGROUND, notification.build());
     }
 
 
