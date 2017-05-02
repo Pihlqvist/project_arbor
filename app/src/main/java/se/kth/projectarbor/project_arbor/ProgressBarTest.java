@@ -13,6 +13,7 @@ public class ProgressBarTest extends AppCompatActivity {
 
     private EditText etPercent;
     private ClipDrawable mImageDrawable;
+    private ClipDrawable mImageDrawable2;
 
 
     private int mLevel = 0;
@@ -47,14 +48,21 @@ public class ProgressBarTest extends AppCompatActivity {
 
         etPercent = (EditText) findViewById(R.id.etPercent);
 
+
         ImageView img = (ImageView) findViewById(R.id.imageView1);
+        ImageView img2 = (ImageView)findViewById(R.id.imageView3);
+
+
         mImageDrawable = (ClipDrawable) img.getDrawable();
         mImageDrawable.setLevel(0);
+        mImageDrawable2= (ClipDrawable) img2.getDrawable();
+        mImageDrawable2.setLevel(0);
     }
 
     private void doTheUpAnimation(int fromLevel, int toLevel) {
         mLevel += LEVEL_DIFF;
         mImageDrawable.setLevel(mLevel);
+        mImageDrawable2.setLevel(mLevel);
         if (mLevel <= toLevel) {
             mRightHandler.postDelayed(animateUpImage, DELAY);
         } else {
@@ -66,6 +74,7 @@ public class ProgressBarTest extends AppCompatActivity {
     private void doTheDownAnimation(int fromLevel, int toLevel) {
         mLevel -= LEVEL_DIFF;
         mImageDrawable.setLevel(mLevel);
+        mImageDrawable2.setLevel(mLevel);
         if (mLevel >= toLevel) {
             mLeftHandler.postDelayed(animateDownImage, DELAY);
         } else {
