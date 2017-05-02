@@ -1,7 +1,10 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -26,6 +29,8 @@ public class ShopTab extends Fragment {
 
     private int money;
 
+    private SharedPreferences sharedPreferences;
+
     public enum StoreItem {
         WATER(10, 5),
         SUN(12, 7);
@@ -47,13 +52,34 @@ public class ShopTab extends Fragment {
         }
     }
 
+    private class Receiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            money += intent.getIntExtra("MONEY", 0);
+            tvMoney.setText(""+money);
+            sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
 
-        // TODO: get money from different source
-        this.money = 100;
+        // Setup a filter for money
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Pedometer.STORE_BROADCAST);
+        getActivity().registerReceiver(this.new Receiver(), filter);
+
+        sharedPreferences = getActivity().getSharedPreferences("STORE_MONEY", Context.MODE_PRIVATE);
+        if (sharedPreferences.contains("STORE_MONEY")) {
+            money = sharedPreferences.getInt("STORE_MONEY", 0);
+        } else {
+            money = 0;
+            sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
+        }
+
+
         tvMoney = (TextView) view.findViewById(R.id.tvMoney);
         tvMoney.setText(""+this.money);
 
@@ -132,3 +158,4 @@ public class ShopTab extends Fragment {
         }
     }
 }
+

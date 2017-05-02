@@ -1,8 +1,11 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.Serializable;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by pethrus and lovisa on 2017-04-20.
@@ -14,6 +17,7 @@ import java.io.Serializable;
 public class Tree implements Serializable {
     // IMPORTANT for serialization, DO NOT REMOVE
     private static final long serialVersionUID = 5911304372524803500L;
+    private SharedPreferences sharedPreferences;
 
     //Seed phase constants
     private final int SEED_WATERBUFFER_MAX = 20;
@@ -67,7 +71,18 @@ public class Tree implements Serializable {
     private boolean timerFlag;
 
     public enum Phase {
-        SEED, SPROUT, SAPLING, GROWN_TREE
+        SEED(1), SPROUT(2), SAPLING(3), GROWN_TREE(4);
+
+        private int phaseNumber;
+
+        private Phase(int phaseNumber) {
+            this.phaseNumber = phaseNumber;
+        }
+
+        public int getPhaseNumber() {
+            return phaseNumber;
+        }
+
     }
 
     //The buffer class keeps track of the buffer value that is an integer
@@ -147,6 +162,7 @@ public class Tree implements Serializable {
     public Phase getTreePhase(){
         return treePhase;
     }
+
     //This method is called when it's time for the tree object to change phase
     //It changes the tree objects attributes to match the current phase
     //and fills all the buffers to max
@@ -161,6 +177,7 @@ public class Tree implements Serializable {
                 this.sunBuffer.setValue(SPROUT_SUNBUFFER_MAX);
                 this.healthBuffer.setMax(SPROUT_HEALTHBUFFER_MAX);
                 this.healthBuffer.setValue(SPROUT_HEALTHBUFFER_MAX);
+
                 break;
             case SPROUT:
                 this.treePhase = Phase.SAPLING;
@@ -239,7 +256,6 @@ public class Tree implements Serializable {
     }
     // bufferIncrease() is called from MainService every accomplished kilometer
     public void bufferIncrease(Environment.Weather weather) {
-
         // Update phase if needed.
         dist++;
         switch(dist) {
@@ -268,6 +284,7 @@ public class Tree implements Serializable {
             default: // if neither sun nor rain, cloudy
                 break;
         }
+
     }
         // Add sun amount depending on phase.
         private void addSunIntake(){
@@ -362,4 +379,7 @@ public class Tree implements Serializable {
 
 
     }
+
+
+
 }

@@ -19,7 +19,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 60 * 60;  // TODO: changed to min for testing
+    public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
 
     // Don't use 0, it will mess up everything
@@ -56,7 +56,8 @@ public class MainService extends Service {
         loadState(list);
         // TODO: Define the order of (de)serializing objects
         environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
-        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance);
+        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance
+                , tree.getTreePhase().getPhaseNumber());
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
     }
 
@@ -115,6 +116,7 @@ public class MainService extends Service {
             // The user have traveled 1 km and the user trees buffers will increase
             case MSG_KM_DONE:
                 tree.bufferIncrease(environment.getWeather());
+                pedometer.setPhaseNumber(tree.getTreePhase().getPhaseNumber());
                 sendToView();
 
                 break;
