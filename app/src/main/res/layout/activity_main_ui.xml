@@ -37,6 +37,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_dialog_email" />
+        android:tint="@android:color/black"
+        android:visibility="visible"
+        app:backgroundTint="@drawable/cast_abc_scrubber_control_to_pressed_mtrl_000"
+        app:elevation="4dp"
+        app:fabSize="mini"
+        app:rippleColor="@color/cast_expanded_controller_ad_container_white_stripe_color"
+        app:srcCompat="@android:drawable/ic_menu_help" />
 
 </android.support.design.widget.CoordinatorLayout>
