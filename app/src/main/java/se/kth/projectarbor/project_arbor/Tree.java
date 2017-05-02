@@ -1,5 +1,7 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 /**
@@ -339,5 +341,25 @@ public class Tree implements Serializable {
             else
                 healthBuffer.decrValue(amount);
         }
+    }
+
+
+    public void purchase(ShopTab.StoreItem storeItem) {
+
+        switch (storeItem) {
+
+            case SUN:
+                Log.d("ARBOR_TREE", "purchase sun");
+                sunBuffer.incrValue(storeItem.getAmount());
+                break;
+
+            case WATER:
+                Log.d("ARBOR_TREE", "purchase water");
+                waterBuffer.incrValue(storeItem.getAmount());
+                break;
+
+        }
+
+
     }
 }

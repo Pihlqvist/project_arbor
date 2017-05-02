@@ -35,9 +35,6 @@ public class MainUIActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    // Creates new tree if true
-    SharedPreferences sharedPreferences = null;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -57,6 +54,8 @@ public class MainUIActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);

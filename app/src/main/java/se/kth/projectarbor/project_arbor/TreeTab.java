@@ -60,6 +60,8 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+        Log.d("ARBOR_TREE_TAB", "onCreateView in tree tab");
+
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
         setupValues();

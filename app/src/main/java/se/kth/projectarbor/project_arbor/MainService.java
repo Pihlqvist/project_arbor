@@ -30,6 +30,7 @@ public class MainService extends Service {
     public final static int MSG_KM_DONE = 5;
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
+    public final static int MSG_PURCHASE = 8;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -128,6 +129,13 @@ public class MainService extends Service {
             case MSG_TREE_GAME:
                 startGame();
 
+                break;
+
+            case MSG_PURCHASE:
+                tree.purchase((ShopTab.StoreItem)intent.getExtras().get("STORE_ITEM"));
+                sendToView();
+                DataManager.saveState(this, filename, tree,
+                        environment.getForecasts(), pedometer.getTotalDistance());
                 break;
         }
 
