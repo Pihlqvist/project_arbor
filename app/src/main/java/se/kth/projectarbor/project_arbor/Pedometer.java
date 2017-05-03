@@ -29,7 +29,8 @@ class Pedometer {
     }
 
     public final static String DISTANCE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.DISTANCE";
-    private final static int BUFFER_CONSTANT = 1000;
+    public final static String STORE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.STORE";
+    private final static int BUFFER_CONSTANT = 10;  // TODO: change back to 1000
 
     private double height;
     private Gender gender;
@@ -40,34 +41,42 @@ class Pedometer {
     private double totalDistance;
     private double updateDistance;
 
+    private int phaseNumber;
+
     private SensorManager sensorManager;
     private Sensor stepCounter;
     private SensorEventListener listener;
     private Context context;
     private Intent broadcast;
+    private Intent storeBroadcast;
     private double coefficient;
     private int updateOn = 10;
 
     public Pedometer(Context context, double height, Gender gender) {
-        this(context, height, gender, 0);
+        this(context, height, gender, 0, 1);
     }
 
-    public Pedometer(Context context, double height, Gender gender, double totalDistance) {
+    public Pedometer(Context context, double height, Gender gender, double totalDistance, int phaseNumber) {
         this.context = context;
         this.height = height;
         this.gender = gender;
         this.totalDistance = totalDistance;
         this.coefficient = height * gender.getMultiplicativeFactor();
+        this.phaseNumber = phaseNumber;
 
         updateDistance =  totalDistance % BUFFER_CONSTANT;
 
         this.broadcast = new Intent();
         broadcast.setAction(DISTANCE_BROADCAST);
+        this.storeBroadcast = new Intent();
+        storeBroadcast.setAction(STORE_BROADCAST);
 
         sensorManager = (SensorManager) context.getSystemService(Context.SENSOR_SERVICE);
         stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         listener = new PedometerEventListener();
         // sensorManager.registerListener(listener, stepCounter, SensorManager.SENSOR_DELAY_FASTEST);
+
+
     }
 
     public void register() {
@@ -96,6 +105,10 @@ class Pedometer {
 
     public double getTotalDistance() {
         return totalDistance;
+    }
+
+    public void setPhaseNumber(int phaseNumber) {
+        this.phaseNumber = phaseNumber;
     }
 
     public void reset() {
@@ -128,18 +141,24 @@ class Pedometer {
                 totalDistance += distance;
 
                 // TODO: Recently implemented, be wary of bugs!
-                updateDistance += distance;
+                updateDistance += coefficient * currentStepCount;
+                Log.d("ARBOR_PEDOMETER", "UpdateDist: " + updateDistance);
                 if (updateDistance >= BUFFER_CONSTANT) {
                     updateDistance -= BUFFER_CONSTANT;
                     context.startService(new Intent(context, MainService.class)
                             .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
+
+                    // TODO: give proper amount
+                    storeBroadcast.putExtra("MONEY", phaseNumber);
+                    context.getApplicationContext().sendBroadcast(storeBroadcast);
+                    Log.d("ARBOR_PEDOMETER", "updateDistance went over Buffer");
                 }
 
                 stepCount += currentStepCount;
                 referenceStepCount = value;
 
-                Log.d("ARBOR_PEDOMETER", stepCount + "");
-                Log.d("ARBOR_PEDOMETER", distance + "");
+                Log.d("ARBOR_PEDOMETER", "stepCount: " + stepCount);
+                Log.d("ARBOR_PEDOMETER", "distance: " + distance);
 
                 if (++updateOn >= 10) {
                     // Intent broadcast = new Intent();

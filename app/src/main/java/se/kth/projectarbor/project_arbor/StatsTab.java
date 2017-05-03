@@ -15,22 +15,12 @@ import android.widget.Button;
 
 public class StatsTab extends Fragment {
 
-    private Button killTreeBtn;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stats_tab, container, false);
 
-        killTreeBtn = (Button) view.findViewById(R.id.kill_tree_btn);
-        killTreeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SharedPreferences sp = getActivity().getSharedPreferences
-                        ("se.kth.projectarbor.project_arbor", getActivity().MODE_PRIVATE);
-                sp.edit().putBoolean("FIRST_TREE", true);
-            }
-        });
 
         return view;
     }

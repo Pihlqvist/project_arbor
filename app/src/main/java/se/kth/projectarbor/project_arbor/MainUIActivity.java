@@ -35,14 +35,13 @@ public class MainUIActivity extends AppCompatActivity {
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    // Creates new tree if true
-    SharedPreferences sharedPreferences = null;
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private boolean snackbarSemaphore = false;
 
+    private Snackbar snackbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,21 +56,37 @@ public class MainUIActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        mViewPager.setOffscreenPageLimit(2);
+
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+
+        // TODO: Add elements to the settings_main_settings layout
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+               if(snackbarSemaphore) {
+                   if (snackbar.isShown()) {
+                       snackbar.dismiss();
+                   }else {
+                       snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                       Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                       mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                       snackbar.removeCallback(null);
+                       snackbar.show();
+                   }
+               }else{
+                   snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                   Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                   mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                   snackbar.show();
+                   snackbarSemaphore = true;
+               }
             }
         });
-
-
-
 
     }
 
