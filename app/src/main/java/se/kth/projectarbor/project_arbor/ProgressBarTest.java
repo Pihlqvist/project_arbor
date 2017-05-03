@@ -1,4 +1,7 @@
 package se.kth.projectarbor.project_arbor;
+/**
+ * Created by Joseph on 4/3/2017.
+ */
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,6 +10,7 @@ import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+
 
 public class ProgressBarTest extends AppCompatActivity {
 
