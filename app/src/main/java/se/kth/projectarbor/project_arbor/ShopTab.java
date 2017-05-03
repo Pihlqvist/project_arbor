@@ -56,7 +56,7 @@ public class ShopTab extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             money += intent.getIntExtra("MONEY", 0);
-            tvMoney.setText(""+money);
+            tvMoney.setText("Curreny: "+money);
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
         }
     }
@@ -75,13 +75,13 @@ public class ShopTab extends Fragment {
         if (sharedPreferences.contains("STORE_MONEY")) {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
         } else {
-            money = 0;
+            money = 10;
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
         }
 
 
         tvMoney = (TextView) view.findViewById(R.id.tvMoney);
-        tvMoney.setText(""+this.money);
+        tvMoney.setText("Curreny "+this.money);
 
         btnBuyWater = (Button) view.findViewById(R.id.btnWater);
         btnBuyWater.setOnClickListener(new View.OnClickListener() {
@@ -105,11 +105,13 @@ public class ShopTab extends Fragment {
         btnBuyWater.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                CharSequence text = " Inc Water by 5 Dec Money by 10!" ;
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(getActivity(),text ,duration);
-                toast.setGravity(Gravity.CENTER,0,0);
-                toast.show();
+//                CharSequence text = " Inc Water by 5 Dec Money by 10!" ;
+//                int duration = Toast.LENGTH_LONG;
+//                Toast toast = Toast.makeText(getActivity(),text ,duration);
+//                toast.setGravity(Gravity.CENTER,0,0);
+//                toast.show();
+                money += 20;
+                tvMoney.setText("Currency: " + money);
                 return true;
             }
         });

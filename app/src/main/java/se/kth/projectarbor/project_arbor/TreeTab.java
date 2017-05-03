@@ -53,7 +53,10 @@ public class TreeTab extends Fragment {
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 tempView.setText("Temp: " + extras.getDouble("TEMP"));
                 weatherView.setText("Weather: " + extras.getString("WEATHER"));
-                hpView.setText("HP: " + extras.getInt("HP"));
+                if (extras.getInt("HP") < 1)
+                    hpView.setText("HP: DEAD");
+                else
+                    hpView.setText("HP: " + extras.getInt("HP"));
                 treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
                 sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
                 waterView.setText("Water Buffer: " + extras.getInt("WATER"));

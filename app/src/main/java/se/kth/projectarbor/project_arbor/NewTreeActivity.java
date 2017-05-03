@@ -21,13 +21,15 @@ public class NewTreeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_tree);
+
 
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             startService(new Intent(NewTreeActivity.this, MainService.class)
             .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME));
         }
+
+        setContentView(R.layout.activity_new_tree);
 
         newTreeBtn = (Button) findViewById(R.id.new_tree_btn);
         newTreeBtn.setOnClickListener(new View.OnClickListener() {
