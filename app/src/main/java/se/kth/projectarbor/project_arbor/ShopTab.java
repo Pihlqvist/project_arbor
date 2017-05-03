@@ -17,6 +17,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
  */
@@ -26,6 +28,9 @@ public class ShopTab extends Fragment {
     private Button btnBuyWater;
     private Button btnBuySun;
     private TextView tvMoney;
+
+    private TextView tvShopWater;
+    private TextView tvShopSun;
 
     private int money;
 
@@ -55,9 +60,15 @@ public class ShopTab extends Fragment {
     private class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            money += intent.getIntExtra("MONEY", 0);
-            tvMoney.setText("Curreny: "+money);
-            sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
+            if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
+                money += intent.getIntExtra("MONEY", 0);
+                tvMoney.setText("Curreny: " + money);
+                sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
+            } else if (intent.getAction().equals(MainService.TREE_DATA)) {
+                Bundle extras = intent.getExtras();
+                tvShopSun.setText("SUN: " + extras.getInt("SUN"));
+                tvShopWater.setText("WATER: " + extras.getInt("WATER"));
+            }
         }
     }
 
@@ -69,6 +80,7 @@ public class ShopTab extends Fragment {
         // Setup a filter for money
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.STORE_BROADCAST);
+        filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("STORE_MONEY", Context.MODE_PRIVATE);
@@ -83,6 +95,9 @@ public class ShopTab extends Fragment {
         tvMoney = (TextView) view.findViewById(R.id.tvMoney);
         tvMoney.setText("Curreny "+this.money);
 
+        tvShopSun = (TextView) view.findViewById(R.id.tvShopSun);
+        tvShopWater = (TextView) view.findViewById(R.id.tvShopWater);
+
         btnBuyWater = (Button) view.findViewById(R.id.btnWater);
         btnBuyWater.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,6 +105,7 @@ public class ShopTab extends Fragment {
                 Log.d("ARBOR", "buy");
                 buy(StoreItem.WATER);
                 tvMoney.setText(""+money);
+                Toast.makeText(getContext(), "Bought Water", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -100,6 +116,7 @@ public class ShopTab extends Fragment {
                 Log.d("ARBOR", "BUY SUN");
                 buy(StoreItem.SUN);
                 tvMoney.setText(""+money);
+                Toast.makeText(getContext(), "Bought Sun", Toast.LENGTH_SHORT).show();
             }
         });
         btnBuyWater.setOnLongClickListener(new View.OnLongClickListener() {
@@ -119,11 +136,11 @@ public class ShopTab extends Fragment {
         btnBuySun.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                CharSequence text = " Inc Sun by 7 Dec Money by 12!" ;
-                int duration = Toast.LENGTH_LONG;
-                Toast toast = Toast.makeText(getActivity(),text ,duration);
-                toast.setGravity(Gravity.CENTER,0,0);
-                toast.show();
+//                CharSequence text = " Inc Sun by 7 Dec Money by 12!" ;
+//                int duration = Toast.LENGTH_LONG;
+//                Toast toast = Toast.makeText(getActivity(),text ,duration);
+//                toast.setGravity(Gravity.CENTER,0,0);
+//                toast.show();
                 return true;
             }
         });
