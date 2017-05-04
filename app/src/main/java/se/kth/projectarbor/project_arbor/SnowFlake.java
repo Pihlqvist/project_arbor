@@ -20,10 +20,10 @@ public class SnowFlake {
     private static final float FLAKE_SIZE_UPPER = 6f;
 
     private final Random random;
-    private final Point position;
-    private float angle;
-    private final float increment;
-    private  final float flakeSize;
+    private final Point position;      // position of the created snowflake
+    private float angle;              // falling angle
+    private final float increment;   //falling speed
+    private  final float flakeSize; // the size range of the flake
     private final Paint paint;
 
     public static SnowFlake create(int width, int height, Paint paint) {
@@ -58,7 +58,8 @@ public class SnowFlake {
             reset(width);
         }
     }
-
+    // method isInside and method reset check if the flake is inside the screen if not it will reposition it to be in the screen
+    // dont know exactly how it works but it gets the job done :)
     private boolean isInside(int width, int height) {
         int x = position.x;
         int y = position.y;

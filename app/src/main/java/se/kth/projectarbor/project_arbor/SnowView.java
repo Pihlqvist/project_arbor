@@ -61,7 +61,7 @@ public class SnowView extends View {
     private Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            invalidate();
+            invalidate();  //will call onDraw again and again PS:must be called from UIthread orherwise use postInvalidate
         }
     };
 }
