@@ -5,14 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.*;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -38,6 +42,14 @@ public class TreeTab extends Fragment {
     private TextView waterView;
     private View view;
 
+    private ViewGroup vgClouds;
+    private ViewGroup vgRain;
+    private ViewGroup vgSun;
+
+
+
+    private Environment.Weather weather;
+
     private SharedPreferences sharedPreferences;
 
 
@@ -56,10 +68,11 @@ public class TreeTab extends Fragment {
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 tempView.setText("Temp: " + extras.getDouble("TEMP"));
                 weatherView.setText("Weather: " + extras.getString("WEATHER"));
-                if (extras.getInt("HP") < 1)
+                if (extras.getInt("HP") < 1) {
                     hpView.setText("HP: DEAD");
-                else
+                } else {
                     hpView.setText("HP: " + extras.getInt("HP"));
+                }
                 treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
                 sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
                 waterView.setText("Water Buffer: " + extras.getInt("WATER"));
@@ -74,6 +87,11 @@ public class TreeTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
+
+
+
+
+
 
         setupValues();
 
@@ -96,8 +114,32 @@ public class TreeTab extends Fragment {
             waterView.setText("Water Buffer: " + extras.getInt("WATER"));
             tempView.setText("Temp: " + extras.getDouble("TEMP"));
             weatherView.setText("Weather: " + extras.getString("WEATHER"));
+            weather = (Environment.Weather) extras.get("WEATHER");
         }
+/*
+        switch (weather) {
+            case SUN:
+                vgSun = new SunViewGroup();
+                break;
+            case RAIN:
+                vgRain = new RainViewGroup();
+                break;
+            case CLOUDY:
+                vgClouds = new CloudViewGroup();
+                break;
+        }*/
 
+        ImageView cloud = new ImageView(getContext());
+        cloud.setImageResource(R.drawable.cloud_1);
+        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        cloud.setLayoutParams(layoutParams);
+        cloud.setPadding(0,300,0,0);
+
+        ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
+        layout.addView(cloud);
+
+        view = layout;
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
@@ -140,4 +182,7 @@ public class TreeTab extends Fragment {
         waterView = (TextView) view.findViewById(R.id.tvWater);
     }
 
+
+
 }
+
