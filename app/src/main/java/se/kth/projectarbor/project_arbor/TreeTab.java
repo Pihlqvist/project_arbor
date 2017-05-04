@@ -129,17 +129,25 @@ public class TreeTab extends Fragment {
                 break;
         }*/
 
-        ImageView cloud = new ImageView(getContext());
-        cloud.setImageResource(R.drawable.cloud_1);
+/*        ImageView cloud = new ImageView(getContext());
+        cloud.setImageResource(R.drawable.cloud_redspot);
+        cloud.setScaleType(ImageView.ScaleType.FIT_XY);
+        cloud.setScaleX((float) 0.5);
+        cloud.setScaleY((float) 0.5);
+
+
         ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         cloud.setLayoutParams(layoutParams);
-        cloud.setPadding(0,300,0,0);
+
+
+
 
         ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
-        layout.addView(cloud);
+        layout.addView(cloud);*/
+        CloudView cloudView = new CloudView(getContext());
 
-        view = layout;
+        view = cloudView.addViews((ConstraintLayout) view.findViewById(R.id.treefragmentlayout));
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
