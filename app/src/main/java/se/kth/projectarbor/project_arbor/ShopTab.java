@@ -20,7 +20,7 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 /**
- * Created by Fredrik Pihlqvist on 2017-04-28.
+ * Created by Fredrik Pihlqvist, Johan Andersson, Pethrus Gärdborn on 2017-04-28.
  */
 
 public class ShopTab extends Fragment {
@@ -34,8 +34,10 @@ public class ShopTab extends Fragment {
 
     private int money;
 
+    // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
 
+    // Add more items as needed
     public enum StoreItem {
         WATER(10, 5),
         SUN(12, 7);
@@ -57,13 +59,16 @@ public class ShopTab extends Fragment {
         }
     }
 
+
     private class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
+            // Receives messages from pedometer as user is walking to increase money and update display
             if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
                 money += intent.getIntExtra("MONEY", 0);
                 tvMoney.setText("Curreny: " + money);
                 sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
+            // Receives messages from MainService to update display weather data
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Bundle extras = intent.getExtras();
                 tvShopSun.setText("SUN: " + extras.getInt("SUN"));
@@ -84,8 +89,12 @@ public class ShopTab extends Fragment {
         getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("STORE_MONEY", Context.MODE_PRIVATE);
+
+        // If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
+
+        // Else, set initial money value
         } else {
             money = 10;
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
@@ -119,6 +128,7 @@ public class ShopTab extends Fragment {
                 Toast.makeText(getContext(), "Bought Sun", Toast.LENGTH_SHORT).show();
             }
         });
+        // If button held for a LONG time
         btnBuyWater.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -148,7 +158,7 @@ public class ShopTab extends Fragment {
 
         return view;
     }
-
+    // Returns true if possible to make purchase
     private boolean  withdrawMoney(int purchase) {
         if (money - purchase < 0) {
             return false;
@@ -162,6 +172,7 @@ public class ShopTab extends Fragment {
     public void buy(StoreItem item) {
         Log.d("ARBOR","BUY ");
 
+        // If enough money to buy item
         if(withdrawMoney(item.getCost())) {
             Intent intent = new Intent(getActivity(), MainService.class);
             intent.putExtra("MESSAGE_TYPE", MainService.MSG_PURCHASE);
