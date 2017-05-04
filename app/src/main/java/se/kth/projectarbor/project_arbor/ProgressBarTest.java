@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 public class ProgressBarTest extends AppCompatActivity {
 
-
+//
 
     private EditText etPercent;
     private ClipDrawable mImageDrawable;
