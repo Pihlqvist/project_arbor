@@ -9,7 +9,10 @@ import android.hardware.SensorManager;
 import android.util.Log;
 
 /**
- * Created by Ramcin on 2017-04-27.
+ * Created by Ramcin on 2017-04-27. Modified by Fredrik Pihlqvist
+ *
+ * Keeps track of the users steps and handles it, broadcasts the information to
+ * the activity that wants it.
  */
 
 class Pedometer {
@@ -28,6 +31,7 @@ class Pedometer {
         }
     }
 
+    private final static String TAG = "ARBOR_PEDOMETER";
     public final static String DISTANCE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.DISTANCE";
     public final static String STORE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.STORE";
     private final static int BUFFER_CONSTANT = 10;  // TODO: change back to 1000
@@ -40,7 +44,6 @@ class Pedometer {
     private double distance;
     private double totalDistance;
     private double updateDistance;
-
     private int phaseNumber;
 
     private SensorManager sensorManager;
@@ -142,7 +145,6 @@ class Pedometer {
 
                 // TODO: Recently implemented, be wary of bugs!
                 updateDistance += coefficient * currentStepCount;
-                Log.d("ARBOR_PEDOMETER", "UpdateDist: " + updateDistance);
                 if (updateDistance >= BUFFER_CONSTANT) {
                     updateDistance -= BUFFER_CONSTANT;
                     context.startService(new Intent(context, MainService.class)
@@ -151,19 +153,13 @@ class Pedometer {
                     // TODO: give proper amount
                     storeBroadcast.putExtra("MONEY", phaseNumber);
                     context.getApplicationContext().sendBroadcast(storeBroadcast);
-                    Log.d("ARBOR_PEDOMETER", "updateDistance went over Buffer");
                 }
 
                 stepCount += currentStepCount;
                 referenceStepCount = value;
 
-                Log.d("ARBOR_PEDOMETER", "stepCount: " + stepCount);
-                Log.d("ARBOR_PEDOMETER", "distance: " + distance);
 
                 if (++updateOn >= 10) {
-                    // Intent broadcast = new Intent();
-                    // broadcast.setAction("se.kth.projectarbor.project_arbor.intent.DISTANCE");
-                    Log.d("ARBOR_PEDOMETER", "sent intent");
                     broadcast.putExtra("DISTANCE", distance);
                     context.getApplicationContext().sendBroadcast(broadcast);
                     updateOn = 0;

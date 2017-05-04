@@ -104,7 +104,7 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 buy(StoreItem.WATER);
-                tvMoney.setText(""+money);
+                tvMoney.setText("Currency: "+money);
                 Toast.makeText(getContext(), "Bought Water", Toast.LENGTH_SHORT).show();
             }
         });
@@ -115,18 +115,13 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "BUY SUN");
                 buy(StoreItem.SUN);
-                tvMoney.setText(""+money);
+                tvMoney.setText("Curreny: "+money);
                 Toast.makeText(getContext(), "Bought Sun", Toast.LENGTH_SHORT).show();
             }
         });
         btnBuyWater.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                CharSequence text = " Inc Water by 5 Dec Money by 10!" ;
-//                int duration = Toast.LENGTH_LONG;
-//                Toast toast = Toast.makeText(getActivity(),text ,duration);
-//                toast.setGravity(Gravity.CENTER,0,0);
-//                toast.show();
                 money += 20;
                 tvMoney.setText("Currency: " + money);
                 return true;
@@ -136,11 +131,6 @@ public class ShopTab extends Fragment {
         btnBuySun.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-//                CharSequence text = " Inc Sun by 7 Dec Money by 12!" ;
-//                int duration = Toast.LENGTH_LONG;
-//                Toast toast = Toast.makeText(getActivity(),text ,duration);
-//                toast.setGravity(Gravity.CENTER,0,0);
-//                toast.show();
                 return true;
             }
         });
