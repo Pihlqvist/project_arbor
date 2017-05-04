@@ -25,6 +25,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class TreeTab extends Fragment {
 
+    private final static String TAG = "ARBOR_TREE_TAB";
+
     // Declaring all views and buttons
     private ToggleButton walkBtn;
     private TextView weatherView;
@@ -45,7 +47,7 @@ public class TreeTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
 
-            Log.d("ARBOR_TREETAB", "onReceive()");
+            Log.d(TAG, "onReceive()");
 
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
@@ -69,7 +71,7 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        Log.d("ARBOR_TREE_TAB", "onCreateView in tree tab");
+        Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
