@@ -50,6 +50,7 @@ public class MainService extends Service {
     private Environment environment;
     private AlarmManager alarmManager;
     private double totalDistance;
+    private int totalStepCount;
     // end
 
     // User information  // TODO: the user should change these themself
@@ -73,7 +74,7 @@ public class MainService extends Service {
         // Instantiate objects that MainService will work with, information from previous
         // runtime are given by loadState() above
         environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
-        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance
+        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance, totalStepCount
                 , tree.getTreePhase().getPhaseNumber());
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
@@ -159,6 +160,7 @@ public class MainService extends Service {
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
         totalDistance = (Double) objects.get(2);
+        totalStepCount =(int) objects.get(3);
     }
 
     // Foreground is created here
@@ -215,7 +217,7 @@ public class MainService extends Service {
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
-                environment.getForecasts(), pedometer.getTotalDistance());
+                environment.getForecasts(), pedometer.getTotalDistance(), totalStepCount+pedometer.getStepCount());
     }
 }
 

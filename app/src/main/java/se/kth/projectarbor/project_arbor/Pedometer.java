@@ -40,6 +40,7 @@ class Pedometer {
     private Gender gender;
     private int currentStepCount = 0;
     private int stepCount = 0;
+    private int totalStepCount;
     private int referenceStepCount = -1;
     private double distance;
     private double totalDistance;
@@ -59,11 +60,12 @@ class Pedometer {
         this(context, height, gender, 0, 1);
     }
 
-    public Pedometer(Context context, double height, Gender gender, double totalDistance, int phaseNumber) {
+    public Pedometer(Context context, double height, Gender gender, double totalDistance, int totalStepCount, int phaseNumber) {
         this.context = context;
         this.height = height;
         this.gender = gender;
         this.totalDistance = totalDistance;
+        this.totalStepCount = totalStepCount;
         this.coefficient = height * gender.getMultiplicativeFactor();
         this.phaseNumber = phaseNumber;
 
@@ -110,6 +112,10 @@ class Pedometer {
         return totalDistance;
     }
 
+    public void setTotalStepCount(int totalStepCount) {
+        this.totalStepCount = totalStepCount;
+    }
+
     public void setPhaseNumber(int phaseNumber) {
         this.phaseNumber = phaseNumber;
     }
@@ -133,14 +139,13 @@ class Pedometer {
 
             if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
                 int value = (int) event.values[0];
-
                 if (referenceStepCount < 0) {
                     referenceStepCount = value;
                 }
 
                 currentStepCount = value - referenceStepCount;
                 distance += coefficient * currentStepCount;
-
+                totalStepCount += currentStepCount;
                 totalDistance += distance;
 
                 // TODO: Recently implemented, be wary of bugs!
@@ -161,6 +166,7 @@ class Pedometer {
 
                 if (++updateOn >= 10) {
                     broadcast.putExtra("DISTANCE", distance);
+                    broadcast.putExtra("STEPCOUNT", stepCount);
                     context.getApplicationContext().sendBroadcast(broadcast);
                     updateOn = 0;
                 }

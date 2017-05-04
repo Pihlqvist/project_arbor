@@ -34,6 +34,7 @@ public class TreeTab extends Fragment {
     private TextView hpView;
     private TextView treeView;
     private TextView distanceView;
+    private TextView stepView;
     private TextView sunView;
     private TextView waterView;
     private View view;
@@ -51,6 +52,7 @@ public class TreeTab extends Fragment {
 
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
+                stepView.setText("StepCount" + extras.getInt("STEPCOUNT"));
             }
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
