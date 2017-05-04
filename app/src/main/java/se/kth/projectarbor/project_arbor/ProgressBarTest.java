@@ -9,10 +9,12 @@ import android.graphics.drawable.ClipDrawable;
 import android.os.Handler;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 
 public class ProgressBarTest extends AppCompatActivity {
+
 
 
     private EditText etPercent;
@@ -61,6 +63,10 @@ public class ProgressBarTest extends AppCompatActivity {
         mImageDrawable.setLevel(0);
         mImageDrawable2= (ClipDrawable) img2.getDrawable();
         mImageDrawable2.setLevel(0);
+
+        FrameLayout fram1 = (FrameLayout) findViewById(R.id.Frame1);
+        FrameLayout fram2 = (FrameLayout) findViewById(R.id.Frame2);
+
     }
 
     private void doTheUpAnimation(int fromLevel, int toLevel) {
