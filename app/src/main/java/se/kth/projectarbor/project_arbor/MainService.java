@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -25,6 +26,8 @@ import java.util.List;
 public class MainService extends Service {
 
     public final static String TREE_DATA = "se.kth.projectarbor.project_arbor.intent.TREE_DATA";
+    public final static String WEATHER_DATA = "se.kth.projectarbor.project_arbor.intent.WEATHER_DATA";
+
     private final static String TAG = "ARBOR_SERVICE";
     final static String filename = "user42.dat";
 
@@ -41,6 +44,7 @@ public class MainService extends Service {
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
+    public final static int MSG_UPDATE_WEATHER_VIEW = 9;
 
     public final static int MAIN_FOREGROUND = 111;
 
@@ -50,6 +54,8 @@ public class MainService extends Service {
     private Environment environment;
     private AlarmManager alarmManager;
     private double totalDistance;
+    private Environment.Weather lastWeather;
+    private double lastTemperature;
     // end
 
     // User information  // TODO: the user should change these themself
@@ -77,6 +83,8 @@ public class MainService extends Service {
                 , tree.getTreePhase().getPhaseNumber());
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
+        lastWeather = Environment.Weather.NOT_AVAILABLE;
+        lastTemperature = Double.NaN;
     }
 
     @Override
@@ -89,7 +97,7 @@ public class MainService extends Service {
             Log.d(TAG, "MSG: " + msg);
         }
 
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        final PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
 
         // Depending on the msg a different action is taken
@@ -142,6 +150,13 @@ public class MainService extends Service {
             case MSG_TREE_GAME:
                 startGame();
 
+                Intent weatherIntent = new Intent(MainService.this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
+                //intent.removeExtra("MESSAGE_TYPE");
+                //intent.putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
+                PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this, 0, weatherIntent, 0);
+                sendWeatherToView(weatherPendingIntent);
+
                 break;
 
             // Store sends this message, updates the tree with the right item
@@ -149,6 +164,12 @@ public class MainService extends Service {
                 tree.purchase((ShopTab.StoreItem)intent.getExtras().get("STORE_ITEM"));
                 sendToView();
                 saveGame();
+                break;
+
+            // Update the weather and temperature fields
+            case MSG_UPDATE_WEATHER_VIEW:
+                Log.d("ARBOR_WEATHER", "Retrieved MSG_UPDATE_WEATHER_VIEW");
+                sendWeatherToView(pendingIntent);
                 break;
         }
 
@@ -185,8 +206,6 @@ public class MainService extends Service {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
 
-        intent.putExtra("WEATHER", environment.getWeather().toString());
-        intent.putExtra("TEMP", environment.getTemp());
         intent.putExtra("SUN", tree.getSunLevel());
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
@@ -201,8 +220,6 @@ public class MainService extends Service {
         Intent intentToActivity = new Intent(this, MainUIActivity.class);
         intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
-        intentToActivity.putExtra("TEMP", environment.getTemp());
         intentToActivity.putExtra("SUN", tree.getSunLevel());
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
@@ -216,6 +233,35 @@ public class MainService extends Service {
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
                 environment.getForecasts(), pedometer.getTotalDistance());
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<PendingIntent, Void, PendingIntent> {
+
+        @Override
+        protected PendingIntent doInBackground(PendingIntent... params) {
+            lastWeather = environment.getWeather();
+            lastTemperature = environment.getTemp();
+
+            Intent intent = new Intent();
+            intent.putExtra("WEATHER", lastWeather.toString());
+            intent.putExtra("TEMP", lastTemperature);
+            intent.setAction(WEATHER_DATA);
+            getApplicationContext().sendBroadcast(intent);
+
+            return params[0];
+        }
+
+
+        @Override
+        protected void onPostExecute(PendingIntent pendingIntent) {
+            alarmManager.set(AlarmManager.RTC_WAKEUP,
+                    System.currentTimeMillis() + (1000), pendingIntent); // TODO: ALARM_HOUR/4 *
+            Log.d("ARBOR_WEATHER", "Exiting this thread");
+        }
+    }
+
+    private void sendWeatherToView(final PendingIntent pendingIntent) {
+        new AsyncTaskRunner().execute(pendingIntent);
     }
 }
 

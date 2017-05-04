@@ -109,9 +109,9 @@ class LocationManager implements LocationListener,
 
         if (delta >= mLowerLimit && delta < mUpperLimit) {
             mTotalDistance += delta;
-            Log.d(MainService.TAG, "mTotalDistance == " + mTotalDistance);
+            //Log.d(MainService.TAG, "mTotalDistance == " + mTotalDistance);
         } else {
-            Log.d(MainService.TAG, "ERROR MARGIN");
+            //Log.d(MainService.TAG, "ERROR MARGIN");
         }
 
         mCurrentLocation = location;

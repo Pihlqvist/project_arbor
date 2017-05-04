@@ -49,13 +49,13 @@ public class TreeTab extends Fragment {
 
             Log.d(TAG, "onReceive()");
 
+            // TODO: Do if-else chain?
+
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
             }
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                tempView.setText("Temp: " + extras.getDouble("TEMP"));
-                weatherView.setText("Weather: " + extras.getString("WEATHER"));
                 if (extras.getInt("HP") < 1)
                     hpView.setText("HP: DEAD");
                 else
@@ -63,6 +63,12 @@ public class TreeTab extends Fragment {
                 treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
                 sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
                 waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+            }
+
+            if (intent.getAction().equals(MainService.WEATHER_DATA)) {
+                Log.d("ARBOR_WEATHER", "Broadcast received");
+                tempView.setText("Temp: " + extras.getDouble("TEMP", 0));
+                weatherView.setText("Weather: " + extras.getString("WEATHER", null));
             }
         }
     }
@@ -81,6 +87,7 @@ public class TreeTab extends Fragment {
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
+        filter.addAction(MainService.WEATHER_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"

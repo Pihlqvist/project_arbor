@@ -38,7 +38,7 @@ public class NewTreeActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             startService(new Intent(NewTreeActivity.this, MainService.class)
-            .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME));
+                    .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME));
         }
 
         setContentView(R.layout.activity_new_tree);
