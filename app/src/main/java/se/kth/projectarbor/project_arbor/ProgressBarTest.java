@@ -35,7 +35,7 @@ public class ProgressBarTest extends AppCompatActivity {
 
         @Override
         public void run() {
-            doTheUpAnimation(fromLevel, toLevel);
+            fillBuffer(fromLevel, toLevel);
         }
     };
 
@@ -44,7 +44,7 @@ public class ProgressBarTest extends AppCompatActivity {
 
         @Override
         public void run() {
-            doTheDownAnimation(fromLevel, toLevel);
+            unfillBuffer(fromLevel, toLevel);
         }
     };
     @Override
@@ -55,8 +55,8 @@ public class ProgressBarTest extends AppCompatActivity {
         etPercent = (EditText) findViewById(R.id.etPercent);
 
 
-        ImageView img = (ImageView) findViewById(R.id.imageView1);
-        ImageView img2 = (ImageView)findViewById(R.id.imageView3);
+        ImageView img = (ImageView) findViewById(R.id.imageView1);  //XMl file in drawable clip_source1
+        ImageView img2 = (ImageView)findViewById(R.id.imageView3);  // Xml file in drawable clip_source2
 
 
         mImageDrawable = (ClipDrawable) img.getDrawable();
@@ -69,7 +69,7 @@ public class ProgressBarTest extends AppCompatActivity {
 
     }
 
-    private void doTheUpAnimation(int fromLevel, int toLevel) {
+    private void fillBuffer(int fromLevel, int toLevel) {
         mLevel += LEVEL_DIFF;
         mImageDrawable.setLevel(mLevel);
         mImageDrawable2.setLevel(mLevel);
@@ -81,7 +81,7 @@ public class ProgressBarTest extends AppCompatActivity {
         }
     }
 
-    private void doTheDownAnimation(int fromLevel, int toLevel) {
+    private void unfillBuffer(int fromLevel, int toLevel) {
         mLevel -= LEVEL_DIFF;
         mImageDrawable.setLevel(mLevel);
         mImageDrawable2.setLevel(mLevel);
@@ -93,6 +93,7 @@ public class ProgressBarTest extends AppCompatActivity {
         }
     }
 
+    // Filling and unfilling the buffers depending on textview value
     public void onClickOk(View v) {
         int temp_level = ((Integer.parseInt(etPercent.getText().toString())) * MAX_LEVEL) / 100;
 
