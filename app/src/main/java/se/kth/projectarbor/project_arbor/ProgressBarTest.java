@@ -18,8 +18,8 @@ public class ProgressBarTest extends AppCompatActivity {
 //
 
     private EditText etPercent;
-    private ClipDrawable mImageDrawable;
-    private ClipDrawable mImageDrawable2;
+    private ClipDrawable waterAnim;
+    private ClipDrawable sunAnim;
 
 
     private int mLevel = 0;
@@ -47,6 +47,9 @@ public class ProgressBarTest extends AppCompatActivity {
             unfillBuffer(fromLevel, toLevel);
         }
     };
+
+    ImageView imgWater;
+    ImageView imgSun;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,25 +57,20 @@ public class ProgressBarTest extends AppCompatActivity {
 
         etPercent = (EditText) findViewById(R.id.etPercent);
 
+        imgWater = (ImageView) findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
+        imgSun = (ImageView)findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
 
-        ImageView img = (ImageView) findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
-        ImageView img2 = (ImageView)findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
-
-
-        mImageDrawable = (ClipDrawable) img.getDrawable();
-        mImageDrawable.setLevel(0);
-        mImageDrawable2= (ClipDrawable) img2.getDrawable();
-        mImageDrawable2.setLevel(0);
-
-        FrameLayout fram1 = (FrameLayout) findViewById(R.id.Frame1);
-        FrameLayout fram2 = (FrameLayout) findViewById(R.id.Frame2);
+        waterAnim = (ClipDrawable) imgWater.getDrawable();
+        waterAnim.setLevel(0);
+        sunAnim = (ClipDrawable) imgSun.getDrawable();
+        sunAnim.setLevel(0);
 
     }
 
     private void fillBuffer(int fromLevel, int toLevel) {
         mLevel += LEVEL_DIFF;
-        mImageDrawable.setLevel(mLevel);
-        mImageDrawable2.setLevel(mLevel);
+        waterAnim.setLevel(mLevel);
+        sunAnim.setLevel(mLevel);
         if (mLevel <= toLevel) {
             mRightHandler.postDelayed(animateUpImage, DELAY);
         } else {
@@ -83,8 +81,8 @@ public class ProgressBarTest extends AppCompatActivity {
 
     private void unfillBuffer(int fromLevel, int toLevel) {
         mLevel -= LEVEL_DIFF;
-        mImageDrawable.setLevel(mLevel);
-        mImageDrawable2.setLevel(mLevel);
+        waterAnim.setLevel(mLevel);
+        sunAnim.setLevel(mLevel);
         if (mLevel >= toLevel) {
             mLeftHandler.postDelayed(animateDownImage, DELAY);
         } else {
