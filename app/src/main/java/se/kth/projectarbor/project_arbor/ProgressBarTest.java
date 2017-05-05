@@ -55,8 +55,8 @@ public class ProgressBarTest extends AppCompatActivity {
         etPercent = (EditText) findViewById(R.id.etPercent);
 
 
-        ImageView img = (ImageView) findViewById(R.id.imageView1);  //XMl file in drawable clip_source1
-        ImageView img2 = (ImageView)findViewById(R.id.imageView3);  // Xml file in drawable clip_source2
+        ImageView img = (ImageView) findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
+        ImageView img2 = (ImageView)findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
 
 
         mImageDrawable = (ClipDrawable) img.getDrawable();

@@ -1,15 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:id="@+id/ivTransRectangle"
+        android:layout_width="match_parent"
+        android:layout_height="503dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         app:srcCompat="@drawable/transp_rectangle" />
-</RelativeLayout>
+
+
+    <FrameLayout
+        android:id="@+id/Frame1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="center|top|right">
+
+        <ImageView
+            android:id="@+id/ivXmlWater"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/clip_source" />
+
+
+        <ImageView
+            android:id="@+id/ivEmptyWater"
+            android:layout_width="216dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/scall" />
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/Frame2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="20dp"
+        android:layout_gravity="top|center|right">
+
+
+        <ImageView
+            android:id="@+id/ivEmptySun"
+            android:layout_width="216dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/empty_sb" />
+
+        <ImageView
+            android:id="@+id/ivXmlSun"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/clip_source2" />
+
+    </FrameLayout>
+
+
+</FrameLayout>
