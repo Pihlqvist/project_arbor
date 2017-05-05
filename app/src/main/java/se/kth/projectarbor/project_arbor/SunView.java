@@ -1,15 +1,10 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.app.Activity;
-import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
-import android.support.constraint.ConstraintLayout;
-import android.util.Log;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -35,7 +30,7 @@ public class SunView {
         sunIV = new ImageView(activity);
 
         // rayIV.setImageResource(R.drawable.light_ray_360);
-        sunIV.setImageResource(R.drawable.sun_360);
+        sunIV.setImageResource(R.drawable.sun);
 
         layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -44,8 +39,8 @@ public class SunView {
         Point size = new Point();
         display.getSize(size);
 
-        layoutParams.width = size.x;
-        layoutParams.height = size.x;
+        layoutParams.width = (int) (size.x * 0.9);
+        layoutParams.height = (int) (size.x * 0.9);
 
         layoutParams.leftMargin = -layoutParams.width/2;
         layoutParams.topMargin = -layoutParams.height/2;
