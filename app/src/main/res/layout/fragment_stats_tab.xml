@@ -31,9 +31,17 @@
 
         <ImageView
             android:id="@+id/ivEmptyWater"
-            android:layout_width="216dp"
-            android:layout_height="match_parent"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
             android:src="@drawable/scall" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginRight="150dp"
+            android:src="@drawable/water_icon" />
+
 
     </FrameLayout>
 
@@ -48,8 +56,8 @@
 
         <ImageView
             android:id="@+id/ivEmptySun"
-            android:layout_width="216dp"
-            android:layout_height="match_parent"
+            android:layout_width="220dp"
+            android:layout_height="wrap_content"
             android:src="@drawable/empty_sb" />
 
         <ImageView
@@ -57,6 +65,15 @@
             android:layout_width="220dp"
             android:layout_height="wrap_content"
             android:src="@drawable/clip_source2" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sun_icon"
+            android:layout_marginRight="150dp"
+            android:layout_gravity="left"/>
+
+
 
     </FrameLayout>
 
