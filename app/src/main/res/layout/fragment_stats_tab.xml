@@ -3,12 +3,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <ImageView
         android:id="@+id/ivTransRectangle"
         android:layout_width="match_parent"
-        android:layout_height="503dp"
+        android:layout_height="488dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginTop="10dp"
         android:adjustViewBounds="true"
         app:srcCompat="@drawable/transp_rectangle" />
 
@@ -18,19 +20,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="25dp"
         android:layout_gravity="center|top|right">
 
         <ImageView
             android:id="@+id/ivXmlWater"
-            android:layout_width="250dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:src="@drawable/clip_source" />
 
 
         <ImageView
             android:id="@+id/ivEmptyWater"
-            android:layout_width="250dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:src="@drawable/scall" />
 
@@ -42,19 +44,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="100dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginRight="25dp"
         android:layout_gravity="top|center|right">
 
 
         <ImageView
             android:id="@+id/ivEmptySun"
-            android:layout_width="250dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:src="@drawable/empty_sb" />
 
         <ImageView
             android:id="@+id/ivXmlSun"
-            android:layout_width="250dp"
+            android:layout_width="240dp"
             android:layout_height="wrap_content"
             android:src="@drawable/clip_source2" />
 
