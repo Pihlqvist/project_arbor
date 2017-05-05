@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.util.Random;
 
@@ -53,8 +54,6 @@ public class CloudView {
 
         Log.d(TAG, "CloudView construct");
 
-        animCloud = (TranslateAnimation) AnimationUtils.loadAnimation(context, R.anim.move_right);
-
         animCloud1 = AnimationUtils.loadAnimation(context, R.anim.move_right_1);
         animCloud2 = AnimationUtils.loadAnimation(context, R.anim.move_right_2);
         animCloud3 = AnimationUtils.loadAnimation(context, R.anim.move_right_3);
@@ -80,11 +79,10 @@ public class CloudView {
 
 
 
-
     }
 
 
-    public ConstraintLayout addViews(ConstraintLayout layout) {
+    public RelativeLayout addViews(RelativeLayout layout) {
         for (ImageView imageView : clouds) {
             layout.addView(imageView);
             Log.d(TAG, "addView");

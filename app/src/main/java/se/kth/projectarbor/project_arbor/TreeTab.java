@@ -154,7 +154,7 @@ public class TreeTab extends Fragment {
         switch (testInt) {
             case 1:
                 CloudView cloudView = new CloudView(getContext());
-                //constraintLayout = cloudView.addViews(layout);
+                relativeLayout = cloudView.addViews(layout);
                 break;
             case 2:
                 SunView sunView = new SunView(getActivity());
@@ -163,6 +163,7 @@ public class TreeTab extends Fragment {
             case 3:
                 RainView rainView = new RainView(getActivity());
                 relativeLayout = (RelativeLayout) rainView.addViews(layout);
+                break;
             default:
                 relativeLayout = layout;
         }

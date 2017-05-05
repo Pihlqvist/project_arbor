@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,61 +21,61 @@ public class SunView {
     private Animation animSun;
     private Animation animRay;
 
-    private RelativeLayout.LayoutParams layoutParams;
+    private RelativeLayout.LayoutParams sunLayout;
+    private RelativeLayout.LayoutParams rayLayout;
 
 
 
     public SunView(Activity activity) {
 
-        // rayIV = new ImageView(activity);
-        sunIV = new ImageView(activity);
-
-        // rayIV.setImageResource(R.drawable.light_ray_360);
-        sunIV.setImageResource(R.drawable.sun);
-
-        layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
 
-        layoutParams.width = (int) (size.x * 0.9);
-        layoutParams.height = (int) (size.x * 0.9);
+        // Create and place Sun
+        sunIV = new ImageView(activity);
+        sunIV.setImageResource(R.drawable.sun);
 
-        layoutParams.leftMargin = -layoutParams.width/2;
-        layoutParams.topMargin = -layoutParams.height/2;
+        sunLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        // rayIV.setLayoutParams(layoutParams);
-        sunIV.setLayoutParams(layoutParams);
+        sunLayout.width = (int) (size.x * 0.8);
+        sunLayout.height = (int) (size.x * 0.8);
 
-        /*
-        Float scale = 0.9f;
-        sunIV.setScaleX(scale);
-        sunIV.setScaleY(scale);
+        sunLayout.leftMargin = -sunLayout.width/2;
+        sunLayout.topMargin = -sunLayout.height/2;
 
-        sunIV.setX(-295f);
-        sunIV.setY(-295f);
+        sunIV.setLayoutParams(sunLayout);
 
-        scale = 1.65f;
-        rayIV.setScaleY(scale);
-        rayIV.setScaleX(scale);
+        // Create and place Ray
+        rayIV = new ImageView(activity);
+        rayIV.setImageResource(R.drawable.light_ray_360);
 
-        rayIV.setX(75f);
-        rayIV.setY(20f);
+        rayLayout = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
 
+        rayLayout.width = (int) (size.x * 2);
+        rayLayout.height = (int) (size.x * 1.2);
+
+        rayLayout.topMargin = (int)(-rayLayout.height * (0.2));
+        rayLayout.leftMargin = (int)(-rayLayout.width * (0.065));
+
+        rayIV.setLayoutParams(rayLayout);
+
+        // Create and start animations
         animSun = AnimationUtils.loadAnimation(activity, R.anim.fade_in);
         animRay = AnimationUtils.loadAnimation(activity, R.anim.rays_beeming);
 
         sunIV.startAnimation(animSun);
         rayIV.startAnimation(animRay);
-        */
+
 
     }
 
 
+    // Add the views in this class to a specific layout
     public ViewGroup addViews(ViewGroup layout) {
-        // layout.addView(rayIV);
+        layout.addView(rayIV);
         layout.addView(sunIV);
 
         return layout;
