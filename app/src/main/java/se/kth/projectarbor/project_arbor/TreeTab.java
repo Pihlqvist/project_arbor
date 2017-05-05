@@ -30,6 +30,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class TreeTab extends Fragment {
 
     private final static String TAG = "ARBOR_TREE_TAB";
+    private static int testInt;
 
     // Declaring all views and buttons
     private ToggleButton walkBtn;
@@ -145,9 +146,28 @@ public class TreeTab extends Fragment {
 
         ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
         layout.addView(cloud);*/
-        CloudView cloudView = new CloudView(getContext());
 
-        view = cloudView.addViews((ConstraintLayout) view.findViewById(R.id.treefragmentlayout));
+        ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
+        ConstraintLayout constraintLayout;
+        testInt = 3;
+        switch (testInt) {
+            case 1:
+                CloudView cloudView = new CloudView(getContext());
+                constraintLayout = cloudView.addViews(layout);
+                break;
+            case 2:
+                SunView sunView = new SunView(getContext());
+                constraintLayout = sunView.addViews(layout);
+                break;
+            case 3:
+                RainView rainView = new RainView(getContext());
+                constraintLayout = rainView.addViews(layout);
+            default:
+                constraintLayout = layout;
+        }
+
+
+        view = constraintLayout;
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
@@ -175,7 +195,7 @@ public class TreeTab extends Fragment {
 
 
 
-        return this.view;
+        return view;
     }
 
 
@@ -190,7 +210,10 @@ public class TreeTab extends Fragment {
         waterView = (TextView) view.findViewById(R.id.tvWater);
     }
 
-
-
+    @Override
+    public boolean getUserVisibleHint() {
+        Log.d(TAG, "getUserVisibleHint()");
+        return super.getUserVisibleHint();
+    }
 }
 
