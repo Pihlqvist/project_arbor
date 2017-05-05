@@ -10,6 +10,7 @@
         android:layout_height="503dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:adjustViewBounds="true"
         app:srcCompat="@drawable/transp_rectangle" />
 
 
