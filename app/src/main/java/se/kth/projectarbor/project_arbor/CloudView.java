@@ -59,7 +59,6 @@ public class CloudView {
         animCloud2 = AnimationUtils.loadAnimation(context, R.anim.move_right_2);
         animCloud3 = AnimationUtils.loadAnimation(context, R.anim.move_right_3);
 
-
         layoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
 

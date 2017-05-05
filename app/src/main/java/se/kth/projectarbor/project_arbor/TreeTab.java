@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -147,27 +148,27 @@ public class TreeTab extends Fragment {
         ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
         layout.addView(cloud);*/
 
-        ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
-        ConstraintLayout constraintLayout;
-        testInt = 3;
+        RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
+        RelativeLayout relativeLayout = null;
+        testInt = 2;
         switch (testInt) {
             case 1:
                 CloudView cloudView = new CloudView(getContext());
-                constraintLayout = cloudView.addViews(layout);
+                //constraintLayout = cloudView.addViews(layout);
                 break;
             case 2:
-                SunView sunView = new SunView(getContext());
-                constraintLayout = sunView.addViews(layout);
+                SunView sunView = new SunView(getActivity());
+                relativeLayout = (RelativeLayout) sunView.addViews(layout);
                 break;
             case 3:
-                RainView rainView = new RainView(getContext());
-                constraintLayout = rainView.addViews(layout);
+                RainView rainView = new RainView(getActivity());
+                relativeLayout = (RelativeLayout) rainView.addViews(layout);
             default:
-                constraintLayout = layout;
+                relativeLayout = layout;
         }
 
 
-        view = constraintLayout;
+        view = relativeLayout;
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
