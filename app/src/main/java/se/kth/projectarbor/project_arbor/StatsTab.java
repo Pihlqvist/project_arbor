@@ -92,19 +92,20 @@ public class StatsTab extends Fragment {
             }
 
             // Msgs from MainService:tree data
-            Log.d("HEALTH","HEALTH");
+
             if (intent.getAction().equals(MainService.TREE_DATA)) {
+                Log.d("HEALTH","HEALTH");
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");
                 }
-                else {
+                else
                     health.setText("" + extras.getInt("HP") + "hp");
                     phase.setText(extras.getString("PHASE"));
 
                 // TODO: Implement AGE when functionality is ready
                     waterAnim.setLevel(extras.getInt("WATERLEVEL"));
                     sunAnim.setLevel(extras.getInt("SUNLEVEL"));
-                }
+
 
 
 //                    sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
@@ -118,16 +119,18 @@ public class StatsTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         this.view = inflater.inflate(R.layout.fragment_stats_tab, container, false);
+
         Log.d("ARBOR_TREE_TAB", "onCreateView in tree tab");
 
         setupValues();
 
         // Setup a filter for views
-        IntentFilter filter = new IntentFilter();
+       /* IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
-        getActivity().registerReceiver(this.new Receiver(), filter);
+        getActivity().registerReceiver(this.new Receiver(), filter);*/
 
         // TEST to set levels manually
 
@@ -138,6 +141,16 @@ public class StatsTab extends Fragment {
         phase.setText("SEED");
         age.setText("Age");
         dist.setText("");*/
+
+       /* Intent intent = getActivity().getIntent();
+        Bundle extras = intent.getExtras();*/
+
+       /* if (extras != null) {
+            health.setText("" + extras.getInt("HP") + "hp");
+            steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
+            phase.setText(extras.getString("PHASE"));
+           // dist.setText( extras.getInt("DISTANCE"));
+        }*/
 
 
         return view;
