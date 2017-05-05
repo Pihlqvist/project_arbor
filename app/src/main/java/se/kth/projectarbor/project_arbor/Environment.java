@@ -74,11 +74,11 @@ public class Environment implements android.location.LocationListener {
             Log.d("ARBOR_ENV", "dint get permission");
         }
 
-        /* Log.d("ARBOR_ENV", "before parser");
+        Log.d("ARBOR_ENV", "before parser");
         this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
         Log.d("ARBOR_ENV", "after parser, before forecast");
 
-        // TODO: ask for permission from the user to use internet
+        /* // TODO: ask for permission from the user to use internet
         if (forecasts.length < 1) {
             this.forecasts = parser.getForecast(Calendar.getInstance());
         } else {

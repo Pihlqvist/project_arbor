@@ -39,7 +39,7 @@ public class TreeTab extends Fragment {
     private View view;
 
     private SharedPreferences sharedPreferences;
-
+    private BroadcastReceiver receiver;
 
     private class Receiver extends BroadcastReceiver {
 
@@ -82,13 +82,6 @@ public class TreeTab extends Fragment {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
         setupValues();
-
-        // Setup a filter for views
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Pedometer.DISTANCE_BROADCAST);
-        filter.addAction(MainService.TREE_DATA);
-        filter.addAction(MainService.WEATHER_DATA);
-        getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
                 , MODE_PRIVATE);
@@ -135,6 +128,24 @@ public class TreeTab extends Fragment {
         return this.view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // Setup a filter for views
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Pedometer.DISTANCE_BROADCAST);
+        filter.addAction(MainService.TREE_DATA);
+        filter.addAction(MainService.WEATHER_DATA);
+        getActivity().registerReceiver(receiver = this.new Receiver(), filter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        getActivity().unregisterReceiver(receiver);
+    }
 
     // Setup all the views
     private void setupValues() {

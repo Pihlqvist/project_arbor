@@ -56,20 +56,19 @@ class SMHIParser /*implements Serializable */{
                 "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
 
         // TODO: waiting for other thread to be done, fixme later
-        new GetUrl().execute(url);
-        while (forcasts == null) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        // new GetUrl().execute(url);
+
+        try {
+            JSONtostring(url);
+        } catch (Exception e) {
+            Log.e("ARBOR", e.toString());
         }
+
         return forcasts;
     }
 
-
-
-    private class GetUrl extends AsyncTask<String, Void, String> /*implements Serializable */{
+    /*
+    private class GetUrl extends AsyncTask<String, Void, String> {
        // private static final long serialVersionUID = 4326855909443156638L;
 
         @Override
@@ -82,7 +81,7 @@ class SMHIParser /*implements Serializable */{
             return "";
         }
 
-    }
+    }*/
 
 
     // Returns a list of Forecast objects, this method will make a connection with SMHI

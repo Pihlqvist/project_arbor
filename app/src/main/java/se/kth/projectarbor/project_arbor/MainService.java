@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -72,15 +73,15 @@ public class MainService extends Service {
         Log.d(TAG, "Service onCreate()");
 
         // Load essential information from IO
-        List<Object> list = DataManager.readState(this, filename);
+        List<Object> list = DataManager.readState(this.getApplicationContext(), filename);
         loadState(list);
 
         // TODO: Define the order of (de)serializing objects
         // Instantiate objects that MainService will work with, information from previous
         // runtime are given by loadState() above
         environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
-        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance
-                , tree.getTreePhase().getPhaseNumber());
+        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance,
+                tree.getTreePhase().getPhaseNumber());
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
 
         lastWeather = Environment.Weather.NOT_AVAILABLE;
@@ -97,8 +98,7 @@ public class MainService extends Service {
             Log.d(TAG, "MSG: " + msg);
         }
 
-        final PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-
+        PendingIntent pendingIntent;
 
         // Depending on the msg a different action is taken
         switch (msg) {
@@ -107,7 +107,7 @@ public class MainService extends Service {
             case MSG_START:
                 pedometer.resetAndRegister();
                 // TODO: Do we need to read here ?
-                List<Object> list = DataManager.readState(this, filename);
+                List<Object> list = DataManager.readState(this.getApplicationContext(), filename);
                 loadState(list);
                 startForeground();
                 break;
@@ -124,8 +124,11 @@ public class MainService extends Service {
             case MSG_UPDATE_NEED:
                 tree.update();
                 sendToView();
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
+
+                pendingIntent = PendingIntent.getService(this.getApplicationContext(), 0, intent, 0);
+
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() + (ALARM_HOUR * 1000), pendingIntent);
 
                 saveGame();
 
@@ -150,12 +153,14 @@ public class MainService extends Service {
             case MSG_TREE_GAME:
                 startGame();
 
-                Intent weatherIntent = new Intent(MainService.this, MainService.class)
+                Intent weatherIntent = new Intent(MainService.this.getApplicationContext(), MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
-                //intent.removeExtra("MESSAGE_TYPE");
-                //intent.putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
-                PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this, 0, weatherIntent, 0);
+                PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this.getApplicationContext(), 1, weatherIntent, 0);
+
                 sendWeatherToView(weatherPendingIntent);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() + (2000), weatherPendingIntent);
+                Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME");
 
                 break;
 
@@ -169,6 +174,9 @@ public class MainService extends Service {
             // Update the weather and temperature fields
             case MSG_UPDATE_WEATHER_VIEW:
                 Log.d("ARBOR_WEATHER", "Retrieved MSG_UPDATE_WEATHER_VIEW");
+
+                pendingIntent = PendingIntent.getService(this.getApplicationContext(), 1, intent, 0);
+
                 sendWeatherToView(pendingIntent);
                 break;
         }
@@ -184,7 +192,7 @@ public class MainService extends Service {
 
     // Foreground is created here
     private void startForeground() {
-        Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        Intent resumeIntent = new Intent(this.getApplicationContext(), MainUIActivity.class);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);
@@ -217,7 +225,7 @@ public class MainService extends Service {
 
     // Start MainActivity and give it the information it needs via an intent
     private void startGame() {
-        Intent intentToActivity = new Intent(this, MainUIActivity.class);
+        Intent intentToActivity = new Intent(this.getApplicationContext(), MainUIActivity.class);
         intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         intentToActivity.putExtra("SUN", tree.getSunLevel());
@@ -231,7 +239,7 @@ public class MainService extends Service {
 
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {
-        DataManager.saveState(this, filename, tree,
+        DataManager.saveState(this.getApplicationContext(), filename, tree,
                 environment.getForecasts(), pedometer.getTotalDistance());
     }
 
@@ -246,7 +254,7 @@ public class MainService extends Service {
             intent.putExtra("WEATHER", lastWeather.toString());
             intent.putExtra("TEMP", lastTemperature);
             intent.setAction(WEATHER_DATA);
-            getApplicationContext().sendBroadcast(intent);
+            MainService.this.getApplicationContext().sendBroadcast(intent);
 
             return params[0];
         }
@@ -254,9 +262,10 @@ public class MainService extends Service {
 
         @Override
         protected void onPostExecute(PendingIntent pendingIntent) {
-            alarmManager.set(AlarmManager.RTC_WAKEUP,
-                    System.currentTimeMillis() + (1000), pendingIntent); // TODO: ALARM_HOUR/4 *
-            Log.d("ARBOR_WEATHER", "Exiting this thread");
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + (2000), pendingIntent); // TODO: ALARM_HOUR/4 *
+
+            Log.d("ARBOR_WEATHER", "Exiting onPostExecute()");
         }
     }
 
