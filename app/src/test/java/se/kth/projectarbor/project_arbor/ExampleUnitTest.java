@@ -3,6 +3,7 @@ package se.kth.projectarbor.project_arbor;
 import org.junit.Test;
 
 import java.io.Serializable;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -13,6 +14,24 @@ import static org.junit.Assert.*;
  */
 
 public class ExampleUnitTest {
+
+    @Test
+    public void randtest() {
+        for (int i=0; i<10; i++)
+            System.out.println(getRandInt(3, 7));
+    }
+
+    private float getRandFloat(float min, float max) {
+        Random random = new Random();
+        return random.nextFloat() * (max - min) + min;
+    }
+
+
+    private int getRandInt(int min, int max) {
+        Random random = new Random();
+        return random.nextInt((max - min) + 1) + min;
+    }
+
     @Test
     public void testNeedsDecr_HealthDecr() {
         Tree tree = new Tree();
