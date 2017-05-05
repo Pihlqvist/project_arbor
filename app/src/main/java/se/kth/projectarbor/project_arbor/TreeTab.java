@@ -149,8 +149,10 @@ public class TreeTab extends Fragment {
         layout.addView(cloud);*/
 
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
+
+
         RelativeLayout relativeLayout = null;
-        testInt = 2;
+        testInt = 3;
         switch (testInt) {
             case 1:
                 CloudView cloudView = new CloudView(getContext());
