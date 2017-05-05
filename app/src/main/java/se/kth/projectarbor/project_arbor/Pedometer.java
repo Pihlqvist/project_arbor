@@ -57,7 +57,7 @@ class Pedometer {
     private int updateOn = 10;
 
     public Pedometer(Context context, double height, Gender gender) {
-        this(context, height, gender, 0, 1);
+        this(context, height, gender, 0, 0, 1);
     }
 
     public Pedometer(Context context, double height, Gender gender, double totalDistance, int totalStepCount, int phaseNumber) {
@@ -80,8 +80,6 @@ class Pedometer {
         stepCounter = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
         listener = new PedometerEventListener();
         // sensorManager.registerListener(listener, stepCounter, SensorManager.SENSOR_DELAY_FASTEST);
-
-
     }
 
     public void register() {
@@ -138,11 +136,10 @@ class Pedometer {
         public void onSensorChanged(SensorEvent event) {
 
             if (event.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
-                int value = (int) event.values[0];
+                int value = Math.round(event.values[0]);
                 if (referenceStepCount < 0) {
                     referenceStepCount = value;
                 }
-
                 currentStepCount = value - referenceStepCount;
                 distance += coefficient * currentStepCount;
                 totalStepCount += currentStepCount;
@@ -159,16 +156,16 @@ class Pedometer {
                     storeBroadcast.putExtra("MONEY", phaseNumber);
                     context.getApplicationContext().sendBroadcast(storeBroadcast);
                 }
-
                 stepCount += currentStepCount;
                 referenceStepCount = value;
+                updateOn += currentStepCount;
 
-
-                if (++updateOn >= 10) {
+                if (updateOn >= 10) {
                     broadcast.putExtra("DISTANCE", distance);
                     broadcast.putExtra("STEPCOUNT", stepCount);
                     context.getApplicationContext().sendBroadcast(broadcast);
-                    updateOn = 0;
+                    //TODO: Make it better ie. istead of subtraction
+                    updateOn = updateOn - 10;
                 }
             }
         }

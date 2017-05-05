@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
 import android.util.Log;
@@ -37,7 +38,18 @@ public class TreeTab extends Fragment {
     private TextView stepView;
     private TextView sunView;
     private TextView waterView;
+    private TextView totalDistanceView;
     private View view;
+
+    private String mWeather;
+    private double mTemp;
+    private int mHP;
+    private double mDistance;
+    private String mPhase;
+    private int mStep;
+    private int mSun;
+    private int mWater;
+    private double mTotalDistance;
 
     private SharedPreferences sharedPreferences;
 
@@ -51,21 +63,20 @@ public class TreeTab extends Fragment {
             Log.d(TAG, "onReceive()");
 
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
-                stepView.setText("StepCount" + extras.getInt("STEPCOUNT"));
+                mDistance = extras.getDouble("DISTANCE");
+                mStep = extras.getInt("STEPCOUNT");
             }
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                tempView.setText("Temp: " + extras.getDouble("TEMP"));
-                weatherView.setText("Weather: " + extras.getString("WEATHER"));
-                if (extras.getInt("HP") < 1)
-                    hpView.setText("HP: DEAD");
-                else
-                    hpView.setText("HP: " + extras.getInt("HP"));
-                treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
-                sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
-                waterView.setText("Water Buffer: " + extras.getInt("WATER"));
+                mTemp = extras.getDouble("TEMP");
+                mWeather = extras.getString("WEATHER");
+                mHP = extras.getInt("HP");
+                mPhase = extras.getString("PHASE");
+                mSun = extras.getInt("SUN");
+                mWater = extras.getInt("WATER");
+                mTotalDistance = extras.getDouble("TOTALKM");
             }
+            statsDisplay();
         }
     }
 
@@ -73,11 +84,11 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        Log.d(TAG, "onCreateView in tree tab");
+        Log.d("TAG", "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
-        setupValues();
+        setupValues(); //Sets instances
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
@@ -88,24 +99,8 @@ public class TreeTab extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
                 , MODE_PRIVATE);
 
-
-        Intent intent = getActivity().getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            hpView.setText("HP: " + extras.getInt("HP"));
-            treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
-            sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
-            waterView.setText("Water Buffer: " + extras.getInt("WATER"));
-            tempView.setText("Temp: " + extras.getDouble("TEMP"));
-            weatherView.setText("Weather: " + extras.getString("WEATHER"));
-        }
-
-
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
-        if (sharedPreferences.contains("TOGGLE")) {
-            walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
-        }
         walkBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -129,7 +124,39 @@ public class TreeTab extends Fragment {
 
         return this.view;
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent intent = getActivity().getIntent();
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            mHP = extras.getInt("HP");
+            mPhase = extras.getString("PHASE");
+            mSun = extras.getInt("SUN");
+            mWater = extras.getInt("WATER");
+            mTemp = extras.getDouble("TEMP");
+            mWeather = extras.getString("WEATHER");
+            mTotalDistance = extras.getDouble("TOTALKM");
+            statsDisplay();
+        }
+        mStep = -1;
+        mDistance = -1;
+        Log.d("TAG", "RESUME");
+        if (sharedPreferences.contains("TOGGLE")) {
+            walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
+            if(sharedPreferences.getBoolean("TOGGLE", false)) {
+                Intent intent2 = new Intent(getActivity(), MainService.class);
+                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
+                getActivity().startService(intent2);
+            }else{
+                Intent intent3 = new Intent(getActivity(), MainService.class);
+                intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
+                getActivity().startService(intent3);
+            }
+        }
+        statsDisplay();
 
+    }
 
     // Setup all the views
     private void setupValues() {
@@ -140,6 +167,31 @@ public class TreeTab extends Fragment {
         distanceView = (TextView) view.findViewById(R.id.tvDistance);
         sunView = (TextView) view.findViewById(R.id.tvSun);
         waterView = (TextView) view.findViewById(R.id.tvWater);
+        stepView = (TextView) view.findViewById(R.id.tvStepCount);
+        totalDistanceView = (TextView) view.findViewById(R.id.tvTotalDistance);
     }
-
+    private void conCurrencySimultator(){
+    }
+    private void statsDisplay(){
+        if(!(mDistance == -1)) {
+            distanceView.setText("Distance: " + mDistance);
+        }else{
+            distanceView.setText("WTU"); //WTU walk to update
+        }
+        if(!(mStep == -1)) {
+            stepView.setText("StepCount " + mStep);
+        }else{
+            stepView.setText("WTU"); //WTU walk to update
+        }
+        tempView.setText("Temp: " + mTemp);
+        weatherView.setText("Weather: " + mWeather);
+        if (mHP < 1)
+            hpView.setText("HP < 1");
+        else
+            hpView.setText("HP: " + mHP);
+        treeView.setText("Tree, Phase: " + mPhase);
+        sunView.setText("Sun Buffer: " + mSun);
+        waterView.setText("Water Buffer: " + mWater);
+        totalDistanceView.setText("Total Distance: " + (mTotalDistance + mDistance));
+    }
 }

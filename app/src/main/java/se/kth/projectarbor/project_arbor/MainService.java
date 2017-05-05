@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -28,6 +29,8 @@ public class MainService extends Service {
     private final static String TAG = "ARBOR_SERVICE";
     final static String filename = "user42.dat";
 
+
+
     // Times in seconds that the alarm will take to repeat the service
     public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
@@ -35,6 +38,8 @@ public class MainService extends Service {
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
     public final static int MSG_STOP = 2;
+    public final static int MSG_RESUME_HEAVY = 9;
+    public final static int MSG_RESUME_LIGHT = 10;
     public final static int MSG_UPDATE_NEED = 3;
 
     public final static int MSG_KM_DONE = 5;
@@ -46,9 +51,9 @@ public class MainService extends Service {
 
     // MainService works with following components
     private Pedometer pedometer;
+    private AlarmManager alarmManager;
     private Tree tree;
     private Environment environment;
-    private AlarmManager alarmManager;
     private double totalDistance;
     private int totalStepCount;
     // end
@@ -90,9 +95,8 @@ public class MainService extends Service {
             Log.d(TAG, "MSG: " + msg);
         }
 
+        //USED TO NOTIFY
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-
-
         // Depending on the msg a different action is taken
         switch (msg) {
 
@@ -100,8 +104,8 @@ public class MainService extends Service {
             case MSG_START:
                 pedometer.resetAndRegister();
                 // TODO: Do we need to read here ?
-                List<Object> list = DataManager.readState(this, filename);
-                loadState(list);
+               // List<Object> list = DataManager.readState(this, filename);
+               // loadState(list);
                 startForeground();
                 break;
 
@@ -111,6 +115,18 @@ public class MainService extends Service {
                 stopForeground(true);
                 saveGame();
 
+                break;
+            // Does activity related resume HEAVY indicates that we need to setup pedometer
+
+            case MSG_RESUME_HEAVY:
+                pedometer.register();
+                sendToView();
+                startForeground();
+                break;
+            // Does activity related resume
+
+            case MSG_RESUME_LIGHT:
+                sendToView();
                 break;
 
             // Updates the tree, every hour. Will lower the trees needs and set a timer to do it again
@@ -160,7 +176,7 @@ public class MainService extends Service {
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
         totalDistance = (Double) objects.get(2);
-        totalStepCount =(int) objects.get(3);
+        totalStepCount = (int) objects.get(3);
     }
 
     // Foreground is created here
@@ -176,27 +192,10 @@ public class MainService extends Service {
                 .setContentTitle("Arbor")
                 .setContentText(getText(R.string.content_text))
                 .setContentIntent(resumePending);
-
         startForeground(MAIN_FOREGROUND, notification.build());
     }
 
 
-    // TODO: Fix this with bundle
-    // Update the views in the MainActivity via a broadcast
-    private void sendToView() {
-        Log.d(TAG, "sendToView()");
-        Intent intent = new Intent();
-
-        intent.putExtra("WEATHER", environment.getWeather().toString());
-        intent.putExtra("TEMP", environment.getTemp());
-        intent.putExtra("SUN", tree.getSunLevel());
-        intent.putExtra("WATER", tree.getWaterLevel());
-        intent.putExtra("HP", tree.getHealth());
-        intent.putExtra("PHASE", tree.getTreePhase().toString());
-
-        intent.setAction(TREE_DATA);
-        getApplicationContext().sendBroadcast(intent);
-    }
 
     // Start MainActivity and give it the information it needs via an intent
     private void startGame() {
@@ -209,6 +208,7 @@ public class MainService extends Service {
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
+        intentToActivity.putExtra("TOTALKM", totalDistance);
 
         startActivity(intentToActivity);
     }
@@ -218,6 +218,42 @@ public class MainService extends Service {
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
                 environment.getForecasts(), pedometer.getTotalDistance(), totalStepCount+pedometer.getStepCount());
+    }
+    //TODO: Make a pretty way of capturing expressions
+    @Override
+    public void onDestroy(){
+        saveGame();
+    }
+    private boolean isAppOnForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null) {
+            return false;
+        }
+        final String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    // TODO: Fix this with bundle
+    // Update the views in the MainActivity via a broadcast
+    public void sendToView() {
+        Log.d(TAG, "sendToView()");
+        Intent intent = new Intent();
+
+        intent.putExtra("WEATHER", environment.getWeather().toString());
+        intent.putExtra("TEMP", environment.getTemp());
+        intent.putExtra("SUN", tree.getSunLevel());
+        intent.putExtra("WATER", tree.getWaterLevel());
+        intent.putExtra("HP", tree.getHealth());
+        intent.putExtra("PHASE", tree.getTreePhase().toString());
+        intent.putExtra("TOTALKM", totalDistance);
+
+        intent.setAction(TREE_DATA);
+        getApplicationContext().sendBroadcast(intent);
     }
 }
 
