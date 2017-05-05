@@ -39,7 +39,7 @@ public class Environment implements android.location.LocationListener {
 
     // Interpet SMHI symbol data
     public enum Weather {
-        SUN, RAIN, CLOUDY, NOT_AVAILABLE
+        SUN, RAIN, CLOUDY, PARTLY_CLOUDY, NOT_AVAILABLE
     }
 
     public Environment(Context context) {

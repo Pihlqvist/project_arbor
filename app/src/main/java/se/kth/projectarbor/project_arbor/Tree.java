@@ -272,6 +272,7 @@ public class Tree implements Serializable {
         // Add fixed amount of resources depending on weather and phase.
         switch(weather) {
             case SUN:
+            case PARTLY_CLOUDY:
                 addSunIntake();
                 if (getSunLevel() > getSunBufferMax())
                     sunBuffer.setValue(getSunBufferMax());

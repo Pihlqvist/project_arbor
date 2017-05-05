@@ -164,13 +164,13 @@ class SMHIParser /*implements Serializable */{
 
     // Decode an int between 1-15 to a specific ENUM
     private Environment.Weather decodeWeather(int code) {
-        if(code == 1 || code == 2 || code == 3 || code == 4){
+        if(code == 1 || code == 2){
             return Environment.Weather.SUN;
-        }
-        else if(code == 5 || code == 6 || code == 7){
+        } else if (code == 3 || code == 4) {
+            return Environment.Weather.PARTLY_CLOUDY;
+        } else if(code == 5 || code == 6 || code == 7){
             return Environment.Weather.CLOUDY;
-        }
-        else {
+        } else {
             return Environment.Weather.RAIN;
         }
     }
