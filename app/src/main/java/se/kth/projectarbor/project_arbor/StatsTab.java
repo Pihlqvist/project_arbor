@@ -74,7 +74,7 @@ public class StatsTab extends Fragment {
     ImageView imgWater;
     ImageView imgSun;
 
-    private class Receiver extends BroadcastReceiver {
+    private class ReceiverStats extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -84,7 +84,7 @@ public class StatsTab extends Fragment {
 
             // Msgs from Pedometer: steps and distance
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-               dist.setText( extras.getInt("DISTANCE"));
+               dist.setText( ""+ extras.getInt("DISTANCE"));
             }
             // TODO: Check that receiver message is correct new version of Pedometer is ready
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
@@ -103,8 +103,8 @@ public class StatsTab extends Fragment {
                     phase.setText(extras.getString("PHASE"));
 
                 // TODO: Implement AGE when functionality is ready
-                    waterAnim.setLevel(extras.getInt("WATERLEVEL"));
-                    sunAnim.setLevel(extras.getInt("SUNLEVEL"));
+                    waterAnim.setLevel(extras.getInt("WATER") * 10);
+                    sunAnim.setLevel(extras.getInt("SUN") * 10);
 
 
 
@@ -127,30 +127,32 @@ public class StatsTab extends Fragment {
         setupValues();
 
         // Setup a filter for views
-       /* IntentFilter filter = new IntentFilter();
+        IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
-        getActivity().registerReceiver(this.new Receiver(), filter);*/
+        getActivity().registerReceiver(this.new ReceiverStats(), filter);
 
         // TEST to set levels manually
 
-        /*  waterAnim.setLevel(5000);
-        sunAnim.setLevel(7500);
-        health.setText("HP: LIVING");
-        steps.setText("Many steps");
-        phase.setText("SEED");
-        age.setText("Age");
-        dist.setText("");*/
+//          waterAnim.setLevel(5000);
+//        sunAnim.setLevel(7500);
+//        health.setText("HP: LIVING");
+//        steps.setText("Many steps");
+//        phase.setText("SEED");
+//        age.setText("Age");
+//        dist.setText("");
 
-       /* Intent intent = getActivity().getIntent();
-        Bundle extras = intent.getExtras();*/
+        Intent intent = getActivity().getIntent();
+        Bundle extras = intent.getExtras();
 
-       /* if (extras != null) {
+        if (extras != null) {
             health.setText("" + extras.getInt("HP") + "hp");
             steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
             phase.setText(extras.getString("PHASE"));
+            waterAnim.setLevel(extras.getInt("WATER") * 10);
+            sunAnim.setLevel(extras.getInt("SUN") * 10);
            // dist.setText( extras.getInt("DISTANCE"));
-        }*/
+        }
 
 
         return view;
