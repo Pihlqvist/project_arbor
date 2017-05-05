@@ -3,6 +3,7 @@ package se.kth.projectarbor.project_arbor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
@@ -79,11 +80,11 @@ public class StatsTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
 
-            Log.d("ARBOR_TREETAB", "onReceive()");
+            Log.d("ARBOR_STATAB", "onReceive()");
 
             // Msgs from Pedometer: steps and distance
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-            //    dist.setText("Distance: " + extras.getDouble("DISTANCE"));
+               dist.setText( extras.getInt("DISTANCE"));
             }
             // TODO: Check that receiver message is correct new version of Pedometer is ready
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
@@ -91,6 +92,7 @@ public class StatsTab extends Fragment {
             }
 
             // Msgs from MainService:tree data
+            Log.d("HEALTH","HEALTH");
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");
@@ -121,14 +123,21 @@ public class StatsTab extends Fragment {
 
         setupValues();
 
+        // Setup a filter for views
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(Pedometer.DISTANCE_BROADCAST);
+        filter.addAction(MainService.TREE_DATA);
+        getActivity().registerReceiver(this.new Receiver(), filter);
+
         // TEST to set levels manually
-        waterAnim.setLevel(5000);
+
+        /*  waterAnim.setLevel(5000);
         sunAnim.setLevel(7500);
         health.setText("HP: LIVING");
         steps.setText("Many steps");
         phase.setText("SEED");
         age.setText("Age");
-        // dist.setText("Walking distance");
+        dist.setText("");*/
 
 
         return view;
@@ -187,7 +196,7 @@ public class StatsTab extends Fragment {
         age = (TextView) view.findViewById(R.id.tvAge);
         phase = (TextView) view.findViewById(R.id.tvPhase);
         steps = (TextView) view.findViewById(R.id.tvSteps);
-        // dist = (TextView) view.findViewById(R.id.tvDist);
+         dist = (TextView) view.findViewById(R.id.tvDistance);
 
         imgWater = (ImageView) view.findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
