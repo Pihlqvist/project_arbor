@@ -192,6 +192,6 @@ public class TreeTab extends Fragment {
         treeView.setText("Tree, Phase: " + mPhase);
         sunView.setText("Sun Buffer: " + mSun);
         waterView.setText("Water Buffer: " + mWater);
-        totalDistanceView.setText("Total Distance: " + (mTotalDistance + mDistance));
+        totalDistanceView.setText("Total Distance: " + mTotalDistance);
     }
 }
