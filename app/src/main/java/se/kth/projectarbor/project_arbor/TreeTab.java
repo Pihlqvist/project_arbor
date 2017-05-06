@@ -90,11 +90,6 @@ public class TreeTab extends Fragment {
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
-
-
-
-
-
         setupValues();
 
         // Setup a filter for views
@@ -115,63 +110,33 @@ public class TreeTab extends Fragment {
             sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
             waterView.setText("Water Buffer: " + extras.getInt("WATER"));
             tempView.setText("Temp: " + extras.getDouble("TEMP"));
-            weatherView.setText("Weather: " + extras.getString("WEATHER"));
+            weatherView.setText("Weather: " + extras.get("WEATHER").toString());
             weather = (Environment.Weather) extras.get("WEATHER");
         }
-/*
-        switch (weather) {
-            case SUN:
-                vgSun = new SunViewGroup();
-                break;
-            case RAIN:
-                vgRain = new RainViewGroup();
-                break;
-            case CLOUDY:
-                vgClouds = new CloudViewGroup();
-                break;
-        }*/
-
-/*        ImageView cloud = new ImageView(getContext());
-        cloud.setImageResource(R.drawable.cloud_redspot);
-        cloud.setScaleType(ImageView.ScaleType.FIT_XY);
-        cloud.setScaleX((float) 0.5);
-        cloud.setScaleY((float) 0.5);
 
 
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        cloud.setLayoutParams(layoutParams);
-
-
-
-
-        ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
-        layout.addView(cloud);*/
-
+        // changeing weahter view depending on "testInt"
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
-
-
-        RelativeLayout relativeLayout = null;
-        testInt = 3;
+        testInt = 1;
         switch (testInt) {
             case 1:
                 CloudView cloudView = new CloudView(getContext());
-                relativeLayout = cloudView.addViews(layout);
+                layout = cloudView.addViews(layout);
                 break;
             case 2:
                 SunView sunView = new SunView(getActivity());
-                relativeLayout = (RelativeLayout) sunView.addViews(layout);
+                layout = (RelativeLayout) sunView.addViews(layout);
                 break;
             case 3:
                 RainView rainView = new RainView(getActivity());
-                relativeLayout = (RelativeLayout) rainView.addViews(layout);
+                layout = (RelativeLayout) rainView.addViews(layout);
                 break;
             default:
-                relativeLayout = layout;
+                Log.d(TAG, "no case in weather switch");
         }
 
 
-        view = relativeLayout;
+        view = layout;
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
