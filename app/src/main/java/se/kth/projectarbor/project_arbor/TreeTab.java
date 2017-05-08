@@ -56,7 +56,6 @@ public class TreeTab extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-            DecimalFormat twoDForm = new DecimalFormat("#.00");
             Log.d(TAG, "onReceive()");
             if (intent.getAction().equals("WEATHER_DATA")) {
                 // Build new weatherLayout depending on weather
@@ -72,16 +71,15 @@ public class TreeTab extends Fragment {
                 mStep = extras.getInt("STEPCOUNT");
             }
 
-          //  statsDisplay();
+            statsDisplay();
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
-      //  distanceView = (TextView) view.findViewById(R.id.tvDistance);
-      //  stepView = (TextView) view.findViewById(R.id.tvStepCount);
+        //distanceView = (TextView) view.findViewById(R.id.tvDistance);
+        //stepView = (TextView) view.findViewById(R.id.tvStepCount);
         Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
@@ -182,8 +180,6 @@ public class TreeTab extends Fragment {
         @Override
         public void onResume() {
             super.onResume();
-            Intent intent = getActivity().getIntent();
-            Bundle extras = intent.getExtras();
 
             mStep = -1;
             mDistance = -1;
@@ -200,7 +196,7 @@ public class TreeTab extends Fragment {
                     getActivity().startService(intent3);
                 }
             }
-        //    statsDisplay();
+        //   statsDisplay();
 
         }
     private void setWeahterLayout() {
