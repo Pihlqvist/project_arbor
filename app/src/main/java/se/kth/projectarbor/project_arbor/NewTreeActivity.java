@@ -23,7 +23,7 @@ import android.view.View;
 *
  */
 
-public class NewTreeActivity extends AppCompatActivity {
+public class NewTreeActivity extends AppCompatActivity  {
 
     private final static String TAG = "ARBOR_NEW_TREE";
     private Button newTreeBtn;
@@ -67,5 +67,4 @@ public class NewTreeActivity extends AppCompatActivity {
             }
         });
     }
-
 }

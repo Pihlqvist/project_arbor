@@ -1,7 +1,179 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/ivTransRectangle"
+        android:layout_width="match_parent"
+        android:layout_height="488dp"
+        android:layout_marginTop="10dp"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/transp_rectangle" />
 
-</RelativeLayout>
+
+    <FrameLayout
+
+        android:id="@+id/Frame1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="25dp"
+        android:layout_gravity="center|top|right">
+
+        <ImageView
+            android:id="@+id/ivEmptyWater"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="0dp"
+            android:paddingEnd="0dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:src="@drawable/wbempty" />
+
+        <ImageView
+            android:id="@+id/ivXmlWater"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:padding="0dp"
+            android:paddingBottom="0dp"
+            android:paddingEnd="0dp"
+            android:paddingLeft="0dp"
+            android:paddingRight="0dp"
+            android:paddingStart="0dp"
+            android:paddingTop="0dp"
+            android:src="@drawable/clip_source" />
+
+
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/Frame2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginRight="25dp"
+        android:layout_gravity="top|center|right">
+
+
+        <ImageView
+            android:id="@+id/ivEmptySun"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/sbempty" />
+
+        <ImageView
+            android:id="@+id/ivXmlSun"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:src="@drawable/clip_source2" />
+
+
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/ivWaterIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="40dp"
+        app:srcCompat="@drawable/water_icon" />
+
+    <ImageView
+        android:id="@+id/ivSunIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="30dp"
+        app:srcCompat="@drawable/sun_icon" />
+
+    <ImageView
+        android:id="@+id/ivHealthIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="175dp"
+        android:layout_marginLeft="35dp"
+        app:srcCompat="@drawable/health_icon" />
+
+    <ImageView
+        android:id="@+id/ivAgeIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="245dp"
+        android:layout_marginLeft="35dp"
+        app:srcCompat="@drawable/age_icon" />
+
+    <ImageView
+        android:id="@+id/ivStepsIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="315dp"
+        app:srcCompat="@drawable/stpes_icon" />
+
+    <ImageView
+        android:id="@+id/ivPhaseIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="385dp"
+        app:srcCompat="@drawable/phase_icon" />
+
+    <ImageView
+        android:id="@+id/ivDistanceIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginTop="445dp"
+        app:srcCompat="@drawable/total_distance_icon" />
+
+    <TextView
+        android:id="@+id/tvHealth"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="175dp"
+        android:text="TextView"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tvAge"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="245dp"
+        android:text="TextView"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tvSteps"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="315dp"
+        android:text="TextView"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tvPhase"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="385dp"
+        android:text="TextView"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="250dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="100dp"
+        android:layout_marginTop="450dp"
+        android:text=""
+        android:textSize="30sp" />
+
+
+</FrameLayout>

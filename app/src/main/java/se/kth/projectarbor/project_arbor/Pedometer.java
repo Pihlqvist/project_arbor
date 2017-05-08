@@ -166,6 +166,8 @@ class Pedometer {
                 //updateOn tries to capture every 10 step and do the broadcast when captured.
                 if (updateOn >= 10) {
                     broadcast.putExtra("DISTANCE", distance);
+                    broadcast.putExtra("TOTALDISTANCE", totalDistance); // StatsTab listens to this
+                    broadcast.putExtra("TOTALSTEPCOUNT", totalStepCount); // StatsTab listens to this
                     broadcast.putExtra("STEPCOUNT", stepCount);
                     context.getApplicationContext().sendBroadcast(broadcast);
                     //TODO: Make it better ie. istead of subtraction

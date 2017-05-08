@@ -18,6 +18,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.text.DecimalFormat;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -59,7 +61,7 @@ public class TreeTab extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-
+            DecimalFormat twoDForm = new DecimalFormat("#.00");
             Log.d(TAG, "onReceive()");
 
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
@@ -74,7 +76,7 @@ public class TreeTab extends Fragment {
                 mPhase = extras.getString("PHASE");
                 mSun = extras.getInt("SUN");
                 mWater = extras.getInt("WATER");
-                mTotalDistance = extras.getDouble("TOTALKM");
+                mTotalDistance = (double) (Math.round( extras.getDouble("TOTALKM")*100)/100);
             }
             statsDisplay();
         }
