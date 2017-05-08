@@ -84,7 +84,7 @@ public class StatsTab extends Fragment {
 
             // Msgs from Pedometer: steps and distance
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-               dist.setText( ""+ extras.getInt("DISTANCE"));
+               dist.setText( ""+ extras.getDouble("DISTANCE"));
             }
             // TODO: Check that receiver message is correct new version of Pedometer is ready
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
