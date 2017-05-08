@@ -39,8 +39,8 @@ public class ShopTab extends Fragment {
 
     // Add more items as needed
     public enum StoreItem {
-        WATER(10, 5),
-        SUN(12, 7);
+        WATER(300, 4),
+        SUN(200, 4);
 
         private int amount;
         private int cost;
