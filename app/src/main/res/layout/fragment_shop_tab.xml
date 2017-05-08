@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="se.kth.projectarbor.project_arbor.ShopTab"
-    android:background="@color/wallet_holo_blue_light" >
+    android:background="@color/wallet_holo_blue_light"
+    android:id="@+id/shop_top_layout">
 
     <View
         android:layout_width="match_parent"

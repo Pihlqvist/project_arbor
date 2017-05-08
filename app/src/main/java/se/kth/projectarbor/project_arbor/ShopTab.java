@@ -5,16 +5,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +42,9 @@ public class ShopTab extends Fragment {
 
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
+
+    private RelativeLayout.LayoutParams layoutParams;
+    private TextView textReceipt;
 
     // Add more items as needed
     public enum StoreItem {
@@ -86,8 +93,23 @@ public class ShopTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view;
-        view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
+        View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
+
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+
+        layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        layoutParams.topMargin = size.y;
+
+        textReceipt = new TextView(getActivity());
+        textReceipt.setTypeface(Typeface.SANS_SERIF);
+        textReceipt.setLayoutParams(layoutParams);
+        textReceipt.setText("Hello World");
+
+        ViewGroup layout = (ViewGroup) view.findViewById(R.id.shop_top_layout);
+        layout.addView(textReceipt);
 
         // Setup a filter for money
         IntentFilter filter = new IntentFilter();
