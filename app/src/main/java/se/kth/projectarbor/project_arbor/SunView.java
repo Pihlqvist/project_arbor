@@ -25,7 +25,6 @@ public class SunView {
     private RelativeLayout.LayoutParams rayLayout;
 
 
-
     public SunView(Activity activity) {
 
         Display display = activity.getWindowManager().getDefaultDisplay();
@@ -75,6 +74,11 @@ public class SunView {
 
     // Add the views in this class to a specific layout
     public ViewGroup addViews(ViewGroup layout) {
+        ViewGroup.LayoutParams layoutParams = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+
+        layout.setLayoutParams(layoutParams);
         layout.addView(rayIV);
         layout.addView(sunIV);
 
