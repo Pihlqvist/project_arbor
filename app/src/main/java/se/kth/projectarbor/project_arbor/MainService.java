@@ -186,7 +186,7 @@ public class MainService extends Service {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
 
-        intent.putExtra("WEATHER", environment.getWeather().toString());
+        intent.putExtra("WEATHER", environment.getWeather());
         intent.putExtra("TEMP", environment.getTemp());
         intent.putExtra("SUN", tree.getSunLevel());
         intent.putExtra("WATER", tree.getWaterLevel());
@@ -202,7 +202,7 @@ public class MainService extends Service {
         Intent intentToActivity = new Intent(this, MainUIActivity.class);
         intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
+        intentToActivity.putExtra("WEATHER", environment.getWeather());
         intentToActivity.putExtra("TEMP", environment.getTemp());
         intentToActivity.putExtra("SUN", tree.getSunLevel());
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
