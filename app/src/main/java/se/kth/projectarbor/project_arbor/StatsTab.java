@@ -77,11 +77,11 @@ public class StatsTab extends Fragment {
 
             // Msgs from Pedometer: steps and distance
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-               dist.setText( ""+ extras.getDouble("DISTANCE"));
+               dist.setText( ""+ (double) (Math.round(     extras.getDouble("TOTALDISTANCE")*100)/100)); //writes out the total distance with one decimal
             }
             // TODO: Check that receiver message is correct new version of Pedometer is ready
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
+                steps.setText("" + extras.getInt("TOTALSTEPCOUNT") + " steps");
             }
 
             // Msgs from MainService:tree data

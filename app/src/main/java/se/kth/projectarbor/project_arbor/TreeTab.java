@@ -74,7 +74,7 @@ public class TreeTab extends Fragment {
                 mPhase = extras.getString("PHASE");
                 mSun = extras.getInt("SUN");
                 mWater = extras.getInt("WATER");
-                mTotalDistance = extras.getDouble("TOTALKM");
+                mTotalDistance = (double) (Math.round(     extras.getDouble("TOTALKM")*100)/100);
             }
             statsDisplay();
         }
