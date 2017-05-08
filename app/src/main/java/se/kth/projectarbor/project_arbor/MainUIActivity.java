@@ -89,6 +89,10 @@ public class MainUIActivity extends AppCompatActivity {
         });
 
     }
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

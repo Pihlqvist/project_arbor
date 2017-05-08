@@ -50,7 +50,7 @@ public class NewTreeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DataManager.saveState(getApplicationContext(), MainService.filename,
-                        new Tree(), new Environment.Forecast[]{}, new Double(0));
+                        new Tree(), new Environment.Forecast[]{}, new Double(0), (int) 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).commit();
                 Log.d(TAG, "new save state");
 
