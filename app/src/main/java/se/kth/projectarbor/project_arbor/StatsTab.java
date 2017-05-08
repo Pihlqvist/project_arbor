@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import java.text.DecimalFormat;
+
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
@@ -72,22 +74,24 @@ public class StatsTab extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-
+            DecimalFormat twoDForm = new DecimalFormat("#.0");
             Log.d("ARBOR_STATAB", "onReceive()");
 
             // Msgs from Pedometer: steps and distance
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-               dist.setText( ""+ (double) (Math.round(     extras.getDouble("TOTALDISTANCE")*100)/100)); //writes out the total distance with one decimal
+               //dist.setText( ""+  (twoDForm.format(     extras.getDouble("TOTALDISTANCE")))); //writes out the total distance with one decimal
             }
             // TODO: Check that receiver message is correct new version of Pedometer is ready
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                steps.setText("" + extras.getInt("TOTALSTEPCOUNT") + " steps");
+                //steps.setText("" + extras.getInt("TOTALSTEPCOUNT") + " steps");
             }
 
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d("HEALTH","HEALTH");
+                dist.setText( ""+  Double.parseDouble(twoDForm.format(     extras.getDouble("TOTALKM")/1000)));
+                steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");
                 }
