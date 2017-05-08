@@ -25,54 +25,47 @@ import android.widget.TextView;
 
 public class StatsTab extends Fragment {
 
-    // Declaring all views and buttons
-
+    // Variables and constants used for static change of buffers (no animation)
 
     private TextView health;
-
+    private TextView steps;
+    private TextView phase;
+    private TextView dist;
+    private View view;
     // TODO: Implement age
     private TextView age;
 
-    private TextView steps;
-    private TextView phase;
-
-    // TODO: Implement distance
-    private TextView dist;
-
-    private View view;
-
-    // Variables used for animation
     private ClipDrawable waterAnim;
     private ClipDrawable sunAnim;
-
-    private int mLevel = 0;
-    private int fromLevel = 0;
-    private int toLevel = 0;
-
     public static final int MAX_LEVEL = 10000;
-    public static final int LEVEL_DIFF = 100;
-    public static final int DELAY = 30;
-
-    private Handler mRightHandler = new Handler();
-    private Runnable animateUpImage = new Runnable() {
-
-        @Override
-        public void run() {
-            fillBuffer(fromLevel, toLevel);
-        }
-    };
-
-    private Handler mLeftHandler = new Handler();
-    private Runnable animateDownImage = new Runnable() {
-
-        @Override
-        public void run() {
-            unfillBuffer(fromLevel, toLevel);
-        }
-    };
-
     ImageView imgWater;
     ImageView imgSun;
+
+    // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
+
+        /*private Handler mRightHandler = new Handler();
+        private Runnable animateUpImage = new Runnable() {
+
+            @Override
+            public void run() {
+                fillBuffer(fromLevel, toLevel);
+            }
+        };
+        private Handler mLeftHandler = new Handler();
+        private Runnable animateDownImage = new Runnable() {
+
+            @Override
+            public void run() {
+                unfillBuffer(fromLevel, toLevel);
+            }
+        };
+        public static final int LEVEL_DIFF = 100;  // Difference btw current level and level we want to reach.
+        public static final int DELAY = 30;
+        private int mLevel = 0;
+        private int fromLevel = 0;
+        private int toLevel = 0;*/
+
+
 
     private class ReceiverStats extends BroadcastReceiver {
 
@@ -105,17 +98,10 @@ public class StatsTab extends Fragment {
                 // TODO: Implement AGE when functionality is ready
                     waterAnim.setLevel(extras.getInt("WATER") * 10);
                     sunAnim.setLevel(extras.getInt("SUN") * 10);
-
-
-
-//                    sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
-//                    waterView.setText("Water Buffer: " + extras.getInt("WATER"));
-
             }
         }
     }
 
-//blabla
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -158,60 +144,13 @@ public class StatsTab extends Fragment {
         return view;
     }
 
-    private void fillBuffer(int fromLevel, int toLevel) {
-        mLevel += LEVEL_DIFF;
-        waterAnim.setLevel(mLevel);
-        sunAnim.setLevel(mLevel);
-        if (mLevel <= toLevel) {
-            mRightHandler.postDelayed(animateUpImage, DELAY);
-        } else {
-            mRightHandler.removeCallbacks(animateUpImage);
-            this.fromLevel = toLevel;
-        }
-    }
-
-    private void unfillBuffer(int fromLevel, int toLevel) {
-        mLevel -= LEVEL_DIFF;
-        waterAnim.setLevel(mLevel);
-        sunAnim.setLevel(mLevel);
-        if (mLevel >= toLevel) {
-            mLeftHandler.postDelayed(animateDownImage, DELAY);
-        } else {
-            mLeftHandler.removeCallbacks(animateDownImage);
-            this.fromLevel = toLevel;
-        }
-    }
-
-    // Filling and unfilling the buffers depending on textview value
-    public void changeBuffer(int v) {
-        int temp_level = (5 * MAX_LEVEL) / 100;
-
-        if (toLevel == temp_level || temp_level > MAX_LEVEL) {
-            return;
-        }
-        toLevel = (temp_level <= MAX_LEVEL) ? temp_level : toLevel;
-        if (toLevel > fromLevel) {
-            // cancel previous process first
-            mLeftHandler.removeCallbacks(animateDownImage);
-            this.fromLevel = toLevel;
-
-            mRightHandler.post(animateUpImage);
-        } else {
-            // cancel previous process first
-            mRightHandler.removeCallbacks(animateUpImage);
-            this.fromLevel = toLevel;
-
-            mLeftHandler.post(animateDownImage);
-        }
-    }
-
     // Setup all the views
     private void setupValues() {
         health = (TextView) view.findViewById(R.id.tvHealth);
         age = (TextView) view.findViewById(R.id.tvAge);
         phase = (TextView) view.findViewById(R.id.tvPhase);
         steps = (TextView) view.findViewById(R.id.tvSteps);
-         dist = (TextView) view.findViewById(R.id.tvDistance);
+        dist = (TextView) view.findViewById(R.id.tvDistance);
 
         imgWater = (ImageView) view.findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
@@ -221,4 +160,56 @@ public class StatsTab extends Fragment {
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
     }
+
+    // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED
+
+    //*
+
+        /*private void fillBuffer(int fromLevel, int toLevel) {
+            mLevel += LEVEL_DIFF;
+            waterAnim.setLevel(mLevel);
+            sunAnim.setLevel(mLevel);
+            if (mLevel <= toLevel) {
+                mRightHandler.postDelayed(animateUpImage, DELAY);
+            } else {
+                mRightHandler.removeCallbacks(animateUpImage);
+                this.fromLevel = toLevel;
+            }
+        }
+
+        private void unfillBuffer(int fromLevel, int toLevel) {
+            mLevel -= LEVEL_DIFF;
+            waterAnim.setLevel(mLevel);
+            sunAnim.setLevel(mLevel);
+            if (mLevel >= toLevel) {
+                mLeftHandler.postDelayed(animateDownImage, DELAY);
+            } else {
+                mLeftHandler.removeCallbacks(animateDownImage);
+                this.fromLevel = toLevel;
+            }
+        }
+
+        // Filling and unfilling the buffers depending on textview value
+        public void changeBuffer(int v) {
+            int temp_level = (5 * MAX_LEVEL) / 100;
+
+            if (toLevel == temp_level || temp_level > MAX_LEVEL) {
+                return;
+            }
+            toLevel = (temp_level <= MAX_LEVEL) ? temp_level : toLevel;
+            if (toLevel > fromLevel) {
+                // cancel previous process first
+                mLeftHandler.removeCallbacks(animateDownImage);
+                this.fromLevel = toLevel;
+
+                mRightHandler.post(animateUpImage);
+            } else {
+                // cancel previous process first
+                mRightHandler.removeCallbacks(animateUpImage);
+                this.fromLevel = toLevel;
+
+                mLeftHandler.post(animateDownImage);
+            }
+        }*/
+
 }
