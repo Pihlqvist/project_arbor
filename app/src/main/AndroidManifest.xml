@@ -20,8 +20,8 @@
 
         <activity
             android:name=".MainUIActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" 
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".NewTreeActivity"
             android:screenOrientation="portrait"
