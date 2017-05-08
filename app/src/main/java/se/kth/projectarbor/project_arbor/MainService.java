@@ -186,14 +186,14 @@ public class MainService extends Service {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
 
-        intent.putExtra("WEATHER", environment.getWeather().toString());
+        intent.putExtra("WEATHER", environment.getWeather());
         intent.putExtra("TEMP", environment.getTemp());
         intent.putExtra("SUN", tree.getSunLevel());
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
         intent.putExtra("PHASE", tree.getTreePhase().toString());
-        intent.putExtra("TOTALKM", pedometer.getTotalDistance());
-        intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+        intent.putExtra("TOTALKM", (totalDistance + pedometer.getSessionDistance()));
+        intent.putExtra("TOTALSTEPS", (totalStepCount + pedometer.getSessionStepCount()));
         intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
@@ -202,20 +202,20 @@ public class MainService extends Service {
         Intent intentToActivity = new Intent(this, MainUIActivity.class);
         intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        intentToActivity.putExtra("WEATHER", environment.getWeather().toString());
+        intentToActivity.putExtra("WEATHER", environment.getWeather());
         intentToActivity.putExtra("TEMP", environment.getTemp());
         intentToActivity.putExtra("SUN", tree.getSunLevel());
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
-        intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
-        intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+        intentToActivity.putExtra("TOTALKM", (totalDistance + pedometer.getSessionDistance()));
+        intentToActivity.putExtra("TOTALSTEPS", (totalStepCount + pedometer.getSessionStepCount()));
         startActivity(intentToActivity);
     }
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
-                environment.getForecasts(), pedometer.getTotalDistance(), pedometer.getTotalStepCount());
+                environment.getForecasts(), (totalDistance+pedometer.getSessionDistance()), (totalStepCount+pedometer.getSessionStepCount()));
     }
     //TODO: Make a pretty way of capturing expressions
     @Override

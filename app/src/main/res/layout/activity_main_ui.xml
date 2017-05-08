@@ -30,7 +30,11 @@
         android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+
+
+    </android.support.v4.view.ViewPager>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -45,5 +49,8 @@
         app:fabSize="mini"
         app:rippleColor="@color/cast_expanded_controller_ad_container_white_stripe_color"
         app:srcCompat="@android:drawable/ic_menu_help" />
+
+
+
 
 </android.support.design.widget.CoordinatorLayout>
