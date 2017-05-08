@@ -110,6 +110,10 @@ class Pedometer {
         return totalDistance;
     }
 
+    public int getTotalStepCount() {
+        return totalStepCount;
+    }
+
     public void setTotalStepCount(int totalStepCount) {
         this.totalStepCount = totalStepCount;
     }
@@ -143,7 +147,7 @@ class Pedometer {
                 currentStepCount = value - referenceStepCount;
                 distance += coefficient * currentStepCount;
                 totalStepCount += currentStepCount;
-                totalDistance += distance;
+                totalDistance += coefficient*currentStepCount;
 
                 // TODO: Recently implemented, be wary of bugs!
                 updateDistance += coefficient * currentStepCount;
