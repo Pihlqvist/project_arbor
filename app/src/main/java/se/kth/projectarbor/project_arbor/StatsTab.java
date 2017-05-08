@@ -90,7 +90,7 @@ public class StatsTab extends Fragment {
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d("HEALTH","HEALTH");
-                dist.setText( ""+  Double.parseDouble(twoDForm.format(     extras.getDouble("TOTALKM")/1000)));
+                dist.setText( ""+  extras.getDouble("TOTALKM")/1000);
                 steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");

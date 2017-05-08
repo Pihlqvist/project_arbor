@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.text.DecimalFormat;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -37,21 +39,25 @@ public class TreeTab extends Fragment {
     private RainView rainView;
     private CloudView cloudView;
 
+    private TextView distanceView;
+    private TextView stepView;
+
     private RelativeLayout weatherLayout;
 
     private Environment.Weather weather;
 
     private SharedPreferences sharedPreferences;
 
+    private double mDistance;
+    private int mStep;
 
     private class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-
+            DecimalFormat twoDForm = new DecimalFormat("#.00");
             Log.d(TAG, "onReceive()");
-
             if (intent.getAction().equals("WEATHER_DATA")) {
                 // Build new weatherLayout depending on weather
                 weather = (Environment.Weather) extras.get("WEATHER");
@@ -61,6 +67,12 @@ public class TreeTab extends Fragment {
                 layout.addView(weatherLayout);
                 view = layout;
             }
+            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+                mDistance = extras.getDouble("DISTANCE");
+                mStep = extras.getInt("STEPCOUNT");
+            }
+
+          //  statsDisplay();
         }
     }
 
@@ -68,6 +80,8 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
+      //  distanceView = (TextView) view.findViewById(R.id.tvDistance);
+      //  stepView = (TextView) view.findViewById(R.id.tvStepCount);
         Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
@@ -75,6 +89,7 @@ public class TreeTab extends Fragment {
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction("WEATHER_DATA");
+        filter.addAction(Pedometer.DISTANCE_BROADCAST);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
@@ -121,9 +136,6 @@ public class TreeTab extends Fragment {
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
-        if (sharedPreferences.contains("TOGGLE")) {
-            walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
-        }
         walkBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -142,7 +154,6 @@ public class TreeTab extends Fragment {
 
             }
         });
-
         Button setWheaterBtn = (Button) view.findViewById(R.id.setWeather);
         setWheaterBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,13 +179,35 @@ public class TreeTab extends Fragment {
 
         return view;
     }
+        @Override
+        public void onResume() {
+            super.onResume();
+            Intent intent = getActivity().getIntent();
+            Bundle extras = intent.getExtras();
 
+            mStep = -1;
+            mDistance = -1;
+            Log.d("TAG", "RESUME");
+            if (sharedPreferences.contains("TOGGLE")) {
+                walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
+                if(sharedPreferences.getBoolean("TOGGLE", false)) {
+                    Intent intent2 = new Intent(getActivity(), MainService.class);
+                    intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
+                    getActivity().startService(intent2);
+                }else{
+                    Intent intent3 = new Intent(getActivity(), MainService.class);
+                    intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
+                    getActivity().startService(intent3);
+                }
+            }
+        //    statsDisplay();
 
+        }
     private void setWeahterLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
         switch (weather) {
             case CLOUDY:
-                cloudView = new CloudView(getContext());
+                cloudView = new CloudView(getContext());;
                 layout = cloudView.addViews(layout);
                 break;
             case SUN:
@@ -194,6 +227,18 @@ public class TreeTab extends Fragment {
         }
 
         weatherLayout = layout;
+    }
+    private void statsDisplay(){
+        if(!(mDistance == -1)) {
+       //     distanceView.setText("Distance: " + mDistance);
+        }else{
+        //    distanceView.setText("WTU"); //WTU walk to update
+        }
+        if(!(mStep == -1)) {
+            stepView.setText("StepCount " + mStep);
+        }else{
+            stepView.setText("WTU"); //WTU walk to update
+        }
     }
 }
 

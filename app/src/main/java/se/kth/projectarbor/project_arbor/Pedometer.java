@@ -114,6 +114,14 @@ class Pedometer {
         return totalStepCount;
     }
 
+    public double getSessionDistance() {
+        return distance;
+    }
+
+    public int getSessionStepCount() {
+        return stepCount;
+    }
+
     public void setTotalStepCount(int totalStepCount) {
         this.totalStepCount = totalStepCount;
     }

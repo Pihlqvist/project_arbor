@@ -5,9 +5,27 @@
     android:id="@+id/treefragmentlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="se.kth.projectarbor.project_arbor.TreeTab"
+    tools:context="se.kth.projectarbor.project_arbor.TreeTabs"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_above="@+id/toggleButton"
+        android:layout_alignStart="@+id/tvStepCount"
+        android:layout_marginBottom="142dp" />
+
+    <TextView
+        android:id="@+id/tvStepCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginBottom="38dp"
+        android:layout_above="@+id/tvDistance"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/tvTree"
