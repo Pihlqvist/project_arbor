@@ -365,12 +365,16 @@ public class Tree implements Serializable {
 
         switch (storeItem) {
 
-            case SUN:
+            case SUN_SMALL:
+            case SUN_MEDIUM:
+            case SUN_LARGE:
                 Log.d("ARBOR_TREE", "purchase sun");
                 sunBuffer.incrValue(storeItem.getAmount());
                 break;
 
-            case WATER:
+            case WATER_SMALL:
+            case WATER_MEDIUM:
+            case WATER_LARGE:
                 Log.d("ARBOR_TREE", "purchase water");
                 waterBuffer.incrValue(storeItem.getAmount());
                 break;

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,22 +26,27 @@ import org.w3c.dom.Text;
 
 public class ShopTab extends Fragment {
 
-    private Button btnBuyWater;
-    private Button btnBuySun;
-    private TextView tvMoney;
-
-    private TextView tvShopWater;
-    private TextView tvShopSun;
-
     private int money;
+
+    private ImageView btnWaterSmall;
+    private ImageView btnWaterMedium;
+    private ImageView btnWaterLarge;
+    private ImageView btnSunSmall;
+    private ImageView btnSunMedium;
+    private ImageView btnSunLarge;
+    private TextView textMoney;
 
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
 
     // Add more items as needed
     public enum StoreItem {
-        WATER(10, 5),
-        SUN(12, 7);
+        WATER_SMALL(10, 5),
+        WATER_MEDIUM(50, 10),
+        WATER_LARGE(100, 20),
+        SUN_SMALL(10, 5),
+        SUN_MEDIUM(50, 10),
+        SUN_LARGE(100, 20);
 
         private int amount;
         private int cost;
@@ -66,13 +72,13 @@ public class ShopTab extends Fragment {
             // Receives messages from pedometer as user is walking to increase money and update display
             if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
                 money += intent.getIntExtra("MONEY", 0);
-                tvMoney.setText("Curreny: " + money);
+                textMoney.setText("Curreny: " + money);
                 sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
             // Receives messages from MainService to update display weather data
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Bundle extras = intent.getExtras();
-                tvShopSun.setText("SUN: " + extras.getInt("SUN"));
-                tvShopWater.setText("WATER: " + extras.getInt("WATER"));
+                // tvShopSun.setText("SUN: " + extras.getInt("SUN"));
+                // tvShopWater.setText("WATER: " + extras.getInt("WATER"));
             }
         }
     }
@@ -80,7 +86,8 @@ public class ShopTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
+        View view;
+        view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
 
         // Setup a filter for money
         IntentFilter filter = new IntentFilter();
@@ -100,51 +107,75 @@ public class ShopTab extends Fragment {
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
         }
 
+        textMoney = (TextView) view.findViewById(R.id.text_money);
+        textMoney.setText(this.money + "gp");
 
-        tvMoney = (TextView) view.findViewById(R.id.tvMoney);
-        tvMoney.setText("Curreny "+this.money);
-
-        tvShopSun = (TextView) view.findViewById(R.id.tvShopSun);
-        tvShopWater = (TextView) view.findViewById(R.id.tvShopWater);
-
-        btnBuyWater = (Button) view.findViewById(R.id.btnWater);
-        btnBuyWater.setOnClickListener(new View.OnClickListener() {
+        btnWaterSmall = (ImageView) view.findViewById(R.id.box_water_small);
+        btnWaterSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.WATER);
-                tvMoney.setText("Currency: "+money);
-                Toast.makeText(getContext(), "Bought Water", Toast.LENGTH_SHORT).show();
+                buy(StoreItem.WATER_SMALL);
+                textMoney.setText(ShopTab.this.money + "gp");
+                //Toast.makeText(getContext(), "Bought Water (small)", Toast.LENGTH_SHORT).show();
             }
         });
 
-        btnBuySun = (Button) view.findViewById(R.id.btnSun);
-        btnBuySun.setOnClickListener(new View.OnClickListener() {
+        btnWaterMedium = (ImageView) view.findViewById(R.id.box_water_medium);
+        btnWaterMedium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "BUY SUN");
-                buy(StoreItem.SUN);
-                tvMoney.setText("Curreny: "+money);
-                Toast.makeText(getContext(), "Bought Sun", Toast.LENGTH_SHORT).show();
-            }
-        });
-        // If button held for a LONG time
-        btnBuyWater.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                money += 20;
-                tvMoney.setText("Currency: " + money);
-                return true;
+                Log.d("ARBOR", "buy");
+                buy(StoreItem.WATER_MEDIUM);
+                textMoney.setText(ShopTab.this.money + "gp");
+                //Toast.makeText(getContext(), "Bought Water (medium)", Toast.LENGTH_SHORT).show();
             }
         });
 
-        btnBuySun.setOnLongClickListener(new View.OnLongClickListener() {
+        btnWaterLarge = (ImageView) view.findViewById(R.id.box_water_large);
+        btnWaterLarge.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-                return true;
+            public void onClick(View v) {
+                Log.d("ARBOR", "buy");
+                buy(StoreItem.WATER_LARGE);
+                textMoney.setText(ShopTab.this.money + "gp");
+                //Toast.makeText(getContext(), "Bought Water (large)", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // ----
+        btnSunSmall = (ImageView) view.findViewById(R.id.box_sun_small);
+        btnSunSmall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ARBOR", "buy");
+                buy(StoreItem.SUN_SMALL);
+                textMoney.setText(ShopTab.this.money + "gp");
+                //Toast.makeText(getContext(), "Bought Sun (small)", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnSunMedium = (ImageView) view.findViewById(R.id.box_sun_medium);
+        btnSunMedium.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ARBOR", "buy");
+                buy(StoreItem.SUN_MEDIUM);
+                textMoney.setText(ShopTab.this.money + "gp");
+                //Toast.makeText(getContext(), "Bought Sun (medium)", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        btnSunLarge = (ImageView) view.findViewById(R.id.box_sun_large);
+        btnSunLarge.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("ARBOR", "buy");
+                buy(StoreItem.SUN_LARGE);
+                textMoney.setText(ShopTab.this.money + "gp");
+                //Toast.makeText(getContext(), "Bought Sun (large)", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
