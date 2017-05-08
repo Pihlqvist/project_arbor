@@ -24,7 +24,7 @@ import com.google.android.gms.location.LocationServices;
 /**
  * Created by Ramcin on 2017-04-21.
  */
-
+/*
 class LocationManager implements LocationListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
@@ -95,7 +95,7 @@ class LocationManager implements LocationListener,
             //mEnvironment.changeCoordinatesAndDownload
         ;
         */
-
+/*
         float delta;
         delta = mCurrentLocation.distanceTo(location);
 
@@ -106,7 +106,7 @@ class LocationManager implements LocationListener,
                 location.getLatitude(), location.getLongitude(), results);
         delta = results[0];
         */
-
+/*
         if (delta >= mLowerLimit && delta < mUpperLimit) {
             mTotalDistance += delta;
             Log.d(MainService.TAG, "mTotalDistance == " + mTotalDistance);
@@ -163,4 +163,4 @@ class LocationManager implements LocationListener,
         // TODO: Implement this method
         return new double[]{0,0};
     }
-}
+}*/
