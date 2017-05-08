@@ -5,24 +5,26 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
+import android.text.Layout;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
 
 /**
  * Created by Fredrik Pihlqvist, Johan Andersson, Pethrus Gärdborn on 2017-04-28.
@@ -99,17 +101,73 @@ public class ShopTab extends Fragment {
         Point size = new Point();
         display.getSize(size);
 
-        layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.topMargin = size.y;
+        //layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        //       ViewGroup.LayoutParams.WRAP_CONTENT);
 
-        textReceipt = new TextView(getActivity());
-        textReceipt.setTypeface(Typeface.SANS_SERIF);
-        textReceipt.setLayoutParams(layoutParams);
-        textReceipt.setText("Hello World");
+        //textReceipt = new TextView(getActivity());
+        textReceipt = (TextView) view.findViewById(R.id.text_receipt);
+        textReceipt.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
+        textReceipt.setTextSize(54);
+        //textReceipt.setLayoutParams(layoutParams);
+        textReceipt.setVisibility(View.INVISIBLE);
 
-        ViewGroup layout = (ViewGroup) view.findViewById(R.id.shop_top_layout);
-        layout.addView(textReceipt);
+        final Animation animationSet = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_appear);
+        final Animation animationWait = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_wait);
+        final Animation animationDisappear = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_disappear);
+
+        animationSet.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                textReceipt.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                textReceipt.startAnimation(animationWait);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+
+        animationWait.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                textReceipt.startAnimation(animationDisappear);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        animationDisappear.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                textReceipt.setVisibility(View.INVISIBLE);
+                textReceipt.setTextSize(54);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        //ViewGroup layout = (ViewGroup) view.findViewById(R.id.shop_top_layout);
+        //layout.addView(textReceipt);
 
         // Setup a filter for money
         IntentFilter filter = new IntentFilter();
@@ -137,9 +195,18 @@ public class ShopTab extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.WATER_SMALL);
                 textMoney.setText(ShopTab.this.money + "gp");
-                //Toast.makeText(getContext(), "Bought Water (small)", Toast.LENGTH_SHORT).show();
+                boolean success = buy(StoreItem.WATER_SMALL);
+
+                if (success) {
+                    textReceipt.setText("+" + StoreItem.WATER_SMALL.amount);
+                } else {
+                    textReceipt.setText("Not enough pollen");
+                    textReceipt.setTextSize(32);
+                }
+
+                textReceipt.setTextColor(ColorStateList.valueOf(0xFF00B9D3));
+                textReceipt.startAnimation(animationSet);
             }
         });
 
@@ -148,9 +215,18 @@ public class ShopTab extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.WATER_MEDIUM);
                 textMoney.setText(ShopTab.this.money + "gp");
-                //Toast.makeText(getContext(), "Bought Water (medium)", Toast.LENGTH_SHORT).show();
+                boolean success = buy(StoreItem.WATER_MEDIUM);
+
+                if (success) {
+                    textReceipt.setText("+" + StoreItem.WATER_MEDIUM.amount);
+                } else {
+                    textReceipt.setText("Not enough pollen");
+                    textReceipt.setTextSize(32);
+                }
+
+                textReceipt.setTextColor(ColorStateList.valueOf(0xFF00B9D3));
+                textReceipt.startAnimation(animationSet);
             }
         });
 
@@ -159,9 +235,18 @@ public class ShopTab extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.WATER_LARGE);
                 textMoney.setText(ShopTab.this.money + "gp");
-                //Toast.makeText(getContext(), "Bought Water (large)", Toast.LENGTH_SHORT).show();
+                boolean success = buy(StoreItem.WATER_LARGE);
+
+                if (success) {
+                    textReceipt.setText("+" + StoreItem.WATER_LARGE.amount);
+                } else {
+                    textReceipt.setText("Not enough pollen");
+                    textReceipt.setTextSize(32);
+                }
+
+                textReceipt.setTextColor(ColorStateList.valueOf(0xFF00B9D3));
+                textReceipt.startAnimation(animationSet);
             }
         });
 
@@ -171,9 +256,18 @@ public class ShopTab extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.SUN_SMALL);
                 textMoney.setText(ShopTab.this.money + "gp");
-                //Toast.makeText(getContext(), "Bought Sun (small)", Toast.LENGTH_SHORT).show();
+                boolean success = buy(StoreItem.SUN_SMALL);
+
+                if (success) {
+                    textReceipt.setText("+" + StoreItem.SUN_SMALL.amount);
+                } else {
+                    textReceipt.setText("Not enough pollen");
+                    textReceipt.setTextSize(32);
+                }
+
+                textReceipt.setTextColor(ColorStateList.valueOf(0xFFF2941F));
+                textReceipt.startAnimation(animationSet);
             }
         });
 
@@ -182,9 +276,18 @@ public class ShopTab extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.SUN_MEDIUM);
                 textMoney.setText(ShopTab.this.money + "gp");
-                //Toast.makeText(getContext(), "Bought Sun (medium)", Toast.LENGTH_SHORT).show();
+                boolean success = buy(StoreItem.SUN_MEDIUM);
+
+                if (success) {
+                    textReceipt.setText("+" + StoreItem.SUN_MEDIUM.amount);
+                } else {
+                    textReceipt.setText("Not enough pollen");
+                    textReceipt.setTextSize(32);
+                }
+
+                textReceipt.setTextColor(ColorStateList.valueOf(0xFFF2941F));
+                textReceipt.startAnimation(animationSet);
             }
         });
 
@@ -193,9 +296,18 @@ public class ShopTab extends Fragment {
             @Override
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
-                buy(StoreItem.SUN_LARGE);
                 textMoney.setText(ShopTab.this.money + "gp");
-                //Toast.makeText(getContext(), "Bought Sun (large)", Toast.LENGTH_SHORT).show();
+                boolean success = buy(StoreItem.SUN_LARGE);
+
+                if (success) {
+                    textReceipt.setText("+" + StoreItem.SUN_LARGE.amount);
+                } else {
+                    textReceipt.setText("Not enough pollen");
+                    textReceipt.setTextSize(32);
+                }
+
+                textReceipt.setTextColor(ColorStateList.valueOf(0xFFF2941F));
+                textReceipt.startAnimation(animationSet);
             }
         });
 
@@ -212,7 +324,7 @@ public class ShopTab extends Fragment {
         }
     }
 
-    public void buy(StoreItem item) {
+    public boolean buy(StoreItem item) {
         Log.d("ARBOR","BUY ");
 
         // If enough money to buy item
@@ -221,13 +333,9 @@ public class ShopTab extends Fragment {
             intent.putExtra("MESSAGE_TYPE", MainService.MSG_PURCHASE);
             intent.putExtra("STORE_ITEM", item);
             getActivity().startService(intent);
-        }
-        else{
-            CharSequence text = " Not Enough Money!" ;
-            int duration = Toast.LENGTH_SHORT;
-            Toast toast = Toast.makeText(getActivity(),text ,duration);
-            toast.setGravity(Gravity.CENTER,0,0);
-            toast.show();
+            return true;
+        } else {
+            return false;
         }
     }
 }
