@@ -22,7 +22,7 @@ import java.text.DecimalFormat;
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
- * Edited by Jospeh Ariss and Pethrus Gardborn
+ * Edited by Jospeh Ariss and Pethrus Gardborn on 4/5/2017
  */
 
 public class StatsTab extends Fragment {
