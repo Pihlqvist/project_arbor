@@ -45,6 +45,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
@@ -56,9 +57,9 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTree"
+        android:layout_marginBottom="27dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp" />
+        android:layout_alignParentEnd="true" />
 
 
     <android.support.constraint.Guideline
@@ -96,6 +97,17 @@
         android:layout_above="@+id/setCloudBtn"
         android:layout_alignStart="@+id/setCloudBtn"
         android:layout_marginBottom="17dp" />
+
+    <ImageButton
+        android:id="@+id/imageButton"
+        android:layout_width="286dp"
+        android:layout_height="346dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        app:srcCompat="@drawable/seed_to_sprout_01"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/tvTree" />
 
 
 </RelativeLayout>

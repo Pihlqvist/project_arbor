@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/selected"
+    android:oneshot="true">
+
+    <item android:drawable="@drawable/seed_to_sprout_01" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_02" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_03" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_04" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_05" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_06" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_07" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_08" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_09" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_10" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_11" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_12" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_13" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_14" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_15" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_16" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_17" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_18" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_19" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_20" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_21" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_22" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_23" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_24" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_25" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_26" android:duration="100" />
+    <item android:drawable="@drawable/seed_to_sprout_27" android:duration="100" />
+</animation-list>
