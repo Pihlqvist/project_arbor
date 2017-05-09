@@ -38,13 +38,13 @@
 
 
         <ImageView
-            android:id="@+id/imageView2"
+            android:id="@+id/ivEmptyWater"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/scall" />
 
         <ImageView
-            android:id="@+id/imageView1"
+            android:id="@+id/ivXmlWater"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/clip_source" />
@@ -57,13 +57,13 @@
             android:layout_gravity="center">
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/ivEmptySun"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/empty_sb" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/ivXmlSun"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/clip_source2" />

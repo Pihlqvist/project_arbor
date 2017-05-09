@@ -20,20 +20,22 @@
 
         <activity
             android:name=".MainUIActivity"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar" 
+            android:screenOrientation="portrait">
+                  </activity>
         <activity
             android:name=".NewTreeActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".ProgressBarTest">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+        </activity>
+        <activity android:name=".ProgressBarTest">
+
         </activity>
     </application>
 
