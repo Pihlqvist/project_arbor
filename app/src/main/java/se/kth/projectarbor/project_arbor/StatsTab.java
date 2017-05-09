@@ -29,6 +29,8 @@ public class StatsTab extends Fragment {
 
     // Variables and constants used for static change of buffers (no animation)
 
+    private final static String TAG = "ARBOR_STATSTAB";
+
     private TextView health;
     private TextView steps;
     private TextView phase;
@@ -112,7 +114,7 @@ public class StatsTab extends Fragment {
 
         this.view = inflater.inflate(R.layout.fragment_stats_tab, container, false);
 
-        Log.d("ARBOR_TREE_TAB", "onCreateView in tree tab");
+        Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
 

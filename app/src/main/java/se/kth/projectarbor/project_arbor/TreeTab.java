@@ -18,8 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import java.text.DecimalFormat;
-
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -69,9 +67,9 @@ public class TreeTab extends Fragment {
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 mDistance = extras.getDouble("DISTANCE");
                 mStep = extras.getInt("STEPCOUNT");
+                distanceView.setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
             }
 
-            statsDisplay();
         }
     }
 
@@ -101,31 +99,18 @@ public class TreeTab extends Fragment {
         if (extras != null) {
             treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
             weather = (Environment.Weather) extras.get("WEATHER");
+        } else {
+            weather = Environment.Weather.CLOUDY;
+            Log.e(TAG, "Weahter could not be found");
+            // TODO: from foreground, bring info about the weather in a Intent
         }
+
+        distanceView = (TextView) view.findViewById(R.id.tvDistance);
 
 
         // Change weather view depending on "weather"
         weatherLayout = new RelativeLayout(getContext());
-        switch (weather) {
-            case CLOUDY:
-                CloudView cloudView = new CloudView(getContext());
-                weatherLayout = cloudView.addViews(weatherLayout);
-                break;
-            case SUN:
-                SunView sunView = new SunView(getActivity());
-                weatherLayout = (RelativeLayout) sunView.addViews(weatherLayout);
-                break;
-            case RAIN:
-                RainView rainView = new RainView(getActivity());
-                weatherLayout = (RelativeLayout) rainView.addViews(weatherLayout);
-                break;
-            /*case CLOUDYSUN:
-                SunView sunView1 = new SunView(getActivity());
-                CloudView cloudView1 = new CloudView(getContext());
-                weatherLayout = cloudView1.addViews((RelativeLayout)sunView1.addViews(weatherLayout)); */
-            default:
-                Log.d(TAG, "no case in weather switch");
-        }
+        setWeahterLayout();
 
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
@@ -152,8 +137,8 @@ public class TreeTab extends Fragment {
 
             }
         });
-        Button setWheaterBtn = (Button) view.findViewById(R.id.setWeather);
-        setWheaterBtn.setOnClickListener(new View.OnClickListener() {
+        Button setCloudBtn = (Button) view.findViewById(R.id.setCloudBtn);
+        setCloudBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent broadcast = new Intent();
@@ -163,13 +148,24 @@ public class TreeTab extends Fragment {
             }
         });
 
-        Button setWheaterBtn2 = (Button) view.findViewById(R.id.setWeather2);
-        setWheaterBtn2.setOnClickListener(new View.OnClickListener() {
+        Button setRainBtn = (Button) view.findViewById(R.id.setRainBtn);
+        setRainBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent broadcast = new Intent();
                 broadcast.setAction("WEATHER_DATA");
                 broadcast.putExtra("WEATHER", Environment.Weather.RAIN);
+                getContext().sendBroadcast(broadcast);
+            }
+        });
+
+        Button setSunBtn = (Button) view.findViewById(R.id.setSunBtn);
+        setSunBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent broadcast = new Intent();
+                broadcast.setAction("WEATHER_DATA");
+                broadcast.putExtra("WEATHER", Environment.Weather.SUN);
                 getContext().sendBroadcast(broadcast);
             }
         });
@@ -180,10 +176,8 @@ public class TreeTab extends Fragment {
         @Override
         public void onResume() {
             super.onResume();
+            Log.d(TAG, "RESUME");
 
-            mStep = -1;
-            mDistance = -1;
-            Log.d("TAG", "RESUME");
             if (sharedPreferences.contains("TOGGLE")) {
                 walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
                 if(sharedPreferences.getBoolean("TOGGLE", false)) {
@@ -196,7 +190,6 @@ public class TreeTab extends Fragment {
                     getActivity().startService(intent3);
                 }
             }
-        //   statsDisplay();
 
         }
     private void setWeahterLayout() {
@@ -224,17 +217,6 @@ public class TreeTab extends Fragment {
 
         weatherLayout = layout;
     }
-    private void statsDisplay(){
-        if(!(mDistance == -1)) {
-       //     distanceView.setText("Distance: " + mDistance);
-        }else{
-        //    distanceView.setText("WTU"); //WTU walk to update
-        }
-        if(!(mStep == -1)) {
-            stepView.setText("StepCount " + mStep);
-        }else{
-            stepView.setText("WTU"); //WTU walk to update
-        }
-    }
+
 }
 

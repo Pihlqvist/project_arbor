@@ -5,9 +5,10 @@
     android:id="@+id/treefragmentlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="se.kth.projectarbor.project_arbor.TreeTabs"
+    tools:context="se.kth.projectarbor.project_arbor.TreeTab"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
+
 
     <TextView
         android:id="@+id/tvDistance"
@@ -70,22 +71,31 @@
         tools:layout_editor_absoluteY="20dp" />
 
     <Button
-        android:id="@+id/setWeather"
+        android:id="@+id/setCloudBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/toggleButton"
-        android:layout_marginEnd="10dp"
-        android:layout_toStartOf="@+id/toggleButton"
-        android:text="Button" />
+        android:text="CLOUD"
+        android:layout_marginStart="19dp"
+        android:layout_above="@+id/toggleButton"
+        android:layout_toEndOf="@+id/tvTree"
+        android:layout_marginBottom="13dp" />
 
     <Button
-        android:id="@+id/setWeather2"
+        android:id="@+id/setRainBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/toggleButton"
-        android:layout_marginStart="16dp"
-        android:layout_toEndOf="@+id/toggleButton"
-        android:text="Button" />
+        android:text="RAIN"
+        android:layout_below="@+id/setCloudBtn"
+        android:layout_alignStart="@+id/setCloudBtn" />
+
+    <Button
+        android:id="@+id/setSunBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SUN"
+        android:layout_above="@+id/setCloudBtn"
+        android:layout_alignStart="@+id/setCloudBtn"
+        android:layout_marginBottom="17dp" />
 
 
 </RelativeLayout>
