@@ -55,12 +55,12 @@ public class ShopTab extends Fragment {
 
     // Add more items as needed
     public enum StoreItem {
-        WATER_SMALL(5, 10),
-        WATER_MEDIUM(10, 50),
-        WATER_LARGE(20, 100),
-        SUN_SMALL(5, 10),
-        SUN_MEDIUM(10, 50),
-        SUN_LARGE(20, 100);
+        WATER_SMALL(75, 10),
+        WATER_MEDIUM(200, 50),
+        WATER_LARGE(500, 100),
+        SUN_SMALL(75, 10),
+        SUN_MEDIUM(200, 50),
+        SUN_LARGE(500, 100);
 
         private int amount;
         private int cost;
@@ -194,7 +194,7 @@ public class ShopTab extends Fragment {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
         // Else, set initial money value
         } else {
-            money = 10;
+            money = 2000;
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
         }
 
@@ -269,6 +269,7 @@ public class ShopTab extends Fragment {
         }
         else {
             this.money -= purchase;
+            sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
             return true;
         }
     }
