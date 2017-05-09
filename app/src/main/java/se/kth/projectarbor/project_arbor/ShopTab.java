@@ -55,12 +55,12 @@ public class ShopTab extends Fragment {
 
     // Add more items as needed
     public enum StoreItem {
-        WATER_SMALL(10, 5),
-        WATER_MEDIUM(50, 10),
-        WATER_LARGE(100, 20),
-        SUN_SMALL(10, 5),
-        SUN_MEDIUM(50, 10),
-        SUN_LARGE(100, 20);
+        WATER_SMALL(5, 10),
+        WATER_MEDIUM(10, 50),
+        WATER_LARGE(20, 100),
+        SUN_SMALL(5, 10),
+        SUN_MEDIUM(10, 50),
+        SUN_LARGE(20, 100);
 
         private int amount;
         private int cost;
@@ -102,25 +102,30 @@ public class ShopTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
 
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
+        // These may be used when doing animation programmatically
+        //Display display = getActivity().getWindowManager().getDefaultDisplay();
+        //Point size = new Point();
+        //display.getSize(size);
         //layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
         //       ViewGroup.LayoutParams.WRAP_CONTENT);
-
         //textReceipt = new TextView(getActivity());
+
         textReceipt = (TextView) view.findViewById(R.id.text_receipt);
         textReceipt.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
         //textReceipt.setLayoutParams(layoutParams);
         textReceipt.setVisibility(View.INVISIBLE);
 
-        final Animation animationSet = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_appear);
+        final Animation animationAppear = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_appear);
         final Animation animationWait = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_wait);
         final Animation animationDisappear = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.shop_receipt_disappear);
 
-        animationSet.setAnimationListener(new Animation.AnimationListener() {
+        // The following three method calls, make possible to execute the three animations (see xml)
+        // in sequence.
+
+        // This listener makes the feedback text visible when the user buys an item
+        // and translates the text to the center
+        animationAppear.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
                 textReceipt.setVisibility(View.VISIBLE);
@@ -136,6 +141,7 @@ public class ShopTab extends Fragment {
             }
         });
 
+        // This listener makes the feedback text stand still for a short while
         animationWait.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -153,6 +159,7 @@ public class ShopTab extends Fragment {
             }
         });
 
+        // This listener makes the feedback text go off screen
         animationDisappear.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -162,7 +169,7 @@ public class ShopTab extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 textReceipt.setVisibility(View.INVISIBLE);
-                textReceipt.setTextSize(54);
+                textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
             }
 
             @Override
@@ -185,7 +192,6 @@ public class ShopTab extends Fragment {
         // If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
-
         // Else, set initial money value
         } else {
             money = 10;
@@ -199,11 +205,7 @@ public class ShopTab extends Fragment {
         btnWaterSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "buy");
-                textMoney.setText(ShopTab.this.money + "gp");
-                buy(StoreItem.WATER_SMALL);
-                textReceipt.setTextColor(ColorStateList.valueOf(WATER_COLOR));
-                textReceipt.startAnimation(animationSet);
+                purchaseItem(StoreItem.WATER_SMALL, WATER_COLOR, animationAppear);
             }
         });
 
@@ -211,11 +213,7 @@ public class ShopTab extends Fragment {
         btnWaterMedium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "buy");
-                textMoney.setText(ShopTab.this.money + "gp");
-                buy(StoreItem.WATER_MEDIUM);
-                textReceipt.setTextColor(ColorStateList.valueOf(WATER_COLOR));
-                textReceipt.startAnimation(animationSet);
+                purchaseItem(StoreItem.WATER_MEDIUM, WATER_COLOR, animationAppear);
             }
         });
 
@@ -223,11 +221,7 @@ public class ShopTab extends Fragment {
         btnWaterLarge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "buy");
-                textMoney.setText(ShopTab.this.money + "gp");
-                buy(StoreItem.WATER_LARGE);
-                textReceipt.setTextColor(ColorStateList.valueOf(WATER_COLOR));
-                textReceipt.startAnimation(animationSet);
+                purchaseItem(StoreItem.WATER_LARGE, WATER_COLOR, animationAppear);
             }
         });
 
@@ -236,11 +230,7 @@ public class ShopTab extends Fragment {
         btnSunSmall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "buy");
-                textMoney.setText(ShopTab.this.money + "gp");
-                buy(StoreItem.SUN_SMALL);
-                textReceipt.setTextColor(ColorStateList.valueOf(SUN_COLOR));
-                textReceipt.startAnimation(animationSet);
+                purchaseItem(StoreItem.SUN_SMALL, SUN_COLOR, animationAppear);
             }
         });
 
@@ -248,11 +238,7 @@ public class ShopTab extends Fragment {
         btnSunMedium.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "buy");
-                textMoney.setText(ShopTab.this.money + "gp");
-                buy(StoreItem.SUN_MEDIUM);
-                textReceipt.setTextColor(ColorStateList.valueOf(SUN_COLOR));
-                textReceipt.startAnimation(animationSet);
+                purchaseItem(StoreItem.SUN_MEDIUM, SUN_COLOR, animationAppear);
             }
         });
 
@@ -260,18 +246,24 @@ public class ShopTab extends Fragment {
         btnSunLarge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ARBOR", "buy");
-                textMoney.setText(ShopTab.this.money + "gp");
-                buy(StoreItem.SUN_LARGE);
-                textReceipt.setTextColor(ColorStateList.valueOf(SUN_COLOR));
-                textReceipt.startAnimation(animationSet);
+                purchaseItem(StoreItem.SUN_LARGE, SUN_COLOR, animationAppear);
             }
         });
 
         return view;
     }
+
+    // Buy item and start animation
+    private void purchaseItem(StoreItem item, final int color, Animation anim) {
+        Log.d("ARBOR", "purchasing");
+        buy(item);
+        textMoney.setText(ShopTab.this.money + "gp");
+        textReceipt.setTextColor(ColorStateList.valueOf(color));
+        textReceipt.startAnimation(anim);
+    }
+
     // Returns true if possible to make purchase
-    private boolean  withdrawMoney(int purchase) {
+    private boolean withdrawMoney(int purchase) {
         if (money - purchase < 0) {
             return false;
         }
@@ -281,7 +273,8 @@ public class ShopTab extends Fragment {
         }
     }
 
-    public void buy(StoreItem item) {
+    // Broadcast your purchase to the main service
+    private void buy(StoreItem item) {
         Log.d("ARBOR","BUY ");
 
         // If enough money to buy item
