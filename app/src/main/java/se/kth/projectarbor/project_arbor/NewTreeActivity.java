@@ -1,11 +1,17 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
@@ -33,6 +39,7 @@ public class NewTreeActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         // Controls if a tree exist or not, will go to main activity if the tree exist.
         // If a tree dose not exist it will set up the tree view.
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
@@ -49,6 +56,10 @@ public class NewTreeActivity extends AppCompatActivity  {
         newTreeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if(!isNetworkAvailable()){
+                    displayPromptForEnablingInternet();
+                }
+                else{
                 DataManager.saveState(getApplicationContext(), MainService.filename,
                         new Tree(), new Environment.Forecast[]{}, new Double(0), (int) 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).commit();
@@ -64,7 +75,43 @@ public class NewTreeActivity extends AppCompatActivity  {
                 Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
                 startService(updateIntent);
+                }
             }
         });
+    }
+
+    private  boolean  isNetworkAvailable( ) {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return  true;
+        }
+        else
+          return false;
+    }
+    public void displayPromptForEnablingInternet()
+    {
+
+        final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
+        final String action = Settings.ACTION_WIRELESS_SETTINGS;
+        final String message = "Do you want open Internet Setting?";
+
+        builder.setMessage(message)
+                .setPositiveButton("OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                startActivity(new Intent(action));
+                                d.dismiss();
+                            }
+                        })
+                .setNegativeButton("Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface d, int id) {
+                                d.cancel();
+                            }
+                        });
+        builder.create().show();
     }
 }
