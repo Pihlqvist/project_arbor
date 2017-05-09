@@ -17,6 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 
 
@@ -69,36 +72,6 @@ public class StatsTab extends Fragment {
         private int fromLevel = 0;
         private int toLevel = 0;*/
 
-
-
-    private class ReceiverStats extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            DecimalFormat twoDForm = new DecimalFormat("#.0");
-            Log.d("ARBOR_STATAB", "onReceive()");
-
-            // Msgs from MainService:tree data
-
-            if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d("HEALTH","HEALTH");
-                dist.setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
-                steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
-                if (extras.getInt("HP") < 1) {
-                    health.setText("DEAD");
-                }
-                else
-                    health.setText("" + extras.getInt("HP") + "hp");
-                    phase.setText(extras.getString("PHASE"));
-
-                // TODO: Implement AGE when functionality is ready
-                    waterAnim.setLevel(extras.getInt("WATER") * 10);
-                    sunAnim.setLevel(extras.getInt("SUN") * 10);
-            }
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -108,12 +81,6 @@ public class StatsTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
-
-        // Setup a filter for views
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Pedometer.DISTANCE_BROADCAST);
-        filter.addAction(MainService.TREE_DATA);
-        getActivity().registerReceiver(this.new ReceiverStats(), filter);
 
         // TEST to set levels manually
 
@@ -156,6 +123,30 @@ public class StatsTab extends Fragment {
         waterAnim.setLevel(0);
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
+    }
+
+    TextView getDistanceView() {
+        return dist;
+    }
+
+    TextView getStepsView() {
+        return steps;
+    }
+
+    TextView getHealthView() {
+        return health;
+    }
+
+    TextView getPhaseView() {
+        return phase;
+    }
+
+    ClipDrawable getWaterAnim() {
+        return waterAnim;
+    }
+
+    ClipDrawable getSunAnim() {
+        return sunAnim;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED

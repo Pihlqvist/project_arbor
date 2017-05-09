@@ -49,30 +49,6 @@ public class TreeTab extends Fragment {
     private double mDistance;
     private int mStep;
 
-    private class Receiver extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Bundle extras = intent.getExtras();
-            Log.d(TAG, "onReceive()");
-            if (intent.getAction().equals("WEATHER_DATA")) {
-                // Build new weatherLayout depending on weather
-                weather = (Environment.Weather) extras.get("WEATHER");
-                RelativeLayout layout = (RelativeLayout) view;
-                layout.removeView(weatherLayout);
-                setWeahterLayout();
-                layout.addView(weatherLayout);
-                view = layout;
-            }
-            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                mDistance = extras.getDouble("DISTANCE");
-                mStep = extras.getInt("STEPCOUNT");
-                distanceView.setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
-            }
-
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -81,12 +57,6 @@ public class TreeTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
-
-        // Setup a filter for views
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("WEATHER_DATA");
-        filter.addAction(Pedometer.DISTANCE_BROADCAST);
-        getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
                 , MODE_PRIVATE);
@@ -101,7 +71,7 @@ public class TreeTab extends Fragment {
             weather = (Environment.Weather) extras.get("WEATHER");
         } else {
             weather = Environment.Weather.CLOUDY;
-            Log.e(TAG, "Weahter could not be found");
+            Log.e(TAG, "Weather could not be found");
             // TODO: from foreground, bring info about the weather in a Intent
         }
 
@@ -110,7 +80,7 @@ public class TreeTab extends Fragment {
 
         // Change weather view depending on "weather"
         weatherLayout = new RelativeLayout(getContext());
-        setWeahterLayout();
+        setWeatherLayout();
 
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
@@ -192,7 +162,7 @@ public class TreeTab extends Fragment {
             }
 
         }
-    private void setWeahterLayout() {
+    void setWeatherLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
         switch (weather) {
             case CLOUDY:
@@ -218,5 +188,32 @@ public class TreeTab extends Fragment {
         weatherLayout = layout;
     }
 
+    void setWeather(Environment.Weather newWeather) {
+        weather = newWeather;
+    }
+
+    ViewGroup getWeatherLayout() {
+        return weatherLayout;
+    }
+
+    View getTabView() {
+        return view;
+    }
+
+    void setTabView(View newView) {
+        view = newView;
+    }
+
+    TextView getDistanceView() {
+        return distanceView;
+    }
+
+    void setDistance(double newDistance) {
+        mDistance = newDistance;
+    }
+
+    void setSteps(int newSteps) {
+        mStep = newSteps;
+    }
 }
 

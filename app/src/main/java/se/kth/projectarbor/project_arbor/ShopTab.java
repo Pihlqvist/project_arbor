@@ -79,24 +79,6 @@ public class ShopTab extends Fragment {
         }
     }
 
-
-    private class Receiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Receives messages from pedometer as user is walking to increase money and update display
-            if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
-                money += intent.getIntExtra("MONEY", 0);
-                textMoney.setText("Curreny: " + money);
-                sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
-            // Receives messages from MainService to update display weather data
-            } else if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Bundle extras = intent.getExtras();
-                // tvShopSun.setText("SUN: " + extras.getInt("SUN"));
-                // tvShopWater.setText("WATER: " + extras.getInt("WATER"));
-            }
-        }
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -181,13 +163,7 @@ public class ShopTab extends Fragment {
         //ViewGroup layout = (ViewGroup) view.findViewById(R.id.shop_top_layout);
         //layout.addView(textReceipt);
 
-        // Setup a filter for money
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Pedometer.STORE_BROADCAST);
-        filter.addAction(MainService.TREE_DATA);
-        getActivity().registerReceiver(this.new Receiver(), filter);
-
-        sharedPreferences = getActivity().getSharedPreferences("STORE_MONEY", Context.MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
         // If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
@@ -289,6 +265,14 @@ public class ShopTab extends Fragment {
             textReceipt.setText("Not enough pollen");
             textReceipt.setTextSize(NO_MONEY_TEXT_SIZE);
         }
+    }
+
+    int addMoney(int newMoney) {
+        return (money += newMoney);
+    }
+
+    TextView getTextMoney() {
+        return textMoney;
     }
 }
 
