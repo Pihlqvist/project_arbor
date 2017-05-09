@@ -77,7 +77,7 @@ public class NewTreeActivity extends AppCompatActivity  {
 
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
-                PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
+                 PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
