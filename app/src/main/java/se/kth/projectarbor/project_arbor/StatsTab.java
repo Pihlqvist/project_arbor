@@ -145,9 +145,12 @@ public class StatsTab extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
+        updateAgeView();
+    }
 
+    private void updateAgeView() {
         long lifespan = System.currentTimeMillis() - treeStartTime;
         Log.d("ARBOR_LIFESPAN_SEC", "" + lifespan/1000);
         lifespan = lifespan / 1000 / 60 / 60 / 24;
