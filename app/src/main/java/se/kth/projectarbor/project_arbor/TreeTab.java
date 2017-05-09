@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -81,6 +83,18 @@ public class TreeTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
+
+        // Animation tree
+        final ImageView ivTree = (ImageView) view.findViewById(R.id.imageButton);
+        ivTree.setBackgroundResource(R.drawable.grow_seed_to_sprout);
+        ivTree.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                AnimationDrawable frameAnim = (AnimationDrawable) ivTree.getBackground();
+                frameAnim.start();
+
+            }
+        });
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
