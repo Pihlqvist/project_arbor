@@ -106,12 +106,22 @@
         android:layout_alignStart="@+id/setCloudBtn"
         android:layout_marginBottom="17dp" />
 
-    <ImageButton
-        android:id="@+id/treeButton"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/colorTransparent"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true"
+        android:scaleY="2"
+        android:scaleX="2"
+        android:paddingBottom="80dp">
+
+
+        <ImageButton
+            android:id="@+id/treeButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorTransparent" />
+    </RelativeLayout>
+
 
 
 
