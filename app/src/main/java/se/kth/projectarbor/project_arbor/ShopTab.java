@@ -33,6 +33,11 @@ import android.widget.Toast;
 public class ShopTab extends Fragment {
 
     private int money;
+    private final int SUN_COLOR = 0xFFF2941F;
+    private final int WATER_COLOR = 0xFF00B9D3;
+    private final int PURCHASE_TEXT_SIZE = 54;
+    private final int NO_MONEY_TEXT_SIZE = 32;
+
 
     private ImageView btnWaterSmall;
     private ImageView btnWaterMedium;
@@ -107,7 +112,7 @@ public class ShopTab extends Fragment {
         //textReceipt = new TextView(getActivity());
         textReceipt = (TextView) view.findViewById(R.id.text_receipt);
         textReceipt.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
-        textReceipt.setTextSize(54);
+        textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
         //textReceipt.setLayoutParams(layoutParams);
         textReceipt.setVisibility(View.INVISIBLE);
 
@@ -196,16 +201,8 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 textMoney.setText(ShopTab.this.money + "gp");
-                boolean success = buy(StoreItem.WATER_SMALL);
-
-                if (success) {
-                    textReceipt.setText("+" + StoreItem.WATER_SMALL.amount);
-                } else {
-                    textReceipt.setText("Not enough pollen");
-                    textReceipt.setTextSize(32);
-                }
-
-                textReceipt.setTextColor(ColorStateList.valueOf(0xFF00B9D3));
+                buy(StoreItem.WATER_SMALL);
+                textReceipt.setTextColor(ColorStateList.valueOf(WATER_COLOR));
                 textReceipt.startAnimation(animationSet);
             }
         });
@@ -216,16 +213,8 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 textMoney.setText(ShopTab.this.money + "gp");
-                boolean success = buy(StoreItem.WATER_MEDIUM);
-
-                if (success) {
-                    textReceipt.setText("+" + StoreItem.WATER_MEDIUM.amount);
-                } else {
-                    textReceipt.setText("Not enough pollen");
-                    textReceipt.setTextSize(32);
-                }
-
-                textReceipt.setTextColor(ColorStateList.valueOf(0xFF00B9D3));
+                buy(StoreItem.WATER_MEDIUM);
+                textReceipt.setTextColor(ColorStateList.valueOf(WATER_COLOR));
                 textReceipt.startAnimation(animationSet);
             }
         });
@@ -236,16 +225,8 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 textMoney.setText(ShopTab.this.money + "gp");
-                boolean success = buy(StoreItem.WATER_LARGE);
-
-                if (success) {
-                    textReceipt.setText("+" + StoreItem.WATER_LARGE.amount);
-                } else {
-                    textReceipt.setText("Not enough pollen");
-                    textReceipt.setTextSize(32);
-                }
-
-                textReceipt.setTextColor(ColorStateList.valueOf(0xFF00B9D3));
+                buy(StoreItem.WATER_LARGE);
+                textReceipt.setTextColor(ColorStateList.valueOf(WATER_COLOR));
                 textReceipt.startAnimation(animationSet);
             }
         });
@@ -257,16 +238,8 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 textMoney.setText(ShopTab.this.money + "gp");
-                boolean success = buy(StoreItem.SUN_SMALL);
-
-                if (success) {
-                    textReceipt.setText("+" + StoreItem.SUN_SMALL.amount);
-                } else {
-                    textReceipt.setText("Not enough pollen");
-                    textReceipt.setTextSize(32);
-                }
-
-                textReceipt.setTextColor(ColorStateList.valueOf(0xFFF2941F));
+                buy(StoreItem.SUN_SMALL);
+                textReceipt.setTextColor(ColorStateList.valueOf(SUN_COLOR));
                 textReceipt.startAnimation(animationSet);
             }
         });
@@ -277,16 +250,8 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 textMoney.setText(ShopTab.this.money + "gp");
-                boolean success = buy(StoreItem.SUN_MEDIUM);
-
-                if (success) {
-                    textReceipt.setText("+" + StoreItem.SUN_MEDIUM.amount);
-                } else {
-                    textReceipt.setText("Not enough pollen");
-                    textReceipt.setTextSize(32);
-                }
-
-                textReceipt.setTextColor(ColorStateList.valueOf(0xFFF2941F));
+                buy(StoreItem.SUN_MEDIUM);
+                textReceipt.setTextColor(ColorStateList.valueOf(SUN_COLOR));
                 textReceipt.startAnimation(animationSet);
             }
         });
@@ -297,16 +262,8 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 textMoney.setText(ShopTab.this.money + "gp");
-                boolean success = buy(StoreItem.SUN_LARGE);
-
-                if (success) {
-                    textReceipt.setText("+" + StoreItem.SUN_LARGE.amount);
-                } else {
-                    textReceipt.setText("Not enough pollen");
-                    textReceipt.setTextSize(32);
-                }
-
-                textReceipt.setTextColor(ColorStateList.valueOf(0xFFF2941F));
+                buy(StoreItem.SUN_LARGE);
+                textReceipt.setTextColor(ColorStateList.valueOf(SUN_COLOR));
                 textReceipt.startAnimation(animationSet);
             }
         });
@@ -324,7 +281,7 @@ public class ShopTab extends Fragment {
         }
     }
 
-    public boolean buy(StoreItem item) {
+    public void buy(StoreItem item) {
         Log.d("ARBOR","BUY ");
 
         // If enough money to buy item
@@ -333,9 +290,10 @@ public class ShopTab extends Fragment {
             intent.putExtra("MESSAGE_TYPE", MainService.MSG_PURCHASE);
             intent.putExtra("STORE_ITEM", item);
             getActivity().startService(intent);
-            return true;
+            textReceipt.setText("+" + item.amount);
         } else {
-            return false;
+            textReceipt.setText("Not enough pollen");
+            textReceipt.setTextSize(NO_MONEY_TEXT_SIZE);
         }
     }
 }
