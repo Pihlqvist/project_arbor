@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
@@ -36,13 +37,14 @@ public class MainService extends Service {
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
     public final static int MSG_STOP = 2;
-    public final static int MSG_RESUME_HEAVY = 9;
-    public final static int MSG_RESUME_LIGHT = 10;
     public final static int MSG_UPDATE_NEED = 3;
     public final static int MSG_KM_DONE = 5;
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
+    public final static int MSG_RESUME_HEAVY = 9;
+    public final static int MSG_RESUME_LIGHT = 10;
+    public final static int MSG_BOOT = 11;
     public final static int MAIN_FOREGROUND = 111;
 
     // MainService works with following components
@@ -155,6 +157,21 @@ public class MainService extends Service {
                 tree.purchase((ShopTab.StoreItem)intent.getExtras().get("STORE_ITEM"));
                 sendToView();
                 saveGame();
+                break;
+
+            case MSG_BOOT:
+                long now = System.currentTimeMillis();
+                SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+                long then = sharedPreferences.getLong("SHUTDOWN_TIME", now); // second argument is important
+                long interval = now - then;
+                interval = interval/1000/60; // number of hours
+
+                tree.onSystemBoot((int) interval);
+
+                Intent intentToService = new Intent(this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);
+
+                startService(intentToService);
                 break;
         }
         return START_NOT_STICKY;

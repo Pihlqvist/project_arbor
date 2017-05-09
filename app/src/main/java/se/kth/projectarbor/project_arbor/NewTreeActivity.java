@@ -49,10 +49,14 @@ public class NewTreeActivity extends AppCompatActivity  {
         newTreeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Saving occurs in this order:
+                // Tree, Forecasts, Total Distance, Total Stepcount
                 DataManager.saveState(getApplicationContext(), MainService.filename,
                         new Tree(), new Environment.Forecast[]{}, new Double(0), (int) 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).commit();
                 Log.d(TAG, "new save state");
+
+                sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
 
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);

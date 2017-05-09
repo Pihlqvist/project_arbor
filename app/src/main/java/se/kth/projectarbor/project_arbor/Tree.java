@@ -380,6 +380,31 @@ public class Tree implements Serializable {
 
     }
 
+    public void onSystemBoot(int hours) {
+        int changeInWater = 0;
+        int changeInSun = 0;
 
+        switch (getTreePhase()) {
+            case SEED:
+                changeInWater = SEED_WATER_NEED*hours;
+                changeInSun = SEED_SUN_NEED*hours;
+                break;
+            case SPROUT:
+                changeInWater = SPROUT_WATER_NEED*hours;
+                changeInSun = SPROUT_SUN_NEED*hours;
+                break;
+            case SAPLING:
+                changeInWater = SAPLING_WATER_NEED*hours;
+                changeInSun = SAPLING_SUN_NEED*hours;
+                break;
+            case GROWN_TREE:
+                changeInWater = GROWN_TREE_WATER_NEED*hours;
+                changeInSun = GROWN_TREE_SUN_NEED*hours;
+                break;
+        }
+
+        changeWaterBuffer(false, changeInWater);
+        changeSunBuffer(false, changeInSun);
+    }
 
 }
