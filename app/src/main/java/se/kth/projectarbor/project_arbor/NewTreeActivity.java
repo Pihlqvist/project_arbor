@@ -80,6 +80,7 @@ public class NewTreeActivity extends AppCompatActivity  {
         });
     }
 
+    // check whether there is internet connection of wifi connection
     private  boolean  isNetworkAvailable( ) {
 
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -91,6 +92,8 @@ public class NewTreeActivity extends AppCompatActivity  {
         else
           return false;
     }
+
+    //Display a prompt which goes to internet setting if the user click ok
     public void displayPromptForEnablingInternet()
     {
 
