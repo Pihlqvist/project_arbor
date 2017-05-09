@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
@@ -49,6 +51,10 @@ public class TreeTab extends Fragment {
     private double mDistance;
     private int mStep;
 
+    private int currentPhase;
+    private int newPhase;
+    private ImageView ivTree;
+
     private class Receiver extends BroadcastReceiver {
 
         @Override
@@ -82,6 +88,8 @@ public class TreeTab extends Fragment {
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
+
+
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction("WEATHER_DATA");
@@ -91,19 +99,47 @@ public class TreeTab extends Fragment {
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
                 , MODE_PRIVATE);
 
+        // looks for the last used phase number
+        if (sharedPreferences.contains("CURRENT_TREE_PHASE")) {
+            currentPhase = sharedPreferences.getInt("CURRENT_TREE_PHASE", 1);
+        } else {
+            sharedPreferences.edit().putInt("CURRENT_TREE_PHASE", 1).apply();
+            currentPhase = 1;
+        }
+
         treeView = (TextView) view.findViewById(R.id.tvTree);
+        ivTree = (ImageView) view.findViewById(R.id.treeButton);
+        ivTree.setBackgroundResource(R.drawable.anim_seed_to_sprout);
+
+        switch (currentPhase) {
+            case 1:
+                ivTree.setImageResource(R.drawable.seed_to_sprout_01);
+                Log.d(TAG, "ivTree seed_to_sprout");
+                break;
+            case 2:
+                ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
+                Log.d(TAG, "ivTree sporut_to_sappling");
+                break;
+        }
 
         // Get first information about weather
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
             treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+            newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
             weather = (Environment.Weather) extras.get("WEATHER");
         } else {
             weather = Environment.Weather.CLOUDY;
             Log.e(TAG, "Weahter could not be found");
             // TODO: from foreground, bring info about the weather in a Intent
         }
+
+        // Animation tree
+        if (currentPhase < newPhase) {
+            treePhaseChange();
+        }
+
 
         distanceView = (TextView) view.findViewById(R.id.tvDistance);
 
@@ -216,6 +252,35 @@ public class TreeTab extends Fragment {
         }
 
         weatherLayout = layout;
+    }
+
+
+    private void treePhaseChange() {
+        switch (newPhase) {
+            case 2:
+                ivTree.setBackgroundResource(R.drawable.anim_seed_to_sprout);
+                ivTree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AnimationDrawable frameAnim = (AnimationDrawable) ivTree.getBackground();
+                        frameAnim.start();
+                        currentPhase = newPhase;
+                    }
+                });
+                break;
+
+            case 3:
+                ivTree.setBackgroundResource(R.drawable.grow_sprout_to_sapling);
+                ivTree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AnimationDrawable frameAnim = (AnimationDrawable) ivTree.getBackground();
+                        frameAnim.start();
+                        currentPhase = newPhase;
+                    }
+                });
+                break;
+        }
     }
 
 }

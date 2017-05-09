@@ -87,14 +87,15 @@ public class StatsTab extends Fragment {
                 steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");
-                }
-                else
+                } else {
                     health.setText("" + extras.getInt("HP") + "hp");
-                    phase.setText(extras.getString("PHASE"));
+                }
+                Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
+                phase.setText(pibos.toString());
 
                 // TODO: Implement AGE when functionality is ready
-                    waterAnim.setLevel(extras.getInt("WATER") * 10);
-                    sunAnim.setLevel(extras.getInt("SUN") * 10);
+                waterAnim.setLevel(extras.getInt("WATER") * 10);
+                sunAnim.setLevel(extras.getInt("SUN") * 10);
             }
         }
     }
@@ -131,7 +132,8 @@ public class StatsTab extends Fragment {
         if (extras != null) {
             health.setText("" + extras.getInt("HP") + "hp");
             steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
-            phase.setText(extras.getString("PHASE"));
+            Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
+            phase.setText(pibos.toString());
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
            // dist.setText( extras.getInt("DISTANCE"));
