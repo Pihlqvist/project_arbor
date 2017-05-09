@@ -29,6 +29,8 @@ public class StatsTab extends Fragment {
 
     // Variables and constants used for static change of buffers (no animation)
 
+    private final static String TAG = "ARBOR_STATSTAB";
+
     private TextView health;
     private TextView steps;
     private TextView phase;
@@ -77,20 +79,11 @@ public class StatsTab extends Fragment {
             DecimalFormat twoDForm = new DecimalFormat("#.0");
             Log.d("ARBOR_STATAB", "onReceive()");
 
-            // Msgs from Pedometer: steps and distance
-            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-               //dist.setText( ""+  (twoDForm.format(     extras.getDouble("TOTALDISTANCE")))); //writes out the total distance with one decimal
-            }
-            // TODO: Check that receiver message is correct new version of Pedometer is ready
-            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                //steps.setText("" + extras.getInt("TOTALSTEPCOUNT") + " steps");
-            }
-
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d("HEALTH","HEALTH");
-                dist.setText( ""+  extras.getDouble("TOTALKM")/1000);
+                dist.setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
                 steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");
@@ -112,7 +105,7 @@ public class StatsTab extends Fragment {
 
         this.view = inflater.inflate(R.layout.fragment_stats_tab, container, false);
 
-        Log.d("ARBOR_TREE_TAB", "onCreateView in tree tab");
+        Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
 

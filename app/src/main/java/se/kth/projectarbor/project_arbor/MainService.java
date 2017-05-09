@@ -192,8 +192,8 @@ public class MainService extends Service {
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
         intent.putExtra("PHASE", tree.getTreePhase().toString());
-        intent.putExtra("TOTALKM", (totalDistance + pedometer.getSessionDistance()));
-        intent.putExtra("TOTALSTEPS", (totalStepCount + pedometer.getSessionStepCount()));
+        intent.putExtra("TOTALKM", pedometer.getTotalDistance());
+        intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
@@ -208,20 +208,22 @@ public class MainService extends Service {
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
-        intentToActivity.putExtra("TOTALKM", (totalDistance + pedometer.getSessionDistance()));
-        intentToActivity.putExtra("TOTALSTEPS", (totalStepCount + pedometer.getSessionStepCount()));
+        intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
+        intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalDistance());
         startActivity(intentToActivity);
     }
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
-                environment.getForecasts(), (totalDistance+pedometer.getSessionDistance()), (totalStepCount+pedometer.getSessionStepCount()));
+                environment.getForecasts(), pedometer.getTotalDistance(), pedometer.getTotalStepCount());
     }
     //TODO: Make a pretty way of capturing expressions
     @Override
     public void onDestroy(){
         saveGame();
     }
+
+    /*  CURRENTLY NOT IN USE
     private boolean isAppOnForeground(Context context) {
         ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
@@ -236,6 +238,7 @@ public class MainService extends Service {
         }
         return false;
     }
+    */
 }
 
 
