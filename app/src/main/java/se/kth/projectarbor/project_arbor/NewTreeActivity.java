@@ -80,7 +80,7 @@ public class NewTreeActivity extends AppCompatActivity  {
         });
     }
 
-    // check whether there is internet connection of wifi connection
+    // check whether there is internet connection or wifi connection
     private  boolean  isNetworkAvailable( ) {
 
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
