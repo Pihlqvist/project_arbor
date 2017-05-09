@@ -99,15 +99,10 @@
         android:layout_marginBottom="17dp" />
 
     <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="286dp"
-        android:layout_height="346dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:srcCompat="@drawable/seed_to_sprout_01"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/tvTree" />
+        android:id="@+id/treeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/colorTransparent"/>
 
 
 </RelativeLayout>

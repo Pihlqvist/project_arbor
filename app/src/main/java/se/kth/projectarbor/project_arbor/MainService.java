@@ -30,7 +30,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
+    public final static int ALARM_HOUR = 60;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
@@ -191,7 +191,7 @@ public class MainService extends Service {
         intent.putExtra("SUN", tree.getSunLevel());
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
-        intent.putExtra("PHASE", tree.getTreePhase().toString());
+        intent.putExtra("PHASE", tree.getTreePhase());
         intent.putExtra("TOTALKM", pedometer.getTotalDistance());
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         intent.setAction(TREE_DATA);
@@ -207,7 +207,7 @@ public class MainService extends Service {
         intentToActivity.putExtra("SUN", tree.getSunLevel());
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
-        intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
+        intentToActivity.putExtra("PHASE", tree.getTreePhase());
         intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
         intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalDistance());
         startActivity(intentToActivity);
