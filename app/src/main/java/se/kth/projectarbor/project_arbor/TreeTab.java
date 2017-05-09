@@ -5,20 +5,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.*;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -30,150 +27,98 @@ import static android.content.Context.MODE_PRIVATE;
 public class TreeTab extends Fragment {
 
     private final static String TAG = "ARBOR_TREE_TAB";
-    private static int testInt;
 
     // Declaring all views and buttons
     private ToggleButton walkBtn;
-    private TextView weatherView;
-    private TextView tempView;
-    private TextView hpView;
     private TextView treeView;
-    private TextView distanceView;
-    private TextView sunView;
-    private TextView waterView;
     private View view;
 
-    private ViewGroup vgClouds;
-    private ViewGroup vgRain;
-    private ViewGroup vgSun;
+    private SunView sunView;
+    private RainView rainView;
+    private CloudView cloudView;
 
+    private TextView distanceView;
+    private TextView stepView;
 
+    private RelativeLayout weatherLayout;
 
     private Environment.Weather weather;
 
     private SharedPreferences sharedPreferences;
 
+    private double mDistance;
+    private int mStep;
 
     private class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-
             Log.d(TAG, "onReceive()");
-
+            if (intent.getAction().equals("WEATHER_DATA")) {
+                // Build new weatherLayout depending on weather
+                weather = (Environment.Weather) extras.get("WEATHER");
+                RelativeLayout layout = (RelativeLayout) view;
+                layout.removeView(weatherLayout);
+                setWeahterLayout();
+                layout.addView(weatherLayout);
+                view = layout;
+            }
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                distanceView.setText("Distance: " + extras.getDouble("DISTANCE"));
+                mDistance = extras.getDouble("DISTANCE");
+                mStep = extras.getInt("STEPCOUNT");
+                distanceView.setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
             }
 
-            if (intent.getAction().equals(MainService.TREE_DATA)) {
-                tempView.setText("Temp: " + extras.getDouble("TEMP"));
-                weatherView.setText("Weather: " + extras.getString("WEATHER"));
-                if (extras.getInt("HP") < 1) {
-                    hpView.setText("HP: DEAD");
-                } else {
-                    hpView.setText("HP: " + extras.getInt("HP"));
-                }
-                treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
-                sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
-                waterView.setText("Water Buffer: " + extras.getInt("WATER"));
-            }
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
+        //distanceView = (TextView) view.findViewById(R.id.tvDistance);
+        //stepView = (TextView) view.findViewById(R.id.tvStepCount);
         Log.d(TAG, "onCreateView in tree tab");
 
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
-
-
-
-
-
-        setupValues();
-
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
+        filter.addAction("WEATHER_DATA");
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
-        filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
                 , MODE_PRIVATE);
 
+        treeView = (TextView) view.findViewById(R.id.tvTree);
 
+        // Get first information about weather
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            hpView.setText("HP: " + extras.getInt("HP"));
             treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
-            sunView.setText("Sun Buffer: " + extras.getInt("SUN"));
-            waterView.setText("Water Buffer: " + extras.getInt("WATER"));
-            tempView.setText("Temp: " + extras.getDouble("TEMP"));
-            weatherView.setText("Weather: " + extras.getString("WEATHER"));
             weather = (Environment.Weather) extras.get("WEATHER");
-        }
-/*
-        switch (weather) {
-            case SUN:
-                vgSun = new SunViewGroup();
-                break;
-            case RAIN:
-                vgRain = new RainViewGroup();
-                break;
-            case CLOUDY:
-                vgClouds = new CloudViewGroup();
-                break;
-        }*/
-
-/*        ImageView cloud = new ImageView(getContext());
-        cloud.setImageResource(R.drawable.cloud_redspot);
-        cloud.setScaleType(ImageView.ScaleType.FIT_XY);
-        cloud.setScaleX((float) 0.5);
-        cloud.setScaleY((float) 0.5);
-
-
-        ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        cloud.setLayoutParams(layoutParams);
-
-
-
-
-        ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
-        layout.addView(cloud);*/
-
-        ConstraintLayout layout = (ConstraintLayout) view.findViewById(R.id.treefragmentlayout);
-        ConstraintLayout constraintLayout;
-        testInt = 3;
-        switch (testInt) {
-            case 1:
-                CloudView cloudView = new CloudView(getContext());
-                constraintLayout = cloudView.addViews(layout);
-                break;
-            case 2:
-                SunView sunView = new SunView(getContext());
-                constraintLayout = sunView.addViews(layout);
-                break;
-            case 3:
-                RainView rainView = new RainView(getContext());
-                constraintLayout = rainView.addViews(layout);
-            default:
-                constraintLayout = layout;
+        } else {
+            weather = Environment.Weather.CLOUDY;
+            Log.e(TAG, "Weahter could not be found");
+            // TODO: from foreground, bring info about the weather in a Intent
         }
 
+        distanceView = (TextView) view.findViewById(R.id.tvDistance);
 
-        view = constraintLayout;
+
+        // Change weather view depending on "weather"
+        weatherLayout = new RelativeLayout(getContext());
+        setWeahterLayout();
+
+        RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
+        currentLayout.addView(weatherLayout);
+        view = currentLayout;
+
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
-        if (sharedPreferences.contains("TOGGLE")) {
-            walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
-        }
         walkBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
@@ -192,28 +137,86 @@ public class TreeTab extends Fragment {
 
             }
         });
+        Button setCloudBtn = (Button) view.findViewById(R.id.setCloudBtn);
+        setCloudBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent broadcast = new Intent();
+                broadcast.setAction("WEATHER_DATA");
+                broadcast.putExtra("WEATHER", Environment.Weather.CLOUDY);
+                getContext().sendBroadcast(broadcast);
+            }
+        });
 
+        Button setRainBtn = (Button) view.findViewById(R.id.setRainBtn);
+        setRainBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent broadcast = new Intent();
+                broadcast.setAction("WEATHER_DATA");
+                broadcast.putExtra("WEATHER", Environment.Weather.RAIN);
+                getContext().sendBroadcast(broadcast);
+            }
+        });
+
+        Button setSunBtn = (Button) view.findViewById(R.id.setSunBtn);
+        setSunBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent broadcast = new Intent();
+                broadcast.setAction("WEATHER_DATA");
+                broadcast.putExtra("WEATHER", Environment.Weather.SUN);
+                getContext().sendBroadcast(broadcast);
+            }
+        });
 
 
         return view;
     }
+        @Override
+        public void onResume() {
+            super.onResume();
+            Log.d(TAG, "RESUME");
 
+            if (sharedPreferences.contains("TOGGLE")) {
+                walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
+                if(sharedPreferences.getBoolean("TOGGLE", false)) {
+                    Intent intent2 = new Intent(getActivity(), MainService.class);
+                    intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
+                    getActivity().startService(intent2);
+                }else{
+                    Intent intent3 = new Intent(getActivity(), MainService.class);
+                    intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
+                    getActivity().startService(intent3);
+                }
+            }
 
-    // Setup all the views
-    private void setupValues() {
-        weatherView = (TextView) view.findViewById(R.id.tvWeather);
-        tempView = (TextView) view.findViewById(R.id.tvTemp);
-        hpView = (TextView) view.findViewById(R.id.tvHP);
-        treeView = (TextView) view.findViewById(R.id.tvTree);
-        distanceView = (TextView) view.findViewById(R.id.tvDistance);
-        sunView = (TextView) view.findViewById(R.id.tvSun);
-        waterView = (TextView) view.findViewById(R.id.tvWater);
+        }
+    private void setWeahterLayout() {
+        RelativeLayout layout = new RelativeLayout(getContext());
+        switch (weather) {
+            case CLOUDY:
+                cloudView = new CloudView(getContext());;
+                layout = cloudView.addViews(layout);
+                break;
+            case SUN:
+                sunView = new SunView(getActivity());
+                layout = (RelativeLayout) sunView.addViews(layout);
+                break;
+            case RAIN:
+                rainView = new RainView(getActivity());
+                layout = (RelativeLayout) rainView.addViews(layout);
+                break;
+            /*case CLOUDYSUN:
+                SunView sunView1 = new SunView(getActivity());
+                CloudView cloudView1 = new CloudView(getContext());
+                layout = cloudView1.addViews(sunView1.addViews(layout));  */
+            default:
+                Log.d(TAG, "no case in weather switch");
+        }
+
+        weatherLayout = layout;
     }
 
-    @Override
-    public boolean getUserVisibleHint() {
-        Log.d(TAG, "getUserVisibleHint()");
-        return super.getUserVisibleHint();
-    }
 }
 

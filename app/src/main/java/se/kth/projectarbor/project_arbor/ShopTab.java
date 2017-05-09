@@ -39,8 +39,8 @@ public class ShopTab extends Fragment {
 
     // Add more items as needed
     public enum StoreItem {
-        WATER(10, 5),
-        SUN(12, 7);
+        WATER(300, 4),
+        SUN(200, 4);
 
         private int amount;
         private int cost;
@@ -102,7 +102,7 @@ public class ShopTab extends Fragment {
 
 
         tvMoney = (TextView) view.findViewById(R.id.tvMoney);
-        tvMoney.setText("Curreny "+this.money);
+        tvMoney.setText("Curreny "+ this.money);
 
         tvShopSun = (TextView) view.findViewById(R.id.tvShopSun);
         tvShopWater = (TextView) view.findViewById(R.id.tvShopWater);
@@ -113,7 +113,7 @@ public class ShopTab extends Fragment {
             public void onClick(View v) {
                 Log.d("ARBOR", "buy");
                 buy(StoreItem.WATER);
-                tvMoney.setText("Currency: "+money);
+                tvMoney.setText("Currency: "+ money);
                 Toast.makeText(getContext(), "Bought Water", Toast.LENGTH_SHORT).show();
             }
         });

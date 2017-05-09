@@ -23,7 +23,7 @@ import android.view.View;
 *
  */
 
-public class NewTreeActivity extends AppCompatActivity {
+public class NewTreeActivity extends AppCompatActivity  {
 
     private final static String TAG = "ARBOR_NEW_TREE";
     private Button newTreeBtn;
@@ -50,7 +50,7 @@ public class NewTreeActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DataManager.saveState(getApplicationContext(), MainService.filename,
-                        new Tree(), new Environment.Forecast[]{}, new Double(0));
+                        new Tree(), new Environment.Forecast[]{}, new Double(0), (int) 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).commit();
                 Log.d(TAG, "new save state");
 
@@ -67,5 +67,4 @@ public class NewTreeActivity extends AppCompatActivity {
             }
         });
     }
-
 }

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/treefragmentlayout"
@@ -8,6 +8,25 @@
     tools:context="se.kth.projectarbor.project_arbor.TreeTab"
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
+
+
+    <TextView
+        android:id="@+id/tvDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_above="@+id/toggleButton"
+        android:layout_alignStart="@+id/tvStepCount"
+        android:layout_marginBottom="142dp" />
+
+    <TextView
+        android:id="@+id/tvStepCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:layout_marginBottom="38dp"
+        android:layout_above="@+id/tvDistance"
+        android:layout_centerHorizontal="true" />
 
     <TextView
         android:id="@+id/tvTree"
@@ -25,86 +44,22 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/tvWeather"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weather"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/tvHP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="HP"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTemp" />
-
-    <TextView
-        android:id="@+id/tvTemp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Temperature"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvWeather" />
 
     <ToggleButton
         android:id="@+id/toggleButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:autoText="false"
         android:text="Walk"
         android:textOff="WALK"
         android:textOn="STOP"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTree" />
+        app:layout_constraintTop_toBottomOf="@+id/tvTree"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp" />
 
-    <TextView
-        android:id="@+id/tvDistance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="distance"
-        android:textColor="@color/place_autocomplete_search_text"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintHorizontal_bias="0.501"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toggleButton" />
-
-    <TextView
-        android:id="@+id/tvSun"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SunBuffer"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvHP" />
-
-    <TextView
-        android:id="@+id/tvWater"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="WaterBuffer"
-        android:textColor="@android:color/black"
-        android:textSize="18sp"
-        android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvSun" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -115,6 +70,32 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="20dp" />
 
+    <Button
+        android:id="@+id/setCloudBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CLOUD"
+        android:layout_marginStart="19dp"
+        android:layout_above="@+id/toggleButton"
+        android:layout_toEndOf="@+id/tvTree"
+        android:layout_marginBottom="13dp" />
+
+    <Button
+        android:id="@+id/setRainBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="RAIN"
+        android:layout_below="@+id/setCloudBtn"
+        android:layout_alignStart="@+id/setCloudBtn" />
+
+    <Button
+        android:id="@+id/setSunBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SUN"
+        android:layout_above="@+id/setCloudBtn"
+        android:layout_alignStart="@+id/setCloudBtn"
+        android:layout_marginBottom="17dp" />
 
 
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

@@ -1,23 +1,23 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.content.Context;
-import android.graphics.drawable.Animatable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.widget.ViewUtils;
+import android.graphics.BitmapFactory;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
+import android.view.animation.Animation;;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import java.util.Random;
 
+import static android.view.animation.AnimationUtils.currentAnimationTimeMillis;
+
 /**
  * Created by fredrik on 2017-05-04.
+ *
+ * Creates clouds and animates them
  */
 
 public class CloudView {
@@ -25,70 +25,82 @@ public class CloudView {
     private static final String TAG = "ARBOR_CLOUDVIEW";
 
     private ImageView[] clouds;
-    private ConstraintLayout.LayoutParams layoutParams;
-    private Float randomFloat;
-    private int randomInt1;
-    private int randomInt2;
+    private int[] cloudResources;
+    private RelativeLayout.LayoutParams layoutParams;
     private Random random;
 
-    private Float SCALE_MIN = (float) 0.45;
-    private Float SCALE_MAX = (float) 0.55;
+    private int screenHeight;
+    private int screenWidth;
 
-    private int POSITION_TOP = 1;
-    private int POSITION_LEFT = 1;
-    private int POSITION_RIGHT = 1;
-    private int POSITION_BOTTOM = 1;
-
-    private Animation animCloud1;
-    private Animation animCloud2;
-    private Animation animCloud3;
-
-    private TranslateAnimation animCloud;
+    private static int CLOUD_AMOUNT = 4;
 
 
     public CloudView(Context context) {
 
         random = new Random();
-        clouds = new ImageView[3];
+        clouds = new ImageView[CLOUD_AMOUNT];
+        cloudResources = new int[4];
+        cloudResources[0] = R.drawable.cloud_1;
+        cloudResources[1] = R.drawable.cloud_2;
+        cloudResources[2] = R.drawable.cloud_3;
+        cloudResources[3] = R.drawable.cloud_4;
 
-        Log.d(TAG, "CloudView construct");
+        // Get Width and Height of the available screen size of the context
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        screenHeight = displayMetrics.heightPixels;
+        screenWidth = displayMetrics.widthPixels;
+        Log.d(TAG, "Screen Width: " + screenWidth + ", Height: " + screenHeight);
 
-        animCloud = (TranslateAnimation) AnimationUtils.loadAnimation(context, R.anim.move_right);
+        // Get information about the cloud.png
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inJustDecodeBounds = true;
+        BitmapFactory.decodeResource(context.getResources(), R.drawable.cloud_1, opt);
 
-        animCloud1 = AnimationUtils.loadAnimation(context, R.anim.move_right_1);
-        animCloud2 = AnimationUtils.loadAnimation(context, R.anim.move_right_2);
-        animCloud3 = AnimationUtils.loadAnimation(context, R.anim.move_right_3);
-
-
-        layoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
 
         for (int i=0; i<clouds.length; i++) {
-            clouds[i] = new ImageView(context);
-            clouds[i].setImageResource(R.drawable.cloud_1);
 
-            randomFloat = getRandFloat(SCALE_MIN, SCALE_MAX);
-            clouds[i].setScaleX(randomFloat);
-            clouds[i].setScaleY(randomFloat);
+            // Make png to ImageView
+            ImageView cloudIV = new ImageView(context);
+            cloudIV.setImageResource(cloudResources[i]);
 
+            layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT);
 
-            clouds[i].setLayoutParams(layoutParams);
+            // This changes the size cloud with the original ratios. The width will be
+            // 30-40 % of the screens width
+            layoutParams.width = (int) (screenWidth * getRandFloat(0.3f, 0.4f));
+            layoutParams.height = (layoutParams.width * opt.outHeight) / opt.outWidth;
+            Log.d(TAG, "[Cloud "+ i + "] Width: " + layoutParams.width + ", Height: " + layoutParams.height);
+
+            cloudIV.setLayoutParams(layoutParams);
+
+            // Animates the cloud. Starts of screen and ends of screen. Y-position is random.
+            // Speed is random,
+            Float heightSpawn = getRandFloat(0f, 0.1f);
+            TranslateAnimation cloudAnimation = new TranslateAnimation(
+                    (-1f * layoutParams.width)
+                    , (1f * screenWidth)
+                    , heightSpawn * screenHeight, heightSpawn * screenHeight);
+            cloudAnimation.setDuration(getRandInt(30000, 33000));
+            cloudAnimation.setRepeatMode(Animation.RESTART);
+            cloudAnimation.setRepeatCount(Animation.INFINITE);
+            cloudAnimation.setStartTime(currentAnimationTimeMillis() + i*5000);
+
+            cloudIV.setAnimation(cloudAnimation);
+
+            clouds[i] = cloudIV;
         }
-
-        clouds[0].startAnimation(animCloud1);
-        clouds[1].startAnimation(animCloud2);
-        clouds[2].startAnimation(animCloud3);
-
-
-
 
     }
 
+    // Send the current layout and this will add all the clouds to it and return it.
+    public RelativeLayout addViews(RelativeLayout layout) {
+        layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
 
-    public ConstraintLayout addViews(ConstraintLayout layout) {
-        for (ImageView imageView : clouds) {
-            layout.addView(imageView);
-            Log.d(TAG, "addView");
+        layout.setLayoutParams(layoutParams);
+        for (ImageView cloud : clouds) {
+            layout.addView(cloud);
         }
         return layout;
     }

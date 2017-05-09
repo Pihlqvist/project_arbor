@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -35,21 +36,22 @@ public class MainService extends Service {
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
     public final static int MSG_STOP = 2;
+    public final static int MSG_RESUME_HEAVY = 9;
+    public final static int MSG_RESUME_LIGHT = 10;
     public final static int MSG_UPDATE_NEED = 3;
-
     public final static int MSG_KM_DONE = 5;
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
-
     public final static int MAIN_FOREGROUND = 111;
 
     // MainService works with following components
+    private AlarmManager alarmManager;
     private Pedometer pedometer;
     private Tree tree;
     private Environment environment;
-    private AlarmManager alarmManager;
-    private double totalDistance;
+    private double totalDistance; //distance to be stored in file and handled in mainservice
+    private int totalStepCount; //distance to be stored in file and handled in mainservice
     // end
 
     // User information  // TODO: the user should change these themself
@@ -73,10 +75,9 @@ public class MainService extends Service {
         // Instantiate objects that MainService will work with, information from previous
         // runtime are given by loadState() above
         environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
-        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance
+        pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance, totalStepCount
                 , tree.getTreePhase().getPhaseNumber());
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-
     }
 
     @Override
@@ -89,9 +90,8 @@ public class MainService extends Service {
             Log.d(TAG, "MSG: " + msg);
         }
 
+        //USED TO NOTIFY
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
-
-
         // Depending on the msg a different action is taken
         switch (msg) {
 
@@ -99,8 +99,8 @@ public class MainService extends Service {
             case MSG_START:
                 pedometer.resetAndRegister();
                 // TODO: Do we need to read here ?
-                List<Object> list = DataManager.readState(this, filename);
-                loadState(list);
+                // List<Object> list = DataManager.readState(this, filename);
+                // loadState(list);
                 startForeground();
                 break;
 
@@ -109,7 +109,18 @@ public class MainService extends Service {
                 pedometer.unregister();
                 stopForeground(true);
                 saveGame();
+                break;
 
+            // Does activity related resume HEAVY indicates that we need to setup pedometer
+            case MSG_RESUME_HEAVY:
+                pedometer.register();
+                sendToView();
+                startForeground();
+                break;
+
+            // Does activity related resume
+            case MSG_RESUME_LIGHT:
+                sendToView();
                 break;
 
             // Updates the tree, every hour. Will lower the trees needs and set a timer to do it again
@@ -118,9 +129,7 @@ public class MainService extends Service {
                 sendToView();
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
-
                 saveGame();
-
                 break;
 
             // The user have traveled 1 km and the user trees buffers will increase
@@ -128,20 +137,17 @@ public class MainService extends Service {
                 tree.bufferIncrease(environment.getWeather());
                 pedometer.setPhaseNumber(tree.getTreePhase().getPhaseNumber());
                 sendToView();
-
                 saveGame();
                 break;
 
             // Update the tree view with new information
             case MSG_UPDATE_VIEW:
                 sendToView();
-
                 break;
 
             // Start the game, this is used when the tree is first created
             case MSG_TREE_GAME:
                 startGame();
-
                 break;
 
             // Store sends this message, updates the tree with the right item
@@ -151,16 +157,14 @@ public class MainService extends Service {
                 saveGame();
                 break;
         }
-
         return START_NOT_STICKY;
     }
-
-    // Load tree and tDistance from IO
+    // Load tree and tDistance from and stepcount from IO/file
     private void loadState(List<Object> objects) {
         tree = (Tree) objects.get(0);
         totalDistance = (Double) objects.get(2);
+        totalStepCount = (int) objects.get(3);
     }
-
     // Foreground is created here
     private void startForeground() {
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
@@ -174,14 +178,11 @@ public class MainService extends Service {
                 .setContentTitle("Arbor")
                 .setContentText(getText(R.string.content_text))
                 .setContentIntent(resumePending);
-
         startForeground(MAIN_FOREGROUND, notification.build());
     }
-
-
     // TODO: Fix this with bundle
     // Update the views in the MainActivity via a broadcast
-    private void sendToView() {
+    public void sendToView() {
         Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
 
@@ -191,11 +192,11 @@ public class MainService extends Service {
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
         intent.putExtra("PHASE", tree.getTreePhase().toString());
-
+        intent.putExtra("TOTALKM", pedometer.getTotalDistance());
+        intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
-
     // Start MainActivity and give it the information it needs via an intent
     private void startGame() {
         Intent intentToActivity = new Intent(this, MainUIActivity.class);
@@ -207,16 +208,37 @@ public class MainService extends Service {
         intentToActivity.putExtra("WATER", tree.getWaterLevel());
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
-
+        intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
+        intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalDistance());
         startActivity(intentToActivity);
     }
-
-
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
-                environment.getForecasts(), pedometer.getTotalDistance());
+                environment.getForecasts(), pedometer.getTotalDistance(), pedometer.getTotalStepCount());
     }
+    //TODO: Make a pretty way of capturing expressions
+    @Override
+    public void onDestroy(){
+        saveGame();
+    }
+
+    /*  CURRENTLY NOT IN USE
+    private boolean isAppOnForeground(Context context) {
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> appProcesses = activityManager.getRunningAppProcesses();
+        if (appProcesses == null) {
+            return false;
+        }
+        final String packageName = context.getPackageName();
+        for (ActivityManager.RunningAppProcessInfo appProcess : appProcesses) {
+            if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && appProcess.processName.equals(packageName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    */
 }
 
 
