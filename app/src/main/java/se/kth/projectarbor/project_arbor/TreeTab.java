@@ -109,7 +109,7 @@ public class TreeTab extends Fragment {
 
         treeView = (TextView) view.findViewById(R.id.tvTree);
         ivTree = (ImageView) view.findViewById(R.id.treeButton);
-        ivTree.setBackgroundResource(R.drawable.anim_seed_to_sprout);
+        ivTree.setBackgroundResource(R.drawable.grow_seed_to_sprout);
 
         switch (currentPhase) {
             case 1:
