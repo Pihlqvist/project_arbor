@@ -249,14 +249,17 @@ public class TreeTab extends Fragment {
         Log.d(TAG, "setTreePhase");
         switch (phaseNumber) {
             case 1:
+                ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 ivTree.setImageResource(R.drawable.seed_to_sprout_01);
                 Log.d(TAG, "ivTree seed");
                 break;
             case 2:
+                ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
                 Log.d(TAG, "ivTree sprout");
                 break;
             case 3:
+                ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
                 Log.d(TAG, "ivTree sapling");
                 break;
