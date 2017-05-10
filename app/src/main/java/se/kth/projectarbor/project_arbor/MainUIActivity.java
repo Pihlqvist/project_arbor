@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 public class MainUIActivity extends AppCompatActivity {
 
@@ -39,7 +40,8 @@ public class MainUIActivity extends AppCompatActivity {
 
     private Snackbar snackbar;
 
-    private class ReceiverStats extends BroadcastReceiver {
+    // This receiver used by all fragments
+    private class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -60,6 +62,7 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getPhaseView().setText(extras.getString("PHASE"));
 
                 // TODO: Implement AGE when functionality is ready
+                // Updates buffers
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
             } else if (intent.getAction().equals("WEATHER_DATA")) {
@@ -70,12 +73,14 @@ public class MainUIActivity extends AppCompatActivity {
                 treeTab.setWeatherLayout();
                 layout.addView(treeTab.getWeatherLayout());
                 treeTab.setTabView(layout);
+
+            // Msgs from Pedometer
+
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 treeTab.setDistance(extras.getDouble("DISTANCE"));
                 treeTab.setSteps(extras.getInt("STEPCOUNT"));
                 treeTab.getDistanceView().setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
-                // Receives messages from pedometer as user is walking to increase money and update display
                 int money = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getTextMoney().setText("Curreny: " + money);
 
@@ -89,9 +94,6 @@ public class MainUIActivity extends AppCompatActivity {
     private ShopTab shopTab;
     private SharedPreferences sharedPreferences;
 
-    private void initializeVariables() {
-
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,18 +109,46 @@ public class MainUIActivity extends AppCompatActivity {
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
 
+        // TODO: Trigger animations in StatsTab and TreeTab with the help of addOnPageChangeListener
+
+        // Adds action when switching to certain tab. May be used to trigger animations.
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                switch(position) {
+                    case 0:
+                        Toast.makeText(MainUIActivity.this, "Tree Tab!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 1:
+                        Toast.makeText(MainUIActivity.this, "Stats Tab!", Toast.LENGTH_SHORT).show();
+                        break;
+                    case 2:
+                        Toast.makeText(MainUIActivity.this, "Shop Tab!", Toast.LENGTH_SHORT).show();
+                        break;
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        // -- BEGIN NEW CODE
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(Pedometer.STORE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
-        registerReceiver(this.new ReceiverStats(), filter);
-        // -- END NEW CODE
+        registerReceiver(this.new Receiver(), filter);
 
         // TODO: Add elements to the settings_main_settings layout
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
