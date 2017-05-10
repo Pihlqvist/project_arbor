@@ -1,12 +1,12 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -35,6 +35,10 @@ public class NewTreeActivity extends AppCompatActivity  {
     private Button newTreeBtn;
     SharedPreferences sharedPreferences = null;
 
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,9 +60,15 @@ public class NewTreeActivity extends AppCompatActivity  {
         newTreeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(!isNetworkAvailable()){
-                    displayPromptForEnablingInternet();
+                    displayMessageForEnablingInternetOrGps(Settings.ACTION_WIRELESS_SETTINGS);
                 }
+
+                else if (!isGpsAvailable()){
+                        displayMessageForEnablingInternetOrGps(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                }
+
                 else{
                 DataManager.saveState(getApplicationContext(), MainService.filename,
                         new Tree(), new Environment.Forecast[]{}, new Double(0), (int) 0);
@@ -67,7 +77,7 @@ public class NewTreeActivity extends AppCompatActivity  {
 
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
-                PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
+                 PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
@@ -93,13 +103,27 @@ public class NewTreeActivity extends AppCompatActivity  {
           return false;
     }
 
-    //Display a prompt which goes to internet setting if the user click ok
-    public void displayPromptForEnablingInternet()
-    {
+    private boolean isGpsAvailable (){
+        LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if(manager.isProviderEnabled( LocationManager.GPS_PROVIDER )){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
 
+    //Display a prompt which goes to internet setting if the user click ok
+    public void displayMessageForEnablingInternetOrGps(final String action)
+    {
+        final String message;
         final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
-        final String action = Settings.ACTION_WIRELESS_SETTINGS;
-        final String message = "Do you want open Internet Setting?";
+        if (action.equals (Settings.ACTION_WIRELESS_SETTINGS)) {
+             message = "Do you want to open Internet Setting?";
+        }
+        else  {
+        message = "Do you want to open GPS Setting?";
+    }
 
         builder.setMessage(message)
                 .setPositiveButton("OK",
