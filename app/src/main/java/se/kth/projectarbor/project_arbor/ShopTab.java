@@ -194,7 +194,7 @@ public class ShopTab extends Fragment {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
         // Else, set initial money value
         } else {
-            money = 2000;
+            money = 10;
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
         }
 

@@ -70,8 +70,8 @@ public class TreeTab extends Fragment {
                 layout.addView(weatherLayout);
                 view = layout;
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                stepView.setText(String.format("Steps: %.0f", extras.getInt("STEPCOUNT")));
-                distanceView.setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
+                stepView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
+                distanceView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d(TAG, "TREE_DATA");
                 newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();

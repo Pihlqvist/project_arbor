@@ -34,7 +34,7 @@ class Pedometer {
     private final static String TAG = "ARBOR_PEDOMETER";
     public final static String DISTANCE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.DISTANCE";
     public final static String STORE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.STORE";
-    private final static int BUFFER_CONSTANT = 10;  // TODO: change back to 1000
+    private final static int BUFFER_CONSTANT = 1000;
 
     private double height;
     private Gender gender;
