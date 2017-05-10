@@ -49,6 +49,8 @@ class SMHIParser /*implements Serializable */{
         this.rightNow = rightNow;
         String url = START_URL;
 
+        // Locale.ENGLISH is used because format() may use a e.g. comma when converting a float to
+        // a string; SMHI only understands periods
         String longitude = String.format(Locale.ENGLISH, "%.6f", LONGITUDE);
         String latitude = String.format(Locale.ENGLISH, "%.6f", LATITUDE);
 

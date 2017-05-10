@@ -158,8 +158,6 @@ public class MainService extends Service {
                 PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this.getApplicationContext(), 1, weatherIntent, 0);
 
                 sendWeatherToView(weatherPendingIntent);
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime() + (2000), weatherPendingIntent);
                 Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME");
 
                 break;
