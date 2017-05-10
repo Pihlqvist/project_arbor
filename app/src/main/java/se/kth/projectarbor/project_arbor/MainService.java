@@ -163,24 +163,32 @@ public class MainService extends Service {
 
     // Load tree and tDistance from and stepcount from IO/file
     private void loadState(List<Object> objects) {
-        if (objects.get(0) != null && objects.get(0).getClass() == Tree.class)  {
-            tree = (Tree) objects.get(0);
-        } else {
+        if (objects.size() < 4) {
             tree = new Tree();
-            Log.e(TAG, "Tree was not found in file: " + filename + ", tree = new Tree()");
-        }
-        if (objects.get(2) != null && objects.get(2).getClass() == double.class) {
-            totalDistance = (Double) objects.get(2);
-        } else {
             totalDistance = 0;
-            Log.e(TAG, "totalDistance was not found in file: " + filename + ", totalDistance = 0");
-        }
-        if (objects.get(3) != null && objects.get(3).getClass() == int.class) {
-            totalStepCount = (int) objects.get(3);
-        } else {
             totalStepCount = 0;
-            Log.e(TAG, "totalStepCount was not found in file: " + filename + ", totalStepCount = 0");
+        } else {
+            if (objects.get(0) != null && objects.get(0).getClass() == Tree.class)  {
+                tree = (Tree) objects.get(0);
+            } else {
+                tree = new Tree();
+                Log.e(TAG, "Tree was not found in file: " + filename + ", tree = new Tree()");
+            }
+            if (objects.get(2) != null && objects.get(2).getClass() == double.class) {
+                totalDistance = (Double) objects.get(2);
+            } else {
+                totalDistance = 0;
+                Log.e(TAG, "totalDistance was not found in file: " + filename + ", totalDistance = 0");
+            }
+            if (objects.get(3) != null && objects.get(3).getClass() == int.class) {
+                totalStepCount = (int) objects.get(3);
+            } else {
+                totalStepCount = 0;
+                Log.e(TAG, "totalStepCount was not found in file: " + filename + ", totalStepCount = 0");
+            }
         }
+
+
     }
 
     // Foreground is created here

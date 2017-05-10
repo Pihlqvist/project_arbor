@@ -50,21 +50,24 @@ public class NewTreeActivity extends AppCompatActivity  {
 
         setContentView(R.layout.activity_new_tree);
 
+        if (!isNetworkAvailable()) {
+            displayPromptForEnablingInternet();
+        }
+
         // If the user press this button we will save a new game state to the installation
         // folder and start the game logic and go to the main activity view.
         newTreeBtn = (Button) findViewById(R.id.new_tree_btn);
         newTreeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!isNetworkAvailable()){
-                    displayPromptForEnablingInternet();
-                }
-                else{
+
+                // Make new tree and game settings
                 DataManager.saveState(getApplicationContext(), MainService.filename,
-                        new Tree(), new Environment.Forecast[]{}, new Double(0), (int) 0);
-                sharedPreferences.edit().putBoolean("FIRST_TREE", true).commit();
+                        new Tree(), new Environment.Forecast[]{}, new Double(0), 0);
+                sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
                 Log.d(TAG, "new save state");
 
+                // Start game storage
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
                 PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
@@ -72,30 +75,31 @@ public class NewTreeActivity extends AppCompatActivity  {
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
                         System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
 
+                // Start Game
                 Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
                 startService(updateIntent);
-                }
             }
+
         });
     }
 
     // check whether there is internet connection or wifi connection
-    private  boolean  isNetworkAvailable( ) {
+    private boolean isNetworkAvailable() {
 
         ConnectivityManager connectivityManager = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             //we are connected to a network
             return  true;
+        } else {
+            return false;
         }
-        else
-          return false;
+
     }
 
     //Display a prompt which goes to internet setting if the user click ok
-    public void displayPromptForEnablingInternet()
-    {
+    public void displayPromptForEnablingInternet() {
 
         final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
         final String action = Settings.ACTION_WIRELESS_SETTINGS;
@@ -116,5 +120,6 @@ public class NewTreeActivity extends AppCompatActivity  {
                             }
                         });
         builder.create().show();
+
     }
 }
