@@ -195,6 +195,35 @@ public class TreeTab extends Fragment {
             }
         });
 
+        Button changePhaseBtn = (Button) view.findViewById(R.id.changePhaseBtn);
+        changePhaseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (currentPhase) {
+                    case 1:
+                        ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                        ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
+                        currentPhase++;
+                        break;
+                    case 2:
+                        ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                        ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
+                        currentPhase++;
+                        break;
+                    case 3:
+                        ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                        ivTree.setImageResource(R.drawable.grown_tree);
+                        currentPhase++;
+                        break;
+                    case 4:
+                        currentPhase = 1;
+                        ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                        ivTree.setImageResource(R.drawable.seed_to_sprout_01);
+                        break;
+                }
+            }
+        });
+
 
         return view;
     }

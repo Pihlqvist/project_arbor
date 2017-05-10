@@ -30,7 +30,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 60;  // TODO: changed to min for testing
+    public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything

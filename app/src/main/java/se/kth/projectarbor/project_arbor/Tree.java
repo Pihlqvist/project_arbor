@@ -19,12 +19,14 @@ public class Tree implements Serializable {
     private static final long serialVersionUID = 5911304372524803500L;
     private SharedPreferences sharedPreferences;
 
+    // TODO: fix values
+
     //Seed phase constants
     private final int SEED_WATERBUFFER_MAX = 1000;
     private final int SEED_SUNBUFFER_MAX = 1000;
     private final int SEED_HEALTHBUFFER_MAX = 1;
-    private final int SEED_WATER_NEED = 400; // need per hour
-    private final int SEED_SUN_NEED = 400; // need per hour
+    private final int SEED_WATER_NEED = 70; // need per hour
+    private final int SEED_SUN_NEED = 100; // need per hour
     private final int SEED_WATER_INTAKE = 200; // intake per kilometer
     private final int SEED_SUN_INTAKE = 100; // intake per kilometer
     private final int SEED_NEXT_PHASE = 2; // number of km where SEED goes into next phase // TODO: change 2->10

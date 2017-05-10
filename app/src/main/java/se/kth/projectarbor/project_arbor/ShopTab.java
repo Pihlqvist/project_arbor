@@ -86,7 +86,7 @@ public class ShopTab extends Fragment {
             // Receives messages from pedometer as user is walking to increase money and update display
             if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
                 money += intent.getIntExtra("MONEY", 0);
-                textMoney.setText("Curreny: " + money);
+                textMoney.setText(money + "gp");
                 sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
             // Receives messages from MainService to update display weather data
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {

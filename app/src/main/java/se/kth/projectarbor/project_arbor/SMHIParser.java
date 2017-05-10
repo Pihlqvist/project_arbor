@@ -55,6 +55,8 @@ class SMHIParser /*implements Serializable */{
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
 
+        Log.d("ARBOR_PARSER", "URL: " + url);
+
         // TODO: waiting for other thread to be done, fixme later
         new GetUrl().execute(url);
         while (forcasts == null) {
@@ -165,6 +167,7 @@ class SMHIParser /*implements Serializable */{
 
     // Decode an int between 1-15 to a specific ENUM
     private Environment.Weather decodeWeather(int code) {
+        Log.d("ARBOR_PARSER", "code: " + code);
         if(code == 1 || code == 2 || code == 3 || code == 4){
             return Environment.Weather.SUN;
         }

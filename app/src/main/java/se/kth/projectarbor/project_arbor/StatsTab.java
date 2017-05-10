@@ -96,6 +96,7 @@ public class StatsTab extends Fragment {
                 // TODO: Implement AGE when functionality is ready
                 waterAnim.setLevel(extras.getInt("WATER") * 10);
                 sunAnim.setLevel(extras.getInt("SUN") * 10);
+                Log.d(TAG, "Water: " + extras.getInt("WATER") + ", Sun: " + extras.getInt("SUN"));
             }
         }
     }
