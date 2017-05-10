@@ -25,18 +25,18 @@ public class Tree implements Serializable {
     private final int SEED_WATERBUFFER_MAX = 1000;
     private final int SEED_SUNBUFFER_MAX = 1000;
     private final int SEED_HEALTHBUFFER_MAX = 1;
-    private final int SEED_WATER_NEED = 70; // need per hour
-    private final int SEED_SUN_NEED = 100; // need per hour
+    private final int SEED_WATER_NEED = 400 / 24; // need per hour
+    private final int SEED_SUN_NEED = 400 / 24; // need per hour
     private final int SEED_WATER_INTAKE = 200; // intake per kilometer
     private final int SEED_SUN_INTAKE = 100; // intake per kilometer
-    private final int SEED_NEXT_PHASE = 2; // number of km where SEED goes into next phase // TODO: change 2->10
+    private final int SEED_NEXT_PHASE = 10; // number of km where SEED goes into next phase
 
     //Sprout phase constants
     private final int SPROUT_WATERBUFFER_MAX = 1000;
     private final int SPROUT_SUNBUFFER_MAX = 1000;
     private final int SPROUT_HEALTHBUFFER_MAX = 2;
-    private final int SPROUT_WATER_NEED = 600; // need per hour
-    private final int SPROUT_SUN_NEED = 600; // need per hour
+    private final int SPROUT_WATER_NEED = 600 / 24; // need per hour
+    private final int SPROUT_SUN_NEED = 600 / 24; // need per hour
     private final int SPROUT_WATER_INTAKE = 250; // intake per kilometer
     private final int SPROUT_SUN_INTAKE = 150; // intake per kilometer
     private final int SPROUT_NEXT_PHASE = 30; // number of km where SPROUT goes into next phase
@@ -45,8 +45,8 @@ public class Tree implements Serializable {
     private final int SAPLING_WATERBUFFER_MAX = 1000;
     private final int SAPLING_SUNBUFFER_MAX = 1000;
     private final int SAPLING_HEALTHBUFFER_MAX = 3;
-    private final int SAPLING_WATER_NEED = 800; // need per hour
-    private final int SAPLING_SUN_NEED = 800; // need per hour
+    private final int SAPLING_WATER_NEED = 800 / 24; // need per hour
+    private final int SAPLING_SUN_NEED = 800 / 24; // need per hour
     private final int SAPLING_WATER_INTAKE = 300; // intake per kilometer
     private final int SAPLING_SUN_INTAKE = 200; // intake per kilometer
     private final int SAPLING_NEXT_PHASE = 60; // number of km where SAPLING goes into next phase
@@ -55,8 +55,8 @@ public class Tree implements Serializable {
     private final int GROWN_TREE_WATERBUFFER_MAX = 1000;
     private final int GROWN_TREE_SUNBUFFER_MAX = 1000;
     private final int GROWN_TREE_HEALTHBUFFER_MAX = 4;
-    private final int GROWN_TREE_WATER_NEED = 1000; // need per hour
-    private final int GROWN_TREE_SUN_NEED = 1000; // need per hour
+    private final int GROWN_TREE_WATER_NEED = 1000 / 24; // need per hour
+    private final int GROWN_TREE_SUN_NEED = 1000 / 24; // need per hour
     private final int GROWN_TREE_WATER_INTAKE = 350; // intake per kilometer
     private final int GROWN_TREE_SUN_INTAKE = 250; // intake per kilometer
 
