@@ -5,7 +5,7 @@ import android.util.Log;
 
 import java.io.Serializable;
 
-import static android.content.Context.MODE_PRIVATE;
+import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /**
  * Created by pethrus and lovisa on 2017-04-20.

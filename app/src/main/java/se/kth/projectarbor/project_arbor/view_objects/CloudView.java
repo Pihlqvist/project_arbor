@@ -1,4 +1,4 @@
-package se.kth.projectarbor.project_arbor;
+package se.kth.projectarbor.project_arbor.view_objects;
 
 import android.content.Context;
 import android.graphics.BitmapFactory;
@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import java.util.Random;
+
+import se.kth.projectarbor.project_arbor.R;
 
 import static android.view.animation.AnimationUtils.currentAnimationTimeMillis;
 

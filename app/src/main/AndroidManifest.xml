@@ -35,9 +35,6 @@
             </intent-filter>
 
         </activity>
-        <activity android:name=".ProgressBarTest">
-
-        </activity>
     </application>
 
 </manifest>

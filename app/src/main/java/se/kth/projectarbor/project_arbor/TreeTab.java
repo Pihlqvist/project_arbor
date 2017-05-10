@@ -20,6 +20,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import se.kth.projectarbor.project_arbor.view_objects.CloudView;
+import se.kth.projectarbor.project_arbor.view_objects.RainView;
+import se.kth.projectarbor.project_arbor.view_objects.SunView;
+import se.kth.projectarbor.project_arbor.weather.Environment;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**

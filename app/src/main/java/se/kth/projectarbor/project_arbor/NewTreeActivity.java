@@ -1,6 +1,5 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -16,6 +15,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+
+import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
 * Created by Project Arbor
@@ -39,9 +40,8 @@ public class NewTreeActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         // Controls if a tree exist or not, will go to main activity if the tree exist.
-        // If a tree dose not exist it will set up the tree view.
+        // If a tree dose not exist it will set up the new tree view.
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             startService(new Intent(NewTreeActivity.this, MainService.class)

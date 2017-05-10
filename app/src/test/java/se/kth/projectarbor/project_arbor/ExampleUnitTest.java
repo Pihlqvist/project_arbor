@@ -5,7 +5,7 @@ import org.junit.Test;
 import java.io.Serializable;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /**
  * Example local unit test, which will execute on the development machine (host).
