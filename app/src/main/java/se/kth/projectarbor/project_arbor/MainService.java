@@ -33,7 +33,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
+    public final static int ALARM_HOUR = 60*60;
     public final static int ALARM_DAY = 24 * 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
@@ -58,6 +58,8 @@ public class MainService extends Service {
     private Environment.Weather lastWeather;
     private double lastTemperature;
     // end
+
+    private final Object lock = new Object();
 
     // User information  // TODO: the user should change these themself
     private static double userLength = 1.8;
@@ -136,7 +138,10 @@ public class MainService extends Service {
 
             // The user have traveled 1 km and the user trees buffers will increase
             case MSG_KM_DONE:
-                tree.bufferIncrease(environment.getWeather());
+                synchronized (lock) {
+                    tree.bufferIncrease(lastWeather);
+                }
+
                 pedometer.setPhaseNumber(tree.getTreePhase().getPhaseNumber());
                 sendToView();
 
@@ -245,8 +250,13 @@ public class MainService extends Service {
 
         @Override
         protected PendingIntent doInBackground(PendingIntent... params) {
-            lastWeather = environment.getWeather();
-            lastTemperature = environment.getTemp();
+            Environment.Weather newWeather = environment.getWeather();
+            double newTemperature = environment.getTemp();
+
+            synchronized (lock) {
+                lastWeather = newWeather;
+                lastTemperature = newTemperature;
+            }
 
             Intent intent = new Intent();
             intent.putExtra("WEATHER", lastWeather.toString());
@@ -261,7 +271,7 @@ public class MainService extends Service {
         @Override
         protected void onPostExecute(PendingIntent pendingIntent) {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + (2000), pendingIntent); // TODO: ALARM_HOUR/4 *
+                    SystemClock.elapsedRealtime() + (ALARM_HOUR/4*1000), pendingIntent);
 
             Log.d("ARBOR_WEATHER", "Exiting onPostExecute()");
         }
