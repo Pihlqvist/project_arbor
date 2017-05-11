@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -95,6 +96,10 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
+
+        //GIF tree anim
+        WebView treeWebView = (WebView) view.findViewById(R.id.webview);
+        treeWebView.loadUrl("file:///android_asset/tree_anim.htm");
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
