@@ -37,6 +37,7 @@ public class ShopTab extends Fragment {
     private final int WATER_COLOR = 0xFF00B9D3;
     private final int PURCHASE_TEXT_SIZE = 54;
     private final int NO_MONEY_TEXT_SIZE = 32;
+    private boolean animReady;
 
 
     private ImageView btnWaterSmall;
@@ -109,7 +110,7 @@ public class ShopTab extends Fragment {
         //layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
         //       ViewGroup.LayoutParams.WRAP_CONTENT);
         //textReceipt = new TextView(getActivity());
-
+        animReady = true;
         textReceipt = (TextView) view.findViewById(R.id.text_receipt);
         textReceipt.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
@@ -128,7 +129,8 @@ public class ShopTab extends Fragment {
         animationAppear.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                textReceipt.setVisibility(View.VISIBLE);
+                    animReady = false;
+                    textReceipt.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -151,6 +153,7 @@ public class ShopTab extends Fragment {
             @Override
             public void onAnimationEnd(Animation animation) {
                 textReceipt.startAnimation(animationDisappear);
+                animReady = true;
             }
 
             @Override
@@ -170,6 +173,7 @@ public class ShopTab extends Fragment {
             public void onAnimationEnd(Animation animation) {
                 textReceipt.setVisibility(View.INVISIBLE);
                 textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
+                //animReady = true;
             }
 
             @Override
@@ -256,10 +260,12 @@ public class ShopTab extends Fragment {
     // Buy item and start animation
     private void purchaseItem(StoreItem item, final int color, Animation anim) {
         Log.d("ARBOR", "purchasing");
-        buy(item);
-        textMoney.setText(ShopTab.this.money + "gp");
-        textReceipt.setTextColor(ColorStateList.valueOf(color));
-        textReceipt.startAnimation(anim);
+        if(animReady) {
+            buy(item);
+            textMoney.setText(ShopTab.this.money + "gp");
+            textReceipt.setTextColor(ColorStateList.valueOf(color));
+            textReceipt.startAnimation(anim);
+        }
     }
 
     // Returns true if possible to make purchase
