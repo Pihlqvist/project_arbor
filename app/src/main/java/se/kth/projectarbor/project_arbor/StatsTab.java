@@ -31,6 +31,8 @@ public class StatsTab extends Fragment {
 
     private final static String TAG = "ARBOR_STATSTAB";
 
+    private double mDistance;
+    private int mStepCount;
     private TextView health;
     private TextView steps;
     private TextView phase;
@@ -44,7 +46,7 @@ public class StatsTab extends Fragment {
     public static final int MAX_LEVEL = 10000;
     ImageView imgWater;
     ImageView imgSun;
-
+    ImageView phaseIcon;
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
         /*private Handler mRightHandler = new Handler();
@@ -82,6 +84,12 @@ public class StatsTab extends Fragment {
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
+
+                mDistance = extras.getDouble("TOTALKM")/1000;
+                mStepCount = extras.getInt("TOTALSTEPS");
+
+                statusImgUpd(phaseIcon);
+
                 Log.d(TAG,"HEALTH");
                 dist.setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
                 steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
@@ -92,6 +100,7 @@ public class StatsTab extends Fragment {
                 }
                 Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
                 phase.setText(pibos.toString());
+
 
                 // TODO: Implement AGE when functionality is ready
                 waterAnim.setLevel(extras.getInt("WATER") * 10);
@@ -152,13 +161,33 @@ public class StatsTab extends Fragment {
         steps = (TextView) view.findViewById(R.id.tvSteps);
         dist = (TextView) view.findViewById(R.id.tvDistance);
 
+
         imgWater = (ImageView) view.findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
-
+        phaseIcon = (ImageView) view.findViewById(R.id.ivPhaseIcon);
         waterAnim = (ClipDrawable) imgWater.getDrawable();
         waterAnim.setLevel(0);
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
+    }
+    private void statusImgUpd(ImageView v){
+        v.setImageResource(getPhaseImage());
+    }
+    // TODO : Return right images
+    private int getPhaseImage() {
+
+        if (((0 < mDistance) && mDistance < 2) || ((10 < mDistance) && mDistance < 14) || ((0 < mDistance) && mDistance < 2)) {
+            return R.drawable.total_distance_icon;
+        } else if (((2 < mDistance) && mDistance < 4) || ((14 < mDistance) && mDistance < 18) || ((36 < mDistance) && mDistance < 42)) {
+            return R.drawable.health_icon;
+        } else if (((4 < mDistance) && mDistance < 6) || ((18 < mDistance) && mDistance < 22) || ((42 < mDistance) && mDistance < 48)) {
+            return R.drawable.age_icon;
+        } else if (((6 < mDistance) && mDistance < 8) || ((22 < mDistance) && mDistance < 26) || ((48 < mDistance) && mDistance < 54)) {
+            return R.drawable.phase_icon;
+        } else if (((8 < mDistance) && mDistance < 10) || ((26 < mDistance) && mDistance < 30) || ((54 < mDistance) && mDistance < 60)) {
+            return R.drawable.phase_icon;
+        }
+        return R.drawable.health_icon;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED
@@ -211,5 +240,6 @@ public class StatsTab extends Fragment {
                 mLeftHandler.post(animateDownImage);
             }
         }*/
+
 
 }
