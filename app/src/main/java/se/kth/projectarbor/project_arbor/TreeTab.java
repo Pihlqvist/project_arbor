@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -42,8 +41,8 @@ public class TreeTab extends Fragment {
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
-    private TextView distanceView;
-    private TextView stepView;
+    private TextView distanceTextView;
+    private TextView stepTextView;
     private ImageView ivTree;
 
 
@@ -70,8 +69,8 @@ public class TreeTab extends Fragment {
                 layout.addView(weatherLayout);
                 view = layout;
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                stepView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
-                distanceView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
+                stepTextView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
+                distanceTextView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d(TAG, "TREE_DATA");
                 newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
@@ -118,8 +117,8 @@ public class TreeTab extends Fragment {
         // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
         ivTree = (ImageView) view.findViewById(R.id.treeButton);
-        distanceView = (TextView) view.findViewById(R.id.tvDistance);
-        stepView = (TextView) view.findViewById(R.id.tvStepCount);
+        distanceTextView = (TextView) view.findViewById(R.id.tvDistance);
+        stepTextView = (TextView) view.findViewById(R.id.tvStepCount);
 
         // Pick the right tree depending on the current Phase
         setTreePhase(currentPhase);
