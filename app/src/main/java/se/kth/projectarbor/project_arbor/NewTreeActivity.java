@@ -9,13 +9,13 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
-
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
@@ -72,15 +72,14 @@ public class NewTreeActivity extends AppCompatActivity  {
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
                 PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() + (MainService.ALARM_HOUR * 1000), pendingIntent);
 
                 // Start Game
                 Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
                 startService(updateIntent);
             }
-
         });
     }
 

@@ -39,7 +39,7 @@ public class Environment implements android.location.LocationListener {
 
     // Interpet SMHI symbol data
     public enum Weather {
-        SUN, RAIN, CLOUDY, NAN
+        SUN, RAIN, CLOUDY, PARTLY_CLOUDY, NOT_AVAILABLE
     }
 
     public Environment(Context context) {
@@ -78,14 +78,15 @@ public class Environment implements android.location.LocationListener {
         this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
         Log.d("ARBOR_ENV", "after parser, before forecast");
 
-        // TODO: ask for permission from the user to use internet
+        /* // TODO: ask for permission from the user to use internet
         if (forecasts.length < 1) {
             this.forecasts = parser.getForecast(Calendar.getInstance());
         } else {
             this.forecasts = forecasts;
         }
-        Log.d("ARBOR_ENV", "after forecast");
+        Log.d("ARBOR_ENV", "after forecast"); */
 
+        this.forecasts = forecasts;
         this.context = context;
     }
 
@@ -150,7 +151,7 @@ public class Environment implements android.location.LocationListener {
             Log.e("ARBOR_ENV", "catch: " + e);
         }
 
-        return Weather.NAN;
+        return Weather.NOT_AVAILABLE;
     }
 
     private double newTempForecast(Calendar rightNow) {

@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
@@ -54,22 +55,14 @@ public class TreeTab extends Fragment {
     private int currentPhase;
     private int newPhase;
 
-
+//TODO:Fix messages (Ramcin)
     private class Receiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             Log.d(TAG, "onReceive()");
-            if (intent.getAction().equals("WEATHER_DATA")) {
-                // Build new weather layout depending on weather
-                weather = (Environment.Weather) extras.get("WEATHER");
-                RelativeLayout layout = (RelativeLayout) view;
-                layout.removeView(weatherLayout);
-                setWeatherLayout();
-                layout.addView(weatherLayout);
-                view = layout;
-            } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 stepView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
                 distanceView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
@@ -78,16 +71,20 @@ public class TreeTab extends Fragment {
                 if (newPhase != currentPhase) {
                     setTreePhase(newPhase);
                 }
-
+            } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
+                Log.d("ARBOR_WEATHER", "Broadcast received");
+                // Build new weather layout depending on weather
                 // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
-                weather = (Environment.Weather) extras.get("WEATHER");
-                RelativeLayout layout = (RelativeLayout) view;
-                layout.removeView(weatherLayout);
-                setWeatherLayout();
-                layout.addView(weatherLayout);
-                view = layout;
+                Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
+                if (newWeather != weather) {
+                    weather = newWeather;
+                    RelativeLayout layout = (RelativeLayout) view;
+                    layout.removeView(weatherLayout);
+                    setWeatherLayout();
+                    layout.addView(weatherLayout);
+                    view = layout;
+                }
             }
-
         }
     }
 
@@ -98,11 +95,10 @@ public class TreeTab extends Fragment {
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
-        filter.addAction("WEATHER_DATA");  // TODO: Implement in Environment (Fredrik)
+        filter.addAction(MainService.WEATHER_DATA);
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
-
 
         sharedPreferences = getActivity().getSharedPreferences(
                 "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
@@ -130,11 +126,6 @@ public class TreeTab extends Fragment {
         if (extras != null) {
             treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
-            weather = (Environment.Weather) extras.get("WEATHER");
-        } else {
-            weather = Environment.Weather.CLOUDY;
-            Log.e(TAG, "Weather could not be found");
-            // TODO: from foreground, bring info about the weather in a Intent
         }
 
         // If the tree's phase changed it will start an animation if you press it
@@ -144,7 +135,6 @@ public class TreeTab extends Fragment {
 
         // Change weather view depending on "weather"
         weatherLayout = new RelativeLayout(getContext());
-        setWeatherLayout();
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
         view = currentLayout;
@@ -198,9 +188,10 @@ public class TreeTab extends Fragment {
     // Applying the right weather layout depending on IRL weather
     private void setWeatherLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
+
         switch (weather) {
             case CLOUDY:
-                cloudView = new CloudView(getContext());;
+                cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
                 break;
             case SUN:
@@ -211,11 +202,14 @@ public class TreeTab extends Fragment {
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
                 break;
+
             // TODO: Fix later when its implemented in Environment (Fredrik)
-            /*case CLOUDYSUN:
-                SunView sunView1 = new SunView(getActivity());
-                CloudView cloudView1 = new CloudView(getContext());
-                layout = cloudView1.addViews(sunView1.addViews(layout));  */
+            // TODO: Does it work as intended?
+            case PARTLY_CLOUDY:
+                SunView sunView = new SunView(getActivity());
+                CloudView cloudView = new CloudView(getContext());
+                layout = cloudView.addViews((RelativeLayout) sunView.addViews(layout));
+                break;
             default:
                 Log.d(TAG, "no case in weather switch");
         }
@@ -274,4 +268,3 @@ public class TreeTab extends Fragment {
     }
 
 }
-
