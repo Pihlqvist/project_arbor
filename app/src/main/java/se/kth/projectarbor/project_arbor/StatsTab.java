@@ -86,13 +86,13 @@ public class StatsTab extends Fragment {
                 } else {
                     healthTV.setText("" + extras.getInt("HP") + "hp");
                 }
-                Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
-                phaseTV.setText(pibos.toString());
 
+                phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
                 // TODO: Implement AGE when functionality is ready
                 waterAnim.setLevel(extras.getInt("WATER") * 10);
                 sunAnim.setLevel(extras.getInt("SUN") * 10);
                 Log.d(TAG, "Water: " + extras.getInt("WATER") + ", Sun: " + extras.getInt("SUN"));
+
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 Log.d(TAG,"Action() == DISTANCE_BROADCAST");
                 totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
@@ -134,8 +134,7 @@ public class StatsTab extends Fragment {
             healthTV.setText("" + extras.getInt("HP") + " HP");
             totalStepsTV.setText(String.format("%d steps", extras.getInt("TOTALSTEPS")));
             totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
-            Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
-            phaseTV.setText(pibos.toString());
+            phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
            // totalDistanceTV.setText( extras.getInt("DISTANCE"));
