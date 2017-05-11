@@ -196,6 +196,7 @@ public class MainService extends Service {
     private void startForeground() {
         // TODO: send information about weather (Fredrik)
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);
@@ -262,7 +263,6 @@ public class MainService extends Service {
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
         intent.putExtra("PHASE", tree.getTreePhase());
-        // TODO: LOOK AT getTOTAL in pedo to find out what it dose
         intent.putExtra("TOTALKM", pedometer.getTotalDistance());
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         return intent;
