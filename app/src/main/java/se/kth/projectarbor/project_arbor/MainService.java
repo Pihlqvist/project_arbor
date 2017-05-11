@@ -52,10 +52,9 @@ public class MainService extends Service {
     private Pedometer pedometer;
     private Tree tree;
     private Environment environment;
-    private double totalDistance; //distance to be stored in file and handled in mainservice
     private int totalStepCount; //steps to be stored in file and handled in mainservice
     private AlarmManager alarmManager;
-    private double totalDistance;
+    private double totalDistance; //distance to be stored in file and handled in mainservice
     private Environment.Weather lastWeather;
     private double lastTemperature;
     // end
@@ -170,7 +169,7 @@ public class MainService extends Service {
 
                 Intent weatherIntent = new Intent(MainService.this.getApplicationContext(), MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
-                PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this.getApplicationContext(), 1, weatherIntent, 0);
+                PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this, 1, weatherIntent, 0);
 
                 sendWeatherToView(weatherPendingIntent);
                 Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME");
@@ -314,10 +313,10 @@ public class MainService extends Service {
             }
 
             Intent intent = new Intent();
-            intent.putExtra("WEATHER", lastWeather.toString());
+            intent.putExtra("WEATHER", lastWeather);
             intent.putExtra("TEMP", lastTemperature);
             intent.setAction(WEATHER_DATA);
-            MainService.this.getApplicationContext().sendBroadcast(intent);
+            MainService.this.sendBroadcast(intent);
 
             return params[0];
         }
