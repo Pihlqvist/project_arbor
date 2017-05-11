@@ -7,12 +7,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-
 import java.util.List;
-
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
@@ -27,6 +27,7 @@ import se.kth.projectarbor.project_arbor.weather.Environment;
 public class MainService extends Service {
 
     public final static String TREE_DATA = "se.kth.projectarbor.project_arbor.intent.TREE_DATA";
+    public final static String WEATHER_DATA = "se.kth.projectarbor.project_arbor.intent.WEATHER_DATA";
     private final static String TAG = "ARBOR_SERVICE";
     final static String filename = "user42.dat";
 
@@ -41,20 +42,28 @@ public class MainService extends Service {
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
+    public final static int MSG_UPDATE_WEATHER_VIEW = 12;
+
     public final static int MSG_RESUME_HEAVY = 9;
     public final static int MSG_RESUME_LIGHT = 10;
     public final static int MAIN_FOREGROUND = 111;
 
     // MainService works with following components
-    private AlarmManager alarmManager;
     private Pedometer pedometer;
     private Tree tree;
     private Environment environment;
     private double totalDistance; //distance to be stored in file and handled in mainservice
     private int totalStepCount; //steps to be stored in file and handled in mainservice
+    private AlarmManager alarmManager;
+    private double totalDistance;
+    private Environment.Weather lastWeather;
+    private double lastTemperature;
     // end
 
     // User information  // TODO: the user should change these thyself  (Fredrik)
+    private final Object lock = new Object();
+
+    // User information  // TODO: the user should change these themself
     private static double userLength = 1.8;
     private static Pedometer.Gender userGender = Pedometer.Gender.MALE;
 
@@ -78,6 +87,9 @@ public class MainService extends Service {
         pedometer = new Pedometer(getApplicationContext(), userLength, userGender, totalDistance, totalStepCount
                 , tree.getTreePhase().getPhaseNumber());
         alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+        lastWeather = Environment.Weather.NOT_AVAILABLE;
+        lastTemperature = Double.NaN;
     }
 
     @Override
@@ -91,7 +103,7 @@ public class MainService extends Service {
         }
 
         //USED TO NOTIFY
-        PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+        PendingIntent pendingIntent;
         // Depending on the msg a different action is taken
         switch (msg) {
 
@@ -127,14 +139,20 @@ public class MainService extends Service {
             case MSG_UPDATE_NEED:
                 tree.update();
                 sendToView();
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingIntent);
+
+                pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() + (ALARM_HOUR * 1000), pendingIntent);
                 saveGame();
                 break;
 
             // The user have traveled 1 km and the user trees buffers will increase
             case MSG_KM_DONE:
-                tree.bufferIncrease(environment.getWeather());
+                synchronized (lock) {
+                    tree.bufferIncrease(lastWeather);
+                }
+
                 pedometer.setPhaseNumber(tree.getTreePhase().getPhaseNumber());
                 sendToView();
                 saveGame();
@@ -149,6 +167,14 @@ public class MainService extends Service {
             // Start the game, this is used when the tree is first created
             case MSG_TREE_GAME:
                 startGame();
+
+                Intent weatherIntent = new Intent(MainService.this.getApplicationContext(), MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
+                PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this.getApplicationContext(), 1, weatherIntent, 0);
+
+                sendWeatherToView(weatherPendingIntent);
+                Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME");
+
                 break;
 
             // Store sends this message, updates the tree with the right item
@@ -156,6 +182,15 @@ public class MainService extends Service {
                 tree.purchase((ShopTab.StoreItem)intent.getExtras().get("STORE_ITEM"));
                 sendToView();
                 saveGame();
+                break;
+
+            // Update the weather and temperature fields
+            case MSG_UPDATE_WEATHER_VIEW:
+                Log.d("ARBOR_WEATHER", "Retrieved MSG_UPDATE_WEATHER_VIEW");
+
+                pendingIntent = PendingIntent.getService(this.getApplicationContext(), 1, intent, 0);
+
+                sendWeatherToView(pendingIntent);
                 break;
         }
         return START_NOT_STICKY;
@@ -255,8 +290,6 @@ public class MainService extends Service {
     */
 
     private Intent putTreeInformation(Intent intent) {
-        intent.putExtra("WEATHER", environment.getWeather());
-        intent.putExtra("TEMP", environment.getTemp());
         intent.putExtra("SUN", tree.getSunLevel());
         intent.putExtra("WATER", tree.getWaterLevel());
         intent.putExtra("HP", tree.getHealth());
@@ -264,6 +297,43 @@ public class MainService extends Service {
         intent.putExtra("TOTALKM", pedometer.getTotalDistance());
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         return intent;
+    }
+
+    private class AsyncTaskRunner extends AsyncTask<PendingIntent, Void, PendingIntent> {
+
+        @Override
+        protected PendingIntent doInBackground(PendingIntent... params) {
+            Environment.Weather newWeather = environment.getWeather();
+            double newTemperature = environment.getTemp();
+
+            synchronized (lock) {
+                lastWeather = newWeather;
+                lastTemperature = newTemperature;
+
+                Log.d("ARBOR_WEATHER", lastWeather.toString() + ", temp=" + lastTemperature);
+            }
+
+            Intent intent = new Intent();
+            intent.putExtra("WEATHER", lastWeather.toString());
+            intent.putExtra("TEMP", lastTemperature);
+            intent.setAction(WEATHER_DATA);
+            MainService.this.getApplicationContext().sendBroadcast(intent);
+
+            return params[0];
+        }
+
+
+        @Override
+        protected void onPostExecute(PendingIntent pendingIntent) {
+            alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                    SystemClock.elapsedRealtime() + (ALARM_HOUR/4*1000), pendingIntent);
+
+            Log.d("ARBOR_WEATHER", "Exiting onPostExecute()");
+        }
+    }
+
+    private void sendWeatherToView(final PendingIntent pendingIntent) {
+        new AsyncTaskRunner().execute(pendingIntent);
     }
 }
 

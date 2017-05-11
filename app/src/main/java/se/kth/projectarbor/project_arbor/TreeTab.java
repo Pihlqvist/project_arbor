@@ -18,6 +18,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
@@ -54,7 +55,7 @@ public class TreeTab extends Fragment {
     private int currentPhase;
     private int newPhase;
 
-
+//TODO:Fix messages (Ramcin)
     private class Receiver extends BroadcastReceiver {
 
         @Override
@@ -88,6 +89,11 @@ public class TreeTab extends Fragment {
                 view = layout;
             }
 
+            if (intent.getAction().equals(MainService.WEATHER_DATA)) {
+                Log.d("ARBOR_WEATHER", "Broadcast received");
+                tempView.setText("Temp: " + extras.getDouble("TEMP", 0));
+                weatherView.setText("Weather: " + extras.getString("WEATHER", null));
+            }
         }
     }
 
@@ -274,4 +280,3 @@ public class TreeTab extends Fragment {
     }
 
 }
-
