@@ -5,7 +5,7 @@ import android.util.Log;
 
 import java.io.Serializable;
 
-import static android.content.Context.MODE_PRIVATE;
+import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /**
  * Created by pethrus and lovisa on 2017-04-20.
@@ -19,44 +19,46 @@ public class Tree implements Serializable {
     private static final long serialVersionUID = 5911304372524803500L;
     private SharedPreferences sharedPreferences;
 
+    // TODO: fix values
+
     //Seed phase constants
-    private final int SEED_WATERBUFFER_MAX = 20;
-    private final int SEED_SUNBUFFER_MAX = 40;
+    private final int SEED_WATERBUFFER_MAX = 1000;
+    private final int SEED_SUNBUFFER_MAX = 1000;
     private final int SEED_HEALTHBUFFER_MAX = 1;
-    private final int SEED_WATER_NEED = 1; // need per hour
-    private final int SEED_SUN_NEED = 2; // need per hour
-    private final int SEED_WATER_INTAKE = 7; // intake per kilometer
-    private final int SEED_SUN_INTAKE = 14; // intake per kilometer
-    private final int SEED_NEXT_PHASE = 7; // number of km where SEED goes into next phase
+    private final int SEED_WATER_NEED = 400 / 24; // need per hour
+    private final int SEED_SUN_NEED = 400 / 24; // need per hour
+    private final int SEED_WATER_INTAKE = 200; // intake per kilometer
+    private final int SEED_SUN_INTAKE = 100; // intake per kilometer
+    private final int SEED_NEXT_PHASE = 10; // number of km where SEED goes into next phase
 
     //Sprout phase constants
-    private final int SPROUT_WATERBUFFER_MAX = 114;
-    private final int SPROUT_SUNBUFFER_MAX = 182;
-    private final int SPROUT_HEALTHBUFFER_MAX = 3;
-    private final int SPROUT_WATER_NEED = 5; // need per hour
-    private final int SPROUT_SUN_NEED = 8; // need per hour
-    private final int SPROUT_WATER_INTAKE = 34; // intake per kilometer
-    private final int SPROUT_SUN_INTAKE = 55; // intake per kilometer
-    private final int SPROUT_NEXT_PHASE = 20; // number of km where SPROUT goes into next phase
+    private final int SPROUT_WATERBUFFER_MAX = 1000;
+    private final int SPROUT_SUNBUFFER_MAX = 1000;
+    private final int SPROUT_HEALTHBUFFER_MAX = 2;
+    private final int SPROUT_WATER_NEED = 600 / 24; // need per hour
+    private final int SPROUT_SUN_NEED = 600 / 24; // need per hour
+    private final int SPROUT_WATER_INTAKE = 250; // intake per kilometer
+    private final int SPROUT_SUN_INTAKE = 150; // intake per kilometer
+    private final int SPROUT_NEXT_PHASE = 30; // number of km where SPROUT goes into next phase
 
     //Sapling phase constants
-    private final int SAPLING_WATERBUFFER_MAX = 472;
-    private final int SAPLING_SUNBUFFER_MAX = 708;
-    private final int SAPLING_HEALTHBUFFER_MAX = 10;
-    private final int SAPLING_WATER_NEED = 20; // need per hour
-    private final int SAPLING_SUN_NEED = 30; // need per hour
-    private final int SAPLING_WATER_INTAKE = 137; // intake per kilometer
-    private final int SAPLING_SUN_INTAKE = 206; // intake per kilometer
-    private final int SAPLING_NEXT_PHASE = 50; // number of km where SAPLING goes into next phase
+    private final int SAPLING_WATERBUFFER_MAX = 1000;
+    private final int SAPLING_SUNBUFFER_MAX = 1000;
+    private final int SAPLING_HEALTHBUFFER_MAX = 3;
+    private final int SAPLING_WATER_NEED = 800 / 24; // need per hour
+    private final int SAPLING_SUN_NEED = 800 / 24; // need per hour
+    private final int SAPLING_WATER_INTAKE = 300; // intake per kilometer
+    private final int SAPLING_SUN_INTAKE = 200; // intake per kilometer
+    private final int SAPLING_NEXT_PHASE = 60; // number of km where SAPLING goes into next phase
 
     //Grown tree phase constants
-    private final int GROWN_TREE_WATERBUFFER_MAX = 950;
-    private final int GROWN_TREE_SUNBUFFER_MAX = 1186;
-    private final int GROWN_TREE_HEALTHBUFFER_MAX = 23;
-    private final int GROWN_TREE_WATER_NEED = 40; // need per hour
-    private final int GROWN_TREE_SUN_NEED = 50; // need per hour
-    private final int GROWN_TREE_WATER_INTAKE = 274; // intake per kilometer
-    private final int GROWN_TREE_SUN_INTAKE = 343; // intake per kilometer
+    private final int GROWN_TREE_WATERBUFFER_MAX = 1000;
+    private final int GROWN_TREE_SUNBUFFER_MAX = 1000;
+    private final int GROWN_TREE_HEALTHBUFFER_MAX = 4;
+    private final int GROWN_TREE_WATER_NEED = 1000 / 24; // need per hour
+    private final int GROWN_TREE_SUN_NEED = 1000 / 24; // need per hour
+    private final int GROWN_TREE_WATER_INTAKE = 350; // intake per kilometer
+    private final int GROWN_TREE_SUN_INTAKE = 250; // intake per kilometer
 
     //Tree attributes
     private Phase treePhase;
@@ -272,6 +274,7 @@ public class Tree implements Serializable {
         // Add fixed amount of resources depending on weather and phase.
         switch(weather) {
             case SUN:
+            case PARTLY_CLOUDY:
                 addSunIntake();
                 if (getSunLevel() > getSunBufferMax())
                     sunBuffer.setValue(getSunBufferMax());
@@ -365,12 +368,16 @@ public class Tree implements Serializable {
 
         switch (storeItem) {
 
-            case SUN:
+            case SUN_SMALL:
+            case SUN_MEDIUM:
+            case SUN_LARGE:
                 Log.d("ARBOR_TREE", "purchase sun");
                 sunBuffer.incrValue(storeItem.getAmount());
                 break;
 
-            case WATER:
+            case WATER_SMALL:
+            case WATER_MEDIUM:
+            case WATER_LARGE:
                 Log.d("ARBOR_TREE", "purchase water");
                 waterBuffer.incrValue(storeItem.getAmount());
                 break;

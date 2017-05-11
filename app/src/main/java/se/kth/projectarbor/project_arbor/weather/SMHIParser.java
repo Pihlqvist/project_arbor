@@ -1,4 +1,4 @@
-package se.kth.projectarbor.project_arbor;
+package se.kth.projectarbor.project_arbor.weather;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Calendar;
@@ -49,27 +48,29 @@ class SMHIParser /*implements Serializable */{
         this.rightNow = rightNow;
         String url = START_URL;
 
+        // Locale.ENGLISH is used because format() may use a e.g. comma when converting a float to
+        // a string; SMHI only understands periods
         String longitude = String.format(Locale.ENGLISH, "%.6f", LONGITUDE);
         String latitude = String.format(Locale.ENGLISH, "%.6f", LATITUDE);
 
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
 
+        Log.d("ARBOR_PARSER", "URL: " + url);
+
         // TODO: waiting for other thread to be done, fixme later
-        new GetUrl().execute(url);
-        while (forcasts == null) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        // new GetUrl().execute(url);
+
+        try {
+            JSONtostring(url);
+        } catch (Exception e) {
+            Log.e("ARBOR", e.toString());
         }
         return forcasts;
     }
 
-
-
-    private class GetUrl extends AsyncTask<String, Void, String> /*implements Serializable */{
+    /*
+    private class GetUrl extends AsyncTask<String, Void, String> {
        // private static final long serialVersionUID = 4326855909443156638L;
 
         @Override
@@ -82,7 +83,7 @@ class SMHIParser /*implements Serializable */{
             return "";
         }
 
-    }
+    }*/
 
 
     // Returns a list of Forecast objects, this method will make a connection with SMHI
@@ -165,13 +166,14 @@ class SMHIParser /*implements Serializable */{
 
     // Decode an int between 1-15 to a specific ENUM
     private Environment.Weather decodeWeather(int code) {
-        if(code == 1 || code == 2 || code == 3 || code == 4){
+        Log.d("ARBOR_PARSER", "code: " + code);
+        if(code == 1 || code == 2){
             return Environment.Weather.SUN;
-        }
-        else if(code == 5 || code == 6 || code == 7){
+        } else if (code == 3 || code == 4) {
+            return Environment.Weather.PARTLY_CLOUDY;
+        } else if(code == 5 || code == 6 || code == 7){
             return Environment.Weather.CLOUDY;
-        }
-        else {
+        } else {
             return Environment.Weather.RAIN;
         }
     }
