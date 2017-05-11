@@ -1,4 +1,4 @@
-package se.kth.projectarbor.project_arbor;
+package se.kth.projectarbor.project_arbor.view_objects;
 
 import android.app.Activity;
 import android.graphics.Point;
@@ -8,6 +8,8 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import se.kth.projectarbor.project_arbor.R;
 
 /**
  * Created by fredrik on 2017-05-05.

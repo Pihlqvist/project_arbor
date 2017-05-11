@@ -1,4 +1,4 @@
-package se.kth.projectarbor.project_arbor;
+package se.kth.projectarbor.project_arbor.weather;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -11,7 +11,6 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Calendar;
@@ -54,6 +53,8 @@ class SMHIParser /*implements Serializable */{
 
         url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
+
+        Log.d("ARBOR_PARSER", "URL: " + url);
 
         // TODO: waiting for other thread to be done, fixme later
         new GetUrl().execute(url);
@@ -165,6 +166,7 @@ class SMHIParser /*implements Serializable */{
 
     // Decode an int between 1-15 to a specific ENUM
     private Environment.Weather decodeWeather(int code) {
+        Log.d("ARBOR_PARSER", "code: " + code);
         if(code == 1 || code == 2 || code == 3 || code == 4){
             return Environment.Weather.SUN;
         }

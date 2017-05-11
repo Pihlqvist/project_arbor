@@ -1,4 +1,4 @@
-package se.kth.projectarbor.project_arbor;
+package se.kth.projectarbor.project_arbor.weather;
 
 
 import android.content.Context;

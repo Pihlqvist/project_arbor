@@ -28,9 +28,10 @@ public class MainUIActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private boolean snackbarSemaphore = false;
 
+    private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

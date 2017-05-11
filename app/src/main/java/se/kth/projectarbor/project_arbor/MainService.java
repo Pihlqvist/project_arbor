@@ -1,6 +1,5 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -13,6 +12,8 @@ import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import java.util.List;
+
+import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
 * Created by Project Arbor
@@ -30,19 +31,18 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
-    public final static int ALARM_DAY = 24 * 60 * 60;
+    public final static int ALARM_HOUR = 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
     public final static int MSG_STOP = 2;
-    public final static int MSG_RESUME_HEAVY = 9;
-    public final static int MSG_RESUME_LIGHT = 10;
     public final static int MSG_UPDATE_NEED = 3;
     public final static int MSG_KM_DONE = 5;
     public final static int MSG_UPDATE_VIEW = 6;
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
+    public final static int MSG_RESUME_HEAVY = 9;
+    public final static int MSG_RESUME_LIGHT = 10;
     public final static int MAIN_FOREGROUND = 111;
 
     // MainService works with following components
@@ -51,10 +51,10 @@ public class MainService extends Service {
     private Tree tree;
     private Environment environment;
     private double totalDistance; //distance to be stored in file and handled in mainservice
-    private int totalStepCount; //distance to be stored in file and handled in mainservice
+    private int totalStepCount; //steps to be stored in file and handled in mainservice
     // end
 
-    // User information  // TODO: the user should change these themself
+    // User information  // TODO: the user should change these thyself  (Fredrik)
     private static double userLength = 1.8;
     private static Pedometer.Gender userGender = Pedometer.Gender.MALE;
 
@@ -71,7 +71,7 @@ public class MainService extends Service {
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
 
-        // TODO: Define the order of (de)serializing objects
+        // TODO: Define the order of (de)serializing objects (Ramzin)
         // Instantiate objects that MainService will work with, information from previous
         // runtime are given by loadState() above
         environment = new Environment(getApplicationContext(), (Environment.Forecast[]) list.get(1));
@@ -98,7 +98,7 @@ public class MainService extends Service {
             // Start pedometer and start a foreground
             case MSG_START:
                 pedometer.resetAndRegister();
-                // TODO: Do we need to read here ?
+                // TODO: Do we need to read here ? (Fredrik)
                 // List<Object> list = DataManager.readState(this, filename);
                 // loadState(list);
                 startForeground();
@@ -141,6 +141,7 @@ public class MainService extends Service {
                 break;
 
             // Update the tree view with new information
+            // TODO: Same as UPDATE_LIGHT, should this be ?  (Fredrik)
             case MSG_UPDATE_VIEW:
                 sendToView();
                 break;
@@ -159,14 +160,40 @@ public class MainService extends Service {
         }
         return START_NOT_STICKY;
     }
+
     // Load tree and tDistance from and stepcount from IO/file
     private void loadState(List<Object> objects) {
-        tree = (Tree) objects.get(0);
-        totalDistance = (Double) objects.get(2);
-        totalStepCount = (int) objects.get(3);
+        if (objects.size() < 4) {
+            tree = new Tree();
+            totalDistance = 0;
+            totalStepCount = 0;
+        } else {
+            if (objects.get(0) != null && objects.get(0).getClass() == Tree.class)  {
+                tree = (Tree) objects.get(0);
+            } else {
+                tree = new Tree();
+                Log.e(TAG, "Tree was not found in file: " + filename + ", tree = new Tree()");
+            }
+            if (objects.get(2) != null && objects.get(2).getClass() == double.class) {
+                totalDistance = (Double) objects.get(2);
+            } else {
+                totalDistance = 0;
+                Log.e(TAG, "totalDistance was not found in file: " + filename + ", totalDistance = 0");
+            }
+            if (objects.get(3) != null && objects.get(3).getClass() == int.class) {
+                totalStepCount = (int) objects.get(3);
+            } else {
+                totalStepCount = 0;
+                Log.e(TAG, "totalStepCount was not found in file: " + filename + ", totalStepCount = 0");
+            }
+        }
+
+
     }
+
     // Foreground is created here
     private void startForeground() {
+        // TODO: send information about weather (Fredrik)
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
@@ -180,44 +207,31 @@ public class MainService extends Service {
                 .setContentIntent(resumePending);
         startForeground(MAIN_FOREGROUND, notification.build());
     }
-    // TODO: Fix this with bundle
+
+    // TODO: Fix this with bundle (?)
     // Update the views in the MainActivity via a broadcast
     public void sendToView() {
-        Log.d(TAG, "sendToView()");
         Intent intent = new Intent();
-
-        intent.putExtra("WEATHER", environment.getWeather());
-        intent.putExtra("TEMP", environment.getTemp());
-        intent.putExtra("SUN", tree.getSunLevel());
-        intent.putExtra("WATER", tree.getWaterLevel());
-        intent.putExtra("HP", tree.getHealth());
-        intent.putExtra("PHASE", tree.getTreePhase().toString());
-        intent.putExtra("TOTALKM", pedometer.getTotalDistance());
-        intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+        intent = putTreeInformation(intent);
         intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
+
     // Start MainActivity and give it the information it needs via an intent
     private void startGame() {
-        Intent intentToActivity = new Intent(this, MainUIActivity.class);
-        intentToActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-        intentToActivity.putExtra("WEATHER", environment.getWeather());
-        intentToActivity.putExtra("TEMP", environment.getTemp());
-        intentToActivity.putExtra("SUN", tree.getSunLevel());
-        intentToActivity.putExtra("WATER", tree.getWaterLevel());
-        intentToActivity.putExtra("HP", tree.getHealth());
-        intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
-        intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
-        intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalDistance());
-        startActivity(intentToActivity);
+        Intent intent = new Intent(this, MainUIActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent = putTreeInformation(intent);
+        startActivity(intent);
     }
+
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {
         DataManager.saveState(this, filename, tree,
                 environment.getForecasts(), pedometer.getTotalDistance(), pedometer.getTotalStepCount());
     }
-    //TODO: Make a pretty way of capturing expressions
+
+    //TODO: Make a pretty way of capturing expressions  (?)
     @Override
     public void onDestroy(){
         saveGame();
@@ -239,6 +253,18 @@ public class MainService extends Service {
         return false;
     }
     */
+
+    private Intent putTreeInformation(Intent intent) {
+        intent.putExtra("WEATHER", environment.getWeather());
+        intent.putExtra("TEMP", environment.getTemp());
+        intent.putExtra("SUN", tree.getSunLevel());
+        intent.putExtra("WATER", tree.getWaterLevel());
+        intent.putExtra("HP", tree.getHealth());
+        intent.putExtra("PHASE", tree.getTreePhase());
+        intent.putExtra("TOTALKM", pedometer.getTotalDistance());
+        intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+        return intent;
+    }
 }
 
 

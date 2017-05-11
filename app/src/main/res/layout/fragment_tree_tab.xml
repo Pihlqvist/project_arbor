@@ -14,19 +14,28 @@
         android:id="@+id/tvDistance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_above="@+id/toggleButton"
-        android:layout_alignStart="@+id/tvStepCount"
-        android:layout_marginBottom="142dp" />
+        android:text="DISTANCE"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="15dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:textColorHighlight="@color/colorWhite" />
 
     <TextView
         android:id="@+id/tvStepCount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
-        android:layout_marginBottom="38dp"
-        android:layout_above="@+id/tvDistance"
-        android:layout_centerHorizontal="true" />
+        android:text="STEP_COUNT"
+        android:layout_alignTop="@id/tvDistance"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="15dp"
+        android:textSize="20dp"
+        android:textColor="@color/colorBlack"
+        android:textColorHighlight="@color/colorWhite"
+        />
 
     <TextView
         android:id="@+id/tvTree"
@@ -42,7 +51,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
 
 
@@ -54,13 +64,13 @@
         android:text="Walk"
         android:textOff="WALK"
         android:textOn="STOP"
+        android:layout_centerHorizontal="true"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTree"
         android:layout_marginBottom="27dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true" />
-
+        />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -71,43 +81,25 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="20dp" />
 
-    <Button
-        android:id="@+id/setCloudBtn"
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="CLOUD"
-        android:layout_marginStart="19dp"
-        android:layout_above="@+id/toggleButton"
-        android:layout_toEndOf="@+id/tvTree"
-        android:layout_marginBottom="13dp" />
+        android:scaleY="2"
+        android:scaleX="2"
+        android:paddingBottom="80dp"
+        android:layout_below="@+id/tvTree"
+        android:layout_toEndOf="@+id/tvTree">
 
-    <Button
-        android:id="@+id/setRainBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="RAIN"
-        android:layout_below="@+id/setCloudBtn"
-        android:layout_alignStart="@+id/setCloudBtn" />
 
-    <Button
-        android:id="@+id/setSunBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="SUN"
-        android:layout_above="@+id/setCloudBtn"
-        android:layout_alignStart="@+id/setCloudBtn"
-        android:layout_marginBottom="17dp" />
+        <ImageButton
+            android:id="@+id/treeButton"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorTransparent" />
+    </RelativeLayout>
 
-    <ImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="286dp"
-        android:layout_height="346dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        app:srcCompat="@drawable/seed_to_sprout_01"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/tvTree" />
+
 
 
 </RelativeLayout>

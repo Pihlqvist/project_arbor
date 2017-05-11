@@ -20,6 +20,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import se.kth.projectarbor.project_arbor.view_objects.CloudView;
+import se.kth.projectarbor.project_arbor.view_objects.RainView;
+import se.kth.projectarbor.project_arbor.view_objects.SunView;
+import se.kth.projectarbor.project_arbor.weather.Environment;
+
 import static android.content.Context.MODE_PRIVATE;
 
 /**
@@ -34,22 +39,21 @@ public class TreeTab extends Fragment {
     private ToggleButton walkBtn;
     private TextView treeView;
     private View view;
-
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
-
     private TextView distanceView;
     private TextView stepView;
+    private ImageView ivTree;
+
 
     private RelativeLayout weatherLayout;
-
     private Environment.Weather weather;
-
     private SharedPreferences sharedPreferences;
 
-    private double mDistance;
-    private int mStep;
+    private int currentPhase;
+    private int newPhase;
+
 
     private class Receiver extends BroadcastReceiver {
 
@@ -58,18 +62,30 @@ public class TreeTab extends Fragment {
             Bundle extras = intent.getExtras();
             Log.d(TAG, "onReceive()");
             if (intent.getAction().equals("WEATHER_DATA")) {
-                // Build new weatherLayout depending on weather
+                // Build new weather layout depending on weather
                 weather = (Environment.Weather) extras.get("WEATHER");
                 RelativeLayout layout = (RelativeLayout) view;
                 layout.removeView(weatherLayout);
-                setWeahterLayout();
+                setWeatherLayout();
                 layout.addView(weatherLayout);
                 view = layout;
-            }
-            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                mDistance = extras.getDouble("DISTANCE");
-                mStep = extras.getInt("STEPCOUNT");
-                distanceView.setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
+            } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+                stepView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
+                distanceView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
+            } else if (intent.getAction().equals(MainService.TREE_DATA)) {
+                Log.d(TAG, "TREE_DATA");
+                newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
+                if (newPhase != currentPhase) {
+                    setTreePhase(newPhase);
+                }
+
+                // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
+                weather = (Environment.Weather) extras.get("WEATHER");
+                RelativeLayout layout = (RelativeLayout) view;
+                layout.removeView(weatherLayout);
+                setWeatherLayout();
+                layout.addView(weatherLayout);
+                view = layout;
             }
 
         }
@@ -78,54 +94,57 @@ public class TreeTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //distanceView = (TextView) view.findViewById(R.id.tvDistance);
-        //stepView = (TextView) view.findViewById(R.id.tvStepCount);
-        Log.d(TAG, "onCreateView in tree tab");
-
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
-
-        // Animation tree
-        final ImageView ivTree = (ImageView) view.findViewById(R.id.imageButton);
-        ivTree.setBackgroundResource(R.drawable.grow_seed_to_sprout);
-        ivTree.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                AnimationDrawable frameAnim = (AnimationDrawable) ivTree.getBackground();
-                frameAnim.start();
-
-            }
-        });
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
-        filter.addAction("WEATHER_DATA");
+        filter.addAction("WEATHER_DATA");  // TODO: Implement in Environment (Fredrik)
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
+        filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
-        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
-                , MODE_PRIVATE);
 
+        sharedPreferences = getActivity().getSharedPreferences(
+                "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+
+        // looks for the last used phase number
+        if (sharedPreferences.contains("CURRENT_TREE_PHASE")) {
+            currentPhase = sharedPreferences.getInt("CURRENT_TREE_PHASE", 1);
+        } else {
+            sharedPreferences.edit().putInt("CURRENT_TREE_PHASE", 1).apply();
+            currentPhase = 1;
+        }
+
+        // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
+        ivTree = (ImageView) view.findViewById(R.id.treeButton);
+        distanceView = (TextView) view.findViewById(R.id.tvDistance);
+        stepView = (TextView) view.findViewById(R.id.tvStepCount);
+
+        // Pick the right tree depending on the current Phase
+        setTreePhase(currentPhase);
 
         // Get first information about weather
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
             treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+            newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
             weather = (Environment.Weather) extras.get("WEATHER");
         } else {
             weather = Environment.Weather.CLOUDY;
-            Log.e(TAG, "Weahter could not be found");
+            Log.e(TAG, "Weather could not be found");
             // TODO: from foreground, bring info about the weather in a Intent
         }
 
-        distanceView = (TextView) view.findViewById(R.id.tvDistance);
-
+        // If the tree's phase changed it will start an animation if you press it
+        if (currentPhase < newPhase) {
+            //treePhaseChange();
+        }
 
         // Change weather view depending on "weather"
         weatherLayout = new RelativeLayout(getContext());
-        setWeahterLayout();
-
+        setWeatherLayout();
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
         view = currentLayout;
@@ -151,62 +170,33 @@ public class TreeTab extends Fragment {
 
             }
         });
-        Button setCloudBtn = (Button) view.findViewById(R.id.setCloudBtn);
-        setCloudBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent broadcast = new Intent();
-                broadcast.setAction("WEATHER_DATA");
-                broadcast.putExtra("WEATHER", Environment.Weather.CLOUDY);
-                getContext().sendBroadcast(broadcast);
-            }
-        });
-
-        Button setRainBtn = (Button) view.findViewById(R.id.setRainBtn);
-        setRainBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent broadcast = new Intent();
-                broadcast.setAction("WEATHER_DATA");
-                broadcast.putExtra("WEATHER", Environment.Weather.RAIN);
-                getContext().sendBroadcast(broadcast);
-            }
-        });
-
-        Button setSunBtn = (Button) view.findViewById(R.id.setSunBtn);
-        setSunBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent broadcast = new Intent();
-                broadcast.setAction("WEATHER_DATA");
-                broadcast.putExtra("WEATHER", Environment.Weather.SUN);
-                getContext().sendBroadcast(broadcast);
-            }
-        });
-
 
         return view;
     }
-        @Override
-        public void onResume() {
-            super.onResume();
-            Log.d(TAG, "RESUME");
 
-            if (sharedPreferences.contains("TOGGLE")) {
-                walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
-                if(sharedPreferences.getBoolean("TOGGLE", false)) {
-                    Intent intent2 = new Intent(getActivity(), MainService.class);
-                    intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
-                    getActivity().startService(intent2);
-                }else{
-                    Intent intent3 = new Intent(getActivity(), MainService.class);
-                    intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
-                    getActivity().startService(intent3);
-                }
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "RESUME");
+
+        // Remember toggle button state
+        if (sharedPreferences.contains("TOGGLE")) {
+            walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
+            if(sharedPreferences.getBoolean("TOGGLE", false)) {
+                Intent intent2 = new Intent(getActivity(), MainService.class);
+                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
+                getActivity().startService(intent2);
+            }else{
+                Intent intent3 = new Intent(getActivity(), MainService.class);
+                intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
+                getActivity().startService(intent3);
             }
-
         }
-    private void setWeahterLayout() {
+
+    }
+
+    // Applying the right weather layout depending on IRL weather
+    private void setWeatherLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
         switch (weather) {
             case CLOUDY:
@@ -221,6 +211,7 @@ public class TreeTab extends Fragment {
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
                 break;
+            // TODO: Fix later when its implemented in Environment (Fredrik)
             /*case CLOUDYSUN:
                 SunView sunView1 = new SunView(getActivity());
                 CloudView cloudView1 = new CloudView(getContext());
@@ -228,8 +219,58 @@ public class TreeTab extends Fragment {
             default:
                 Log.d(TAG, "no case in weather switch");
         }
-
         weatherLayout = layout;
+    }
+
+    // Shows the right tree
+    private void setTreePhase(int phaseNumber) {
+        Log.d(TAG, "setTreePhase");
+        switch (phaseNumber) {
+            case 1:
+                ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                ivTree.setImageResource(R.drawable.seed_to_sprout_01);
+                Log.d(TAG, "ivTree seed");
+                break;
+            case 2:
+                ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
+                Log.d(TAG, "ivTree sprout");
+                break;
+            case 3:
+                ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
+                Log.d(TAG, "ivTree sapling");
+                break;
+        }
+    }
+
+    // TODO: FIX BACKGROUND RESOURCE, CURRENTLY USING ALOT OF MEMORY
+    private void treePhaseChange() {
+        switch (newPhase) {
+            case 2:
+                ivTree.setBackgroundResource(R.drawable.anim_seed_to_sprout);
+                ivTree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AnimationDrawable frameAnim = (AnimationDrawable) ivTree.getBackground();
+                        frameAnim.start();
+                        currentPhase = newPhase;
+                    }
+                });
+                break;
+
+            case 3:
+                ivTree.setBackgroundResource(R.drawable.grow_sprout_to_sapling);
+                ivTree.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AnimationDrawable frameAnim = (AnimationDrawable) ivTree.getBackground();
+                        frameAnim.start();
+                        currentPhase = newPhase;
+                    }
+                });
+                break;
+        }
     }
 
 }

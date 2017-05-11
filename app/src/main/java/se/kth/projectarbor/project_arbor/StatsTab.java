@@ -77,24 +77,26 @@ public class StatsTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             DecimalFormat twoDForm = new DecimalFormat("#.0");
-            Log.d("ARBOR_STATAB", "onReceive()");
+            Log.d(TAG, "onReceive()");
 
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d("HEALTH","HEALTH");
+                Log.d(TAG,"HEALTH");
                 dist.setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
                 steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
                     health.setText("DEAD");
-                }
-                else
+                } else {
                     health.setText("" + extras.getInt("HP") + "hp");
-                    phase.setText(extras.getString("PHASE"));
+                }
+                Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
+                phase.setText(pibos.toString());
 
                 // TODO: Implement AGE when functionality is ready
-                    waterAnim.setLevel(extras.getInt("WATER") * 10);
-                    sunAnim.setLevel(extras.getInt("SUN") * 10);
+                waterAnim.setLevel(extras.getInt("WATER") * 10);
+                sunAnim.setLevel(extras.getInt("SUN") * 10);
+                Log.d(TAG, "Water: " + extras.getInt("WATER") + ", Sun: " + extras.getInt("SUN"));
             }
         }
     }
@@ -131,7 +133,8 @@ public class StatsTab extends Fragment {
         if (extras != null) {
             health.setText("" + extras.getInt("HP") + "hp");
             steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
-            phase.setText(extras.getString("PHASE"));
+            Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
+            phase.setText(pibos.toString());
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
            // dist.setText( extras.getInt("DISTANCE"));
