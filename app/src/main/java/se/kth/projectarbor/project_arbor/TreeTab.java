@@ -62,15 +62,7 @@ public class TreeTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             Log.d(TAG, "onReceive()");
-            if (intent.getAction().equals("WEATHER_DATA")) {
-                // Build new weather layout depending on weather
-                weather = (Environment.Weather) extras.get("WEATHER");
-                RelativeLayout layout = (RelativeLayout) view;
-                layout.removeView(weatherLayout);
-                setWeatherLayout();
-                layout.addView(weatherLayout);
-                view = layout;
-            } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 stepTextView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
                 distanceTextView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
@@ -84,7 +76,7 @@ public class TreeTab extends Fragment {
                 // Build new weather layout depending on weather
                 // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
                 Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
-                if (newWeather != weather) {
+                if (true/*newWeather != weather*/) { // TODO: change back after
                     weather = newWeather;
                     RelativeLayout layout = (RelativeLayout) view;
                     layout.removeView(weatherLayout);
