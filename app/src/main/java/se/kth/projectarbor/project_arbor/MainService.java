@@ -256,6 +256,8 @@ public class MainService extends Service {
             synchronized (lock) {
                 lastWeather = newWeather;
                 lastTemperature = newTemperature;
+
+                Log.d("ARBOR_WEATHER", lastWeather.toString() + ", temp=" + lastTemperature);
             }
 
             Intent intent = new Intent();
