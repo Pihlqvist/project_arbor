@@ -198,6 +198,7 @@ public class MainService extends Service {
     // Load tree and tDistance from and stepcount from IO/file
     private void loadState(List<Object> objects) {
         if (objects.size() < 4) {
+            Log.e(TAG, "objects in loadState was below 4, so new variables was made");
             tree = new Tree();
             totalDistance = 0;
             totalStepCount = 0;
@@ -208,13 +209,13 @@ public class MainService extends Service {
                 tree = new Tree();
                 Log.e(TAG, "Tree was not found in file: " + filename + ", tree = new Tree()");
             }
-            if (objects.get(2) != null && objects.get(2).getClass() == double.class) {
-                totalDistance = (Double) objects.get(2);
+            if (objects.get(2) != null /* && objects.get(2).getClass() == double.class */) { //TODO: getClass not working
+                totalDistance = (double) objects.get(2);
             } else {
                 totalDistance = 0;
                 Log.e(TAG, "totalDistance was not found in file: " + filename + ", totalDistance = 0");
             }
-            if (objects.get(3) != null && objects.get(3).getClass() == int.class) {
+            if (objects.get(3) != null /* && objects.get(3).getClass() == int.class */) { //TODO: getClass not working
                 totalStepCount = (int) objects.get(3);
             } else {
                 totalStepCount = 0;
@@ -229,6 +230,7 @@ public class MainService extends Service {
     private void startForeground() {
         // TODO: send information about weather (Fredrik)
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);

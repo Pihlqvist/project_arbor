@@ -43,8 +43,8 @@ public class TreeTab extends Fragment {
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
-    private TextView distanceView;
-    private TextView stepView;
+    private TextView distanceTextView;
+    private TextView stepTextView;
     private ImageView ivTree;
 
 
@@ -62,9 +62,17 @@ public class TreeTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             Log.d(TAG, "onReceive()");
-            if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                stepView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
-                distanceView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
+            if (intent.getAction().equals("WEATHER_DATA")) {
+                // Build new weather layout depending on weather
+                weather = (Environment.Weather) extras.get("WEATHER");
+                RelativeLayout layout = (RelativeLayout) view;
+                layout.removeView(weatherLayout);
+                setWeatherLayout();
+                layout.addView(weatherLayout);
+                view = layout;
+            } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+                stepTextView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
+                distanceTextView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d(TAG, "TREE_DATA");
                 newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
@@ -85,6 +93,7 @@ public class TreeTab extends Fragment {
                     view = layout;
                 }
             }
+
         }
     }
 
@@ -100,6 +109,7 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
+
         sharedPreferences = getActivity().getSharedPreferences(
                 "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
 
@@ -114,8 +124,8 @@ public class TreeTab extends Fragment {
         // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
         ivTree = (ImageView) view.findViewById(R.id.treeButton);
-        distanceView = (TextView) view.findViewById(R.id.tvDistance);
-        stepView = (TextView) view.findViewById(R.id.tvStepCount);
+        distanceTextView = (TextView) view.findViewById(R.id.tvDistance);
+        stepTextView = (TextView) view.findViewById(R.id.tvStepCount);
 
         // Pick the right tree depending on the current Phase
         setTreePhase(currentPhase);
@@ -168,6 +178,7 @@ public class TreeTab extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "RESUME");
+
 
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
@@ -268,3 +279,4 @@ public class TreeTab extends Fragment {
     }
 
 }
+
