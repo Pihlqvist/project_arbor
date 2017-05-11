@@ -77,12 +77,12 @@ public class StatsTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             DecimalFormat twoDForm = new DecimalFormat("#.0");
-            Log.d("ARBOR_STATAB", "onReceive()");
+            Log.d(TAG, "onReceive()");
 
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d("HEALTH","HEALTH");
+                Log.d(TAG,"HEALTH");
                 dist.setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
                 steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
