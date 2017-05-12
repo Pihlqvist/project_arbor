@@ -86,38 +86,47 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TableRow android:gravity="center_horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="sans-serif"
+                    android:gravity="center|start"
                     android:text="Steps"
                     android:textColor="@color/colorBlack"
                     android:textColorHighlight="@color/colorWhite"
                     android:textSize="20sp"
-                    android:gravity="center|start"
-                    android:layout_marginEnd="5dp"/>
+                    android:typeface="serif" />
+
                 <TextView
                     android:id="@+id/tvStepCount"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
                     android:gravity="center|start"
                     android:text="0"
-                    android:textSize="20sp"
-                    android:layout_gravity="center_vertical"/>
+                    android:textSize="20sp" />
             </TableRow>
             <TableRow android:gravity="center_horizontal"
                 android:layout_marginTop="7dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="7dp"
+                    android:fontFamily="sans-serif"
                     android:text="Distance"
                     android:textColor="@color/colorBlack"
                     android:textColorHighlight="@color/colorWhite"
-                    android:textSize="20sp"
-                    android:layout_marginEnd="7dp"/>
+                    android:textSize="20sp" />
+
                 <TextView
                     android:id="@+id/tvDistance"
+                    android:layout_gravity="center_vertical"
+                    android:fontFamily="sans-serif"
                     android:gravity="center|start"
                     android:text="0 km"
-                    android:layout_gravity="center_vertical"
-                    android:textSize="20sp"/>
+                    android:textSize="20sp" />
             </TableRow>
         </TableLayout>
     </RelativeLayout>
