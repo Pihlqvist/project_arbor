@@ -124,8 +124,9 @@ public class MainService extends Service {
 
             // Does activity related resume HEAVY indicates that we need to setup pedometer
             case MSG_RESUME_HEAVY:
-                pedometer.register();
+                pedometer.register();  // TODO: testing without
                 sendToView();
+                sendDistanceInfo();
                 startForeground();
                 break;
 
@@ -300,6 +301,12 @@ public class MainService extends Service {
         return intent;
     }
 
+    private Intent putWeatherInformation(Intent intent) {
+        intent.putExtra("WEATHER", environment.getWeather());
+        intent.putExtra("TEMP", environment.getTemp());
+        return intent;
+    }
+
     private class AsyncTaskRunner extends AsyncTask<PendingIntent, Void, PendingIntent> {
 
         @Override
@@ -335,6 +342,15 @@ public class MainService extends Service {
 
     private void sendWeatherToView(final PendingIntent pendingIntent) {
         new AsyncTaskRunner().execute(pendingIntent);
+    }
+
+    private void sendDistanceInfo() {
+        Intent intent = new Intent();
+        intent.setAction(Pedometer.DISTANCE_BROADCAST);
+        intent.putExtra("DISTANCE", pedometer.getSessionDistance());
+        intent.putExtra("STEPCOUNT", pedometer.getSessionStepCount());
+        MainService.this.sendBroadcast(intent);
+
     }
 }
 

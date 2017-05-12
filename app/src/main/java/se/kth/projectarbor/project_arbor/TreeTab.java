@@ -126,7 +126,7 @@ public class TreeTab extends Fragment {
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+            treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
         }
 
@@ -140,6 +140,12 @@ public class TreeTab extends Fragment {
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
         view = currentLayout;
+
+        // Sends message to MainService and asks for weather
+        if (weather == null) {
+            getActivity().startService(new Intent(getActivity(), MainService.class)
+                    .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW));
+        }
 
 
         // The user can toggle to either collect "distance" or not
@@ -177,7 +183,8 @@ public class TreeTab extends Fragment {
             walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
             if(sharedPreferences.getBoolean("TOGGLE", false)) {
                 Intent intent2 = new Intent(getActivity(), MainService.class);
-                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
+                // TODO: Was "MSG_RESUME_HEAVY" before. Dint update stats tab correctly (Fredrik)
+                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
                 getActivity().startService(intent2);
             }else{
                 Intent intent3 = new Intent(getActivity(), MainService.class);

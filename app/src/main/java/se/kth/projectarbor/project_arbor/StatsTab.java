@@ -80,7 +80,6 @@ public class StatsTab extends Fragment {
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d(TAG,"Action() == TREE_DATA");
                 if (extras.getInt("HP") < 1) {
                     healthTV.setText("DEAD");
                 } else {
@@ -95,7 +94,6 @@ public class StatsTab extends Fragment {
                 totalStepsTV.setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
 
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                Log.d(TAG,"Action() == DISTANCE_BROADCAST");
                 totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
                 totalStepsTV.setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
             }
@@ -132,6 +130,7 @@ public class StatsTab extends Fragment {
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
+            Log.d(TAG, "Setup from Intent");
             healthTV.setText("" + extras.getInt("HP") + " HP");
             totalStepsTV.setText(String.format("%d steps", extras.getInt("TOTALSTEPS")));
             totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
