@@ -220,19 +220,19 @@ public class StatsTab extends Fragment {
 
     // TODO: Change to the right names
     TextView getDistanceView() {
-        return dist;
+        return totalDistanceTV;
     }
 
     TextView getStepsView() {
-        return steps;
+        return totalStepsTV;
     }
 
     TextView getHealthView() {
-        return health;
+        return healthTV;
     }
 
     TextView getPhaseView() {
-        return phase;
+        return phaseTV;
     }
 
     ClipDrawable getWaterAnim() {

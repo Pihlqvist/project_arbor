@@ -93,10 +93,11 @@ public class TreeTab extends Fragment {
                     view = layout;
                 }
             }
-            */
+
 
         }
     }
+    */
 
     @Nullable
     @Override
@@ -235,7 +236,7 @@ public class TreeTab extends Fragment {
     }
 
     // Applying the right weather layout depending on IRL weather
-    private void setWeatherLayout() {
+    void setWeatherLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
 
         switch (weather) {
@@ -284,16 +285,13 @@ public class TreeTab extends Fragment {
     }
 
     TextView getDistanceView() {
-        return distanceView;
+        return distanceTextView;
     }
 
-    void setDistance(double newDistance) {
-        mDistance = newDistance;
+    TextView getStepView() {
+        return stepTextView;
     }
 
-    void setSteps(int newSteps) {
-        mStep = newSteps;
-    }
 
 
     // Shows the right tree

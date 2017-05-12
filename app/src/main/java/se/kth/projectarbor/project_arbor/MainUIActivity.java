@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -66,7 +67,7 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
             } else if (intent.getAction().equals("WEATHER_DATA")) {
                 // Build new weatherLayout depending on weather
-                treeTab.setWeather((Environment.Weather) extras.get("WEATHER"));
+                treeTab.setWeather((se.kth.projectarbor.project_arbor.weather.Environment.Weather) extras.get("WEATHER"));
                 RelativeLayout layout = (RelativeLayout) treeTab.getTabView();
                 layout.removeView(treeTab.getWeatherLayout());
                 treeTab.setWeatherLayout();
@@ -76,9 +77,8 @@ public class MainUIActivity extends AppCompatActivity {
             // Msgs from Pedometer
 
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                treeTab.setDistance(extras.getDouble("DISTANCE"));
-                treeTab.setSteps(extras.getInt("STEPCOUNT"));
-                treeTab.getDistanceView().setText(String.format("Distance: %.2f",extras.getDouble("DISTANCE")));
+                treeTab.getStepView().setText(String.format("%d", extras.getInt("STEPCOUNT")));
+                treeTab.getDistanceView().setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
                 int money = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getTextMoney().setText("Curreny: " + money);
