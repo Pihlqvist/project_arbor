@@ -17,13 +17,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
  * Edited by Jospeh Ariss and Pethrus Gardborn on 4/5/2017
- * Edited by Lazar Cerovic and Patrik Eriksson on 12/5/2017
+ * Edited by Lazar Eriksson and Patrik Cerovic on 12/5/2017
  */
 
 public class StatsTab extends Fragment {
@@ -76,7 +79,7 @@ public class StatsTab extends Fragment {
         private int toLevel = 0;*/
 
 
-
+/*  // TODO: See if MainUI does this correctly
     private class ReceiverStats extends BroadcastReceiver {
 
         @Override
@@ -115,7 +118,7 @@ public class StatsTab extends Fragment {
             }
         }
     }
-
+*/
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -126,12 +129,13 @@ public class StatsTab extends Fragment {
 
         setupValues();
 
+        /* // TODO: See if it works after intergirsh
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new ReceiverStats(), filter);
-
+        */
         // TEST to set levels manually
 
 //          waterAnim.setLevel(5000);
@@ -212,6 +216,31 @@ public class StatsTab extends Fragment {
 
         }
         return R.drawable.phase_icon;
+    }
+
+    // TODO: Change to the right names
+    TextView getDistanceView() {
+        return dist;
+    }
+
+    TextView getStepsView() {
+        return steps;
+    }
+
+    TextView getHealthView() {
+        return health;
+    }
+
+    TextView getPhaseView() {
+        return phase;
+    }
+
+    ClipDrawable getWaterAnim() {
+        return waterAnim;
+    }
+
+    ClipDrawable getSunAnim() {
+        return sunAnim;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED

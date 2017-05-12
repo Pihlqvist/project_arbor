@@ -42,6 +42,7 @@ public class TreeTab extends Fragment {
     private ToggleButton walkBtn;
     private TextView treeView;
     private View view;
+
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
@@ -61,7 +62,8 @@ public class TreeTab extends Fragment {
     private int currentPhase;
     private int newPhase;
 
-//TODO:Fix messages (Ramcin)
+    /* // TODO: See so it works after integrish
+    //TODO:Fix messages (Ramcin)
     private class Receiver extends BroadcastReceiver {
 
         @Override
@@ -82,7 +84,7 @@ public class TreeTab extends Fragment {
                 // Build new weather layout depending on weather
                 // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
                 Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
-                if (true/*newWeather != weather*/) { // TODO: change back after
+                if (true) { // TODO: change to goodie (Fredrik)
                     weather = newWeather;
                     RelativeLayout layout = (RelativeLayout) view;
                     layout.removeView(weatherLayout);
@@ -91,6 +93,7 @@ public class TreeTab extends Fragment {
                     view = layout;
                 }
             }
+            */
 
         }
     }
@@ -100,16 +103,17 @@ public class TreeTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
+        /* // TODO: See if it works after integration
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(MainService.WEATHER_DATA);
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
+        */
 
-
-        sharedPreferences = getActivity().getSharedPreferences(
-                "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
+        , MODE_PRIVATE);
 
         // looks for the last used phase number
         if (sharedPreferences.contains("CURRENT_TREE_PHASE")) {
@@ -258,8 +262,39 @@ public class TreeTab extends Fragment {
             default:
                 Log.d(TAG, "no case in weather switch");
         }
+
         weatherLayout = layout;
     }
+
+    // TODO: Fix the names
+    void setWeather(Environment.Weather newWeather) {
+        weather = newWeather;
+    }
+
+    ViewGroup getWeatherLayout() {
+        return weatherLayout;
+    }
+
+    View getTabView() {
+        return view;
+    }
+
+    void setTabView(View newView) {
+        view = newView;
+    }
+
+    TextView getDistanceView() {
+        return distanceView;
+    }
+
+    void setDistance(double newDistance) {
+        mDistance = newDistance;
+    }
+
+    void setSteps(int newSteps) {
+        mStep = newSteps;
+    }
+
 
     // Shows the right tree
     private void setTreePhase(int phaseNumber) {
