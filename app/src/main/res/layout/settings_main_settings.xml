@@ -1,41 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
 
-    <Button
-        android:id="@+id/NO_SOUND"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+    <TableRow>
 
-        android:layout_alignBaseline="@+id/SOME_SOUND"
-        android:layout_alignBottom="@+id/SOME_SOUND"
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btnAbout"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:text="@string/about"
+                android:layout_weight="1" />
 
-        android:onClick="soundZERO"
-        android:text=" SOUND 0%   " />
-    <Button
+        </TableRow>
+
+        <TableRow>
+            <Button
+                style="?android:attr/borderlessButtonStyle"
+                android:id="@+id/btnHowToPlay"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:text="@string/how_to_play"
+                android:layout_weight="1"/>
+                
+        </TableRow>
+
+        <TableRow>
+            <Button
+
+                android:id="@+id/btnGenderAndHeight"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:text="@string/gender_and_height"
+                android:layout_weight="1"/>
+                />
+        </TableRow>
+
+    <TableRow>
+
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:id="@+id/NO_SOUND"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:onClick="soundZERO"
+            android:text=" SOUND 0%   " />
+
+
+
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/SOME_SOUND"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="soundFIFTY"
-            android:text="SOUND 50%"
+            android:text="SOUND 50%" />
 
 
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true" />
-    <Button
+        <Button
+            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/LOUD_SOUND"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:onClick="soundHUNDRED"
-            android:text="SOUND 100%"
-            android:layout_alignParentTop="true"
-            android:layout_alignBaseline="@+id/SOME_SOUND"
-            android:layout_alignBottom="@+id/SOME_SOUND"
-            android:layout_alignParentEnd="true" />
-    </RelativeLayout>
+            android:text="SOUND 100%" />
+    </TableRow>
+
+
+</TableLayout>
+
+
 
