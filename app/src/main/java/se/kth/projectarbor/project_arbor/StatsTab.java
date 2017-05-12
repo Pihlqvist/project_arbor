@@ -137,6 +137,7 @@ public class StatsTab extends Fragment {
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
            // dist.setText( extras.getInt("DISTANCE"));
+
         }
 
 
