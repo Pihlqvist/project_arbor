@@ -34,6 +34,7 @@ public class StatsTab extends Fragment {
 
     private double mDistance;
     private int mStepCount;
+    private int currentPhaseNumber;
 
     private View view;
 
@@ -94,13 +95,14 @@ public class StatsTab extends Fragment {
                 }
 
                 // LAZAR OCH PATRIK ANVÄNDER DESSA
-                mDistance = extras.getDouble("TOTALKM")/1000;
+                mDistance = extras.getDouble("TOTALKM")/1000;  // 1000 is BUFFER_CONSTANT in Pedometer
                 mStepCount = extras.getInt("TOTALSTEPS");
-
+                currentPhaseNumber = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 statusImgUpd(phaseIcon);
                 // SLUT PÅ DERAS
 
                 phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
+
                 // TODO: Implement AGE when functionality is ready
                 waterAnim.setLevel(extras.getInt("WATER") * 10);
                 sunAnim.setLevel(extras.getInt("SUN") * 10);
@@ -182,24 +184,32 @@ public class StatsTab extends Fragment {
     //This method divides the amount of distance between 0 - 60 (km) in intervals and changes the image (phase icon)
     private int getPhaseImage() {
 
-        if (((0 < mDistance) && mDistance < 1) || ((10 < mDistance) && mDistance < 13) || ((30 < mDistance) && mDistance < 34)) {
-            return R.drawable.phase_icon;
-        } else if (((1 <= mDistance) && mDistance < 3) || ((13 <= mDistance) && mDistance < 15) || ((34 <= mDistance) && mDistance < 38)) {
-            return R.drawable.phase_1;
-        } else if (((3 <= mDistance) && mDistance < 4) || ((15 <= mDistance) && mDistance < 18) || ((38 <= mDistance) && mDistance < 41)) {
-            return R.drawable.phase_2;
-        } else if (((4 <= mDistance) && mDistance < 5) || ((18 <= mDistance) && mDistance < 20) || ((41 <= mDistance) && mDistance < 45)) {
-            return R.drawable.phase_3;
-        } else if (((5 <= mDistance) && mDistance < 6) || ((20 <= mDistance) && mDistance < 23) || ((45 <= mDistance) && mDistance < 49)) {
-            return R.drawable.phase_4;
-        } else if (((6 <= mDistance) && mDistance < 8) || ((23 <= mDistance) && mDistance < 25) || ((49 <= mDistance) && mDistance < 53)) {
-            return R.drawable.phase_5;
-        } else if (((8 <= mDistance) && mDistance < 9) || ((25 <= mDistance) && mDistance < 28) || ((53 <= mDistance) && mDistance < 56)) {
-            return R.drawable.phase_6;
-        }else if (((9 <= mDistance) && mDistance < 10) || ((28 <= mDistance) && mDistance < 30) || ((56 <= mDistance) && mDistance < 60)) {
-            return R.drawable.phase_7;
-        }else if ((mDistance == 10) || (mDistance == 30) || (mDistance == 60)) {
-            return R.drawable.phase_8;
+        if(mDistance <= 60){
+            // TODO: Make a tree varibles class that we can ask
+            Tree tree = new Tree();
+            double k = (mDistance - tree.getNextPhase(currentPhaseNumber-1)) /
+                    tree.getNextPhase(currentPhaseNumber) - tree.getNextPhase(currentPhaseNumber-1);
+            tree = null;
+            if(Double.compare(k, 0.125) < 0){
+                return R.drawable.phase_icon;
+            } else if (Double.compare(k, 0.25) < 0){
+                return R.drawable.phase_1;
+            } else if (Double.compare(k, 0.375) < 0){
+                return R.drawable.phase_2;
+            } else if (Double.compare(k, 0.5) < 0){
+                return R.drawable.phase_3;
+            } else if (Double.compare(k, 0.625) < 0){
+                return R.drawable.phase_4;
+            } else if (Double.compare(k, 0.75) < 0){
+                return R.drawable.phase_5;
+            } else if (Double.compare(k, 0.875) < 0){
+                return R.drawable.phase_6;
+            } else if (Double.compare(k, 1) < 0){
+                return R.drawable.phase_7;
+            } else if (Double.compare(k, 1) == 0){
+                return R.drawable.phase_8;
+            }
+
         }
         return R.drawable.phase_icon;
     }

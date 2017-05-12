@@ -143,6 +143,20 @@ public class Tree implements Serializable {
         this.dist = 0;
     }
 
+    public int getNextPhase(int phaseNumber) {
+        if (phaseNumber == 0) {
+            return 0;
+        } else if (phaseNumber == Phase.SEED.getPhaseNumber()) {
+            return SEED_NEXT_PHASE;
+        } else if (phaseNumber == Phase.SPROUT.getPhaseNumber()) {
+            return SPROUT_NEXT_PHASE;
+        } else if (phaseNumber == Phase.SAPLING.getPhaseNumber()) {
+            return SAPLING_NEXT_PHASE;
+        }
+
+        return 100;
+    }
+
     public int getWaterLevel(){
         return waterBuffer.getValue();
     }
