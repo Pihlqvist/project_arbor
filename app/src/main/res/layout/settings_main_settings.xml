@@ -1,11 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RatingBar
-        android:id="@+id/ratingBar"
+
+    <Button
+        android:id="@+id/NO_SOUND"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
-</LinearLayout>
+        android:layout_alignParentTop="true"
+
+        android:layout_alignBaseline="@+id/SOME_SOUND"
+        android:layout_alignBottom="@+id/SOME_SOUND"
+
+        android:onClick="soundZERO"
+        android:text=" SOUND 0%   " />
+    <Button
+            android:id="@+id/SOME_SOUND"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="soundFIFTY"
+            android:text="SOUND 50%"
+
+
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+    <Button
+            android:id="@+id/LOUD_SOUND"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:onClick="soundHUNDRED"
+            android:text="SOUND 100%"
+            android:layout_alignParentTop="true"
+            android:layout_alignBaseline="@+id/SOME_SOUND"
+            android:layout_alignBottom="@+id/SOME_SOUND"
+            android:layout_alignParentEnd="true" />
+    </RelativeLayout>
+
