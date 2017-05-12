@@ -1,7 +1,9 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
@@ -12,8 +14,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
+import java.text.DecimalFormat;
 
 
 /**
@@ -37,45 +44,33 @@ public class StatsTab extends Fragment {
 
     private ClipDrawable waterAnim;
     private ClipDrawable sunAnim;
-
     public static final int MAX_LEVEL = 10000;
     ImageView imgWater;
     ImageView imgSun;
 
-    // To store old state of bars
-    private SharedPreferences sharedPreferences;
-
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
-    private int oldWaterLevel;
-    private int oldSunLevel;
-    private int newWaterLevel;
-    private int newSunLevel;
-
-        // Right handler uses fillBuffer
-        private Handler mRightHandler = new Handler();
+        /*private Handler mRightHandler = new Handler();
         private Runnable animateUpImage = new Runnable() {
 
             @Override
             public void run() {
-                fillBuffer(toLevel, fromLevel);
+                fillBuffer(fromLevel, toLevel);
             }
         };
-
-        // Left handler uses unfillBuffer
         private Handler mLeftHandler = new Handler();
         private Runnable animateDownImage = new Runnable() {
 
             @Override
             public void run() {
-                unfillBuffer(toLevel, fromLevel);
+                unfillBuffer(fromLevel, toLevel);
             }
         };
         public static final int LEVEL_DIFF = 100;  // Difference btw current level and level we want to reach.
-        public static final int DELAY = 50;
-        private int mLevel;
-        private int fromLevel;
-        private int toLevel;
+        public static final int DELAY = 30;
+        private int mLevel = 0;
+        private int fromLevel = 0;
+        private int toLevel = 0;*/
 
     @Nullable
     @Override
@@ -124,14 +119,10 @@ public class StatsTab extends Fragment {
         imgWater = (ImageView) view.findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
 
-        // TODO: Implement dynamic animations of bars instead of static changes
         waterAnim = (ClipDrawable) imgWater.getDrawable();
         waterAnim.setLevel(0);
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
-        // Used to remember state of buffers when last viewed.
-        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
-
     }
 
     TextView getDistanceView() {
@@ -158,74 +149,12 @@ public class StatsTab extends Fragment {
         return sunAnim;
     }
 
-    public void setNewWaterLevel(int newLevel) {
-        this.newWaterLevel = newLevel;
-    }
-
-    public void setNewSunLevel(int newLevel) {
-        this.newSunLevel = newLevel;
-    }
-
-    public void setOldWaterLevel(int oldLevel) {
-        this.oldWaterLevel = oldLevel;
-        sharedPreferences.edit().putInt("BARS_WATERLEVEL", oldLevel).apply();
-    }
-
-    public void setOldSunLevel(int oldLevel) {
-        this.oldSunLevel = oldLevel;
-    }
-
-    public int getNewWaterLevel() {
-        return this.newWaterLevel;
-    }
-
-    public int getNewSunLevel() {
-        return this.newSunLevel;
-    }
-
-    public int getOldWaterLevel() {
-        return this.oldWaterLevel;
-    }
-
-    public int getOldSunLevel() {
-        return this.oldSunLevel;
-    }
-
-    private int oldWaterLevel() {
-        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
-
-        // If level has been stored earlier, read from sharedPreferences
-        if (sharedPreferences.contains("BARS_WATERLEVEL")) {
-            oldWaterLevel = sharedPreferences.getInt("BARS_WATERLEVEL", 0);
-            // Else, set initial water level
-        } else {
-            oldWaterLevel = 10000;
-            sharedPreferences.edit().putInt("BARS_WATERLEVEL", oldWaterLevel).apply();
-        }
-        return oldWaterLevel;
-    }
-
-    // TODO: Complete animation methods
-    public void animateWaterBar(int newWaterLevel) {
-        oldWaterLevel = oldWaterLevel();
-        if(newWaterLevel > oldWaterLevel)
-            fillBuffer(oldWaterLevel, newWaterLevel);
-        if(newWaterLevel < oldWaterLevel)
-            unfillBuffer(oldWaterLevel, newWaterLevel);
-        // else do nothing
-    }
-
-    public void animateSunBar(int toLevel) {
-
-    }
-
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
     //*
 
-        private void fillBuffer(int fromLevel, int toLevel ) {
+        /*private void fillBuffer(int fromLevel, int toLevel) {
             mLevel += LEVEL_DIFF;
-
             waterAnim.setLevel(mLevel);
             sunAnim.setLevel(mLevel);
             if (mLevel <= toLevel) {
@@ -235,8 +164,6 @@ public class StatsTab extends Fragment {
                 this.fromLevel = toLevel;
             }
         }
-
-
 
         private void unfillBuffer(int fromLevel, int toLevel) {
             mLevel -= LEVEL_DIFF;
@@ -251,43 +178,26 @@ public class StatsTab extends Fragment {
         }
 
         // Filling and unfilling the buffers depending on textview value
-        public void changeBuffer(int newLevel) {
-//            int currentLevel = getOldWaterLevel();
-//            fromLevel = getOldWaterLevel();
-            Log.d("ANIMATION", "OLDWATERLEVEL " + fromLevel);
+        public void changeBuffer(int v) {
+            int temp_level = (5 * MAX_LEVEL) / 100;
 
-            fromLevel = 10000;
-
-            System.out.println("from level " + this.fromLevel);
-
-
-//            if (toLevel == currentLevel || currentLevel > MAX_LEVEL) {
-//                return;
-            toLevel = newLevel;
-            System.out.println("to level "+ toLevel);
-//            this.toLevel = (currentLevel <= MAX_LEVEL) ? currentLevel : this.toLevel;
-
-            // Determines if buffer animation should go up or down.
-//            this.toLevel = (fromLevel <= MAX_LEVEL) ? fromLevel : this.toLevel;
-            System.out.println("to level2 "+ toLevel);
-
-            if (newLevel > fromLevel) {
-                Log.d("ANIMATION", "IF");
-                // cancel previous process first
-                mLeftHandler.removeCallbacks(animateUpImage);
-                this.fromLevel = toLevel;
-
-                mRightHandler.post(animateDownImage);
-            } else {
-                Log.d("ANIMATION", "ELSE");
-                // cancel previous process first
-                mRightHandler.removeCallbacks(animateDownImage);
-                this.fromLevel = toLevel;
-
-                mLeftHandler.post(animateUpImage);
+            if (toLevel == temp_level || temp_level > MAX_LEVEL) {
+                return;
             }
+            toLevel = (temp_level <= MAX_LEVEL) ? temp_level : toLevel;
+            if (toLevel > fromLevel) {
+                // cancel previous process first
+                mLeftHandler.removeCallbacks(animateDownImage);
+                this.fromLevel = toLevel;
 
+                mRightHandler.post(animateUpImage);
+            } else {
+                // cancel previous process first
+                mRightHandler.removeCallbacks(animateUpImage);
+                this.fromLevel = toLevel;
 
-        }
+                mLeftHandler.post(animateDownImage);
+            }
+        }*/
 
 }

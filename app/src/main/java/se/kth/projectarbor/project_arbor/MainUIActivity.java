@@ -63,12 +63,8 @@ public class MainUIActivity extends AppCompatActivity {
 
                 // TODO: Implement AGE when functionality is ready
                 // Updates buffers
-                // TODO: Implement dynamic animations of bars instead of static changes
-                statsTab.setNewWaterLevel(extras.getInt("WATER") * 10);
-                statsTab.setNewSunLevel(extras.getInt("SUN") * 10);
-//                statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
-//                statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
-
+                statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
+                statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
             } else if (intent.getAction().equals("WEATHER_DATA")) {
                 // Build new weatherLayout depending on weather
                 treeTab.setWeather((Environment.Weather) extras.get("WEATHER"));
@@ -98,9 +94,6 @@ public class MainUIActivity extends AppCompatActivity {
     private ShopTab shopTab;
     private SharedPreferences sharedPreferences;
 
-    // Used to save old state for animation of bars in StatsTab
-    private int oldWaterLevel;
-    private int oldSunLevel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,19 +125,7 @@ public class MainUIActivity extends AppCompatActivity {
                         Toast.makeText(MainUIActivity.this, "Tree Tab!", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        // Trigger animation in StatsTab if bars have changed since last viewed.
-                        int newWaterLevel = statsTab.getNewWaterLevel();
-                        if (newWaterLevel != statsTab.getOldWaterLevel()) {
-
-                        //    statsTab.animateWaterBar(newWaterLevel); // Triggers animation of water bar
-
-                        //    statsTab.getWaterAnim().setLevel(2500); // Used for TESTING
-                            statsTab.getSunAnim().setLevel(2500); // Used for TESTING
-                            statsTab.changeBuffer(newWaterLevel);
-                            statsTab.setOldWaterLevel(newWaterLevel);
-                        }
-                        // TODO: Implement the same for Sun bar
-                    //    Toast.makeText(MainUIActivity.this, "Stats Tab!", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainUIActivity.this, "Stats Tab!", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
                         Toast.makeText(MainUIActivity.this, "Shop Tab!", Toast.LENGTH_SHORT).show();
