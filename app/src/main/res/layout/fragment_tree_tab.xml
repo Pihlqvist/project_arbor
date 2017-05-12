@@ -9,33 +9,53 @@
     tools:layout_editor_absoluteX="0dp"
     tools:layout_editor_absoluteY="81dp">
 
-
-    <TextView
-        android:id="@+id/tvDistance"
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="DISTANCE"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginRight="15dp"
-        android:textSize="20dp"
-        android:textColor="@color/colorBlack"
-        android:textColorHighlight="@color/colorWhite" />
+        android:background="@drawable/rounded_corners"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="100dp">
 
-    <TextView
-        android:id="@+id/tvStepCount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="STEP_COUNT"
-        android:layout_alignTop="@id/tvDistance"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="40dp"
-        android:layout_marginRight="15dp"
-        android:textSize="20dp"
-        android:textColor="@color/colorBlack"
-        android:textColorHighlight="@color/colorWhite"
-        />
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TableRow android:gravity="center_horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Steps"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHighlight="@color/colorWhite"
+                    android:textSize="16sp"
+                    android:gravity="center|start"
+                    android:layout_marginEnd="5dp"/>
+                <TextView
+                    android:id="@+id/tvStepCount"
+                    android:gravity="center|start"
+                    android:text="123"
+                    android:textSize="16sp"
+                    android:layout_gravity="center_vertical"/>
+            </TableRow>
+            <TableRow android:gravity="center_horizontal"
+                android:layout_marginTop="7dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Distance"
+                    android:textColor="@color/colorBlack"
+                    android:textColorHighlight="@color/colorWhite"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="7dp"/>
+                <TextView
+                    android:id="@+id/tvDistance"
+                    android:gravity="center|start"
+                    android:text="44444"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="16sp"/>
+            </TableRow>
+        </TableLayout>
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/tvTree"
@@ -96,7 +116,9 @@
             android:id="@+id/treeButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorTransparent" />
+            android:background="@color/colorTransparent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true" />
     </RelativeLayout>
 
 
