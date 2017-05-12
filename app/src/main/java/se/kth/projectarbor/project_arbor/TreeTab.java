@@ -5,11 +5,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Picture;
+import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
 import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,9 +28,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.io.IOException;
+import java.io.InputStream;
+
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
+import se.kth.projectarbor.project_arbor.view_objects.TreeView;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -54,7 +65,7 @@ public class TreeTab extends Fragment {
 
     private int currentPhase;
     private int newPhase;
-
+    private InputStream inputStream;
 
     private class Receiver extends BroadcastReceiver {
 
@@ -98,8 +109,14 @@ public class TreeTab extends Fragment {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
         //GIF tree anim
-        WebView treeWebView = (WebView) view.findViewById(R.id.webview);
-        treeWebView.loadUrl("file:///android_asset/tree_anim.htm");
+       // WebView treeWebView = (WebView) view.findViewById(R.id.webview);
+       // treeWebView.loadUrl("file:///android_asset/tree_anim.htm");
+        try{
+            inputStream = getActivity().getAssets().open("tree_life_cycle.gif");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        TreeView t = new TreeView(getContext(), inputStream);
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
@@ -137,6 +154,7 @@ public class TreeTab extends Fragment {
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
             weather = (Environment.Weather) extras.get("WEATHER");
         } else {
+
             weather = Environment.Weather.CLOUDY;
             Log.e(TAG, "Weather could not be found");
             // TODO: from foreground, bring info about the weather in a Intent
@@ -152,6 +170,14 @@ public class TreeTab extends Fragment {
         setWeatherLayout();
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
+
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        t.setLayoutParams(lp);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        lp.setMargins(((size.x/2)+10)/2, size.y/2-20*(size.y/100), 5*(size.x/100), 0);//left, top, right, bottom
+        currentLayout.addView(t);
         view = currentLayout;
 
 

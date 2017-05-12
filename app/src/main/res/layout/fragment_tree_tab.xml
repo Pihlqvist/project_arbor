@@ -81,7 +81,6 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="20dp" />
 
-
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -96,13 +95,9 @@
             android:id="@+id/treeButton"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/colorTransparent" />
+            android:background="@color/colorTransparent"
+            android:visibility="gone"/>
     </RelativeLayout>
-
-    <WebView
-        android:id="@+id/webview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></WebView>
 
 
 </RelativeLayout>
