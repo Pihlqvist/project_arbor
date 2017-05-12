@@ -8,24 +8,26 @@
     <TableRow>
 
             <Button
-                style="?android:attr/borderlessButtonStyle"
+
                 android:id="@+id/btnAbout"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:text="@string/about"
+                android:onClick="goToAbout"
                 android:layout_weight="1" />
 
         </TableRow>
 
         <TableRow>
             <Button
-                style="?android:attr/borderlessButtonStyle"
+
                 android:id="@+id/btnHowToPlay"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:text="@string/how_to_play"
+                android:onClick="goToHowToPlay"
                 android:layout_weight="1"/>
-                
+
         </TableRow>
 
         <TableRow>
@@ -35,8 +37,9 @@
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:text="@string/gender_and_height"
+                android:onClick="goToGenderHeight"
                 android:layout_weight="1"/>
-                />
+
         </TableRow>
 
     <TableRow>
