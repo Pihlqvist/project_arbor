@@ -35,7 +35,7 @@ public class StatsTab extends Fragment {
     private double mDistance;
     private int mStepCount;
     private int currentPhaseNumber;
-
+    private Tree tree;
     private View view;
 
     private TextView healthTV;
@@ -125,6 +125,26 @@ public class StatsTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
+        if(tree.getWaterLevel()==0) {
+            NotificationCompat.Builder waterBufferNotification = new NotificationCompat.Builder(getContext());
+            waterBufferNotification.setSmallIcon(R.drawable.health_icon);
+            waterBufferNotification.setContentTitle("Arbor");
+            waterBufferNotification.setContentText("WaterBuffer is empty!");
+        }
+        if(tree.getSunLevel()==0){
+            NotificationCompat.Builder sunBufferNotification = new NotificationCompat.Builder(getContext()) ;
+            sunBufferNotification.setSmallIcon(R.drawable.health_icon);
+            sunBufferNotification.setContentTitle("Arbor");
+            sunBufferNotification.setContentText("SunBuffer is empty!");
+        }
+        if(tree.update()==false){
+            NotificationCompat.Builder treeDeadNotification = new NotificationCompat.Builder(getContext()) ;
+            treeDeadNotification.setSmallIcon(R.drawable.health_icon);
+            treeDeadNotification.setContentTitle("Arbor");
+            treeDeadNotification.setContentText("Your Tree Is DEAD :( ");
+        }
+
+
 
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
