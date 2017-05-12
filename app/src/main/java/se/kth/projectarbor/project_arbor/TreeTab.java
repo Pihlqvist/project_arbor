@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -46,6 +48,10 @@ public class TreeTab extends Fragment {
     private TextView distanceTextView;
     private TextView stepTextView;
     private ImageView ivTree;
+    private View sessionView;
+
+    private Animation animAppear;
+    private Animation animDisappear;
 
 
     private RelativeLayout weatherLayout;
@@ -63,8 +69,8 @@ public class TreeTab extends Fragment {
             Bundle extras = intent.getExtras();
             Log.d(TAG, "onReceive()");
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                stepTextView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
-                distanceTextView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
+                stepTextView.setText(String.format("%d", extras.getInt("STEPCOUNT")));
+                distanceTextView.setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d(TAG, "TREE_DATA");
                 newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
@@ -118,6 +124,8 @@ public class TreeTab extends Fragment {
         ivTree = (ImageView) view.findViewById(R.id.treeButton);
         distanceTextView = (TextView) view.findViewById(R.id.tvDistance);
         stepTextView = (TextView) view.findViewById(R.id.tvStepCount);
+        sessionView = view.findViewById(R.id.sessionView);
+        sessionView.setVisibility(View.GONE);
 
         // Pick the right tree depending on the current Phase
         setTreePhase(currentPhase);
@@ -148,17 +156,44 @@ public class TreeTab extends Fragment {
         }
 
 
+        // Animations for session
+        animAppear = AnimationUtils.loadAnimation(getContext(), R.anim.session_appear);
+        animDisappear = AnimationUtils.loadAnimation(getContext(), R.anim.session_disappear);
+        animDisappear.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {}
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                sessionView.setVisibility(View.GONE);
+                distanceTextView.setText("0 km");
+                stepTextView.setText("0");
+            }
+            @Override
+            public void onAnimationRepeat(Animation animation) {}
+        });
+
+
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
         walkBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     // The toggle is enabled
+
+                    // Animate session View
+                    sessionView.setVisibility(View.VISIBLE);
+                    sessionView.startAnimation(animAppear);
+
                     Intent intent = new Intent(getActivity(), MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_START);
                     getActivity().startService(intent);
                 } else {
                     // The toggle is disabled
+
+                    // Animate session View
+                    sessionView.startAnimation(animDisappear);
+
                     Intent intent = new Intent(getActivity(), MainService.class);
                     intent.putExtra("MESSAGE_TYPE", MainService.MSG_STOP);
                     getActivity().startService(intent);
