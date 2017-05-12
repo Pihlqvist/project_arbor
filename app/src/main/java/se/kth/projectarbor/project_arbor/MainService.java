@@ -124,8 +124,9 @@ public class MainService extends Service {
 
             // Does activity related resume HEAVY indicates that we need to setup pedometer
             case MSG_RESUME_HEAVY:
-                pedometer.register();
+                pedometer.register();  // TODO: testing without
                 sendToView();
+                sendDistanceInfo();
                 startForeground();
                 break;
 
@@ -198,6 +199,7 @@ public class MainService extends Service {
     // Load tree and tDistance from and stepcount from IO/file
     private void loadState(List<Object> objects) {
         if (objects.size() < 4) {
+            Log.e(TAG, "objects in loadState was below 4, so new variables was made");
             tree = new Tree();
             totalDistance = 0;
             totalStepCount = 0;
@@ -208,13 +210,13 @@ public class MainService extends Service {
                 tree = new Tree();
                 Log.e(TAG, "Tree was not found in file: " + filename + ", tree = new Tree()");
             }
-            if (objects.get(2) != null && objects.get(2).getClass() == double.class) {
-                totalDistance = (Double) objects.get(2);
+            if (objects.get(2) != null /* && objects.get(2).getClass() == double.class */) { //TODO: getClass not working
+                totalDistance = (double) objects.get(2);
             } else {
                 totalDistance = 0;
                 Log.e(TAG, "totalDistance was not found in file: " + filename + ", totalDistance = 0");
             }
-            if (objects.get(3) != null && objects.get(3).getClass() == int.class) {
+            if (objects.get(3) != null /* && objects.get(3).getClass() == int.class */) { //TODO: getClass not working
                 totalStepCount = (int) objects.get(3);
             } else {
                 totalStepCount = 0;
@@ -229,6 +231,7 @@ public class MainService extends Service {
     private void startForeground() {
         // TODO: send information about weather (Fredrik)
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);
@@ -298,6 +301,12 @@ public class MainService extends Service {
         return intent;
     }
 
+    private Intent putWeatherInformation(Intent intent) {
+        intent.putExtra("WEATHER", environment.getWeather());
+        intent.putExtra("TEMP", environment.getTemp());
+        return intent;
+    }
+
     private class AsyncTaskRunner extends AsyncTask<PendingIntent, Void, PendingIntent> {
 
         @Override
@@ -333,6 +342,15 @@ public class MainService extends Service {
 
     private void sendWeatherToView(final PendingIntent pendingIntent) {
         new AsyncTaskRunner().execute(pendingIntent);
+    }
+
+    private void sendDistanceInfo() {
+        Intent intent = new Intent();
+        intent.setAction(Pedometer.DISTANCE_BROADCAST);
+        intent.putExtra("DISTANCE", pedometer.getSessionDistance());
+        intent.putExtra("STEPCOUNT", pedometer.getSessionStepCount());
+        MainService.this.sendBroadcast(intent);
+
     }
 }
 

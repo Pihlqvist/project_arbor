@@ -43,8 +43,8 @@ public class TreeTab extends Fragment {
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
-    private TextView distanceView;
-    private TextView stepView;
+    private TextView distanceTextView;
+    private TextView stepTextView;
     private ImageView ivTree;
 
 
@@ -63,8 +63,8 @@ public class TreeTab extends Fragment {
             Bundle extras = intent.getExtras();
             Log.d(TAG, "onReceive()");
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                stepView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
-                distanceView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
+                stepTextView.setText(String.format("Steps: %d", extras.getInt("STEPCOUNT")));
+                distanceTextView.setText(String.format("Distance: %.2f m",extras.getDouble("DISTANCE")));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d(TAG, "TREE_DATA");
                 newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
@@ -76,7 +76,7 @@ public class TreeTab extends Fragment {
                 // Build new weather layout depending on weather
                 // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
                 Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
-                if (newWeather != weather) {
+                if (true/*newWeather != weather*/) { // TODO: change back after
                     weather = newWeather;
                     RelativeLayout layout = (RelativeLayout) view;
                     layout.removeView(weatherLayout);
@@ -85,6 +85,7 @@ public class TreeTab extends Fragment {
                     view = layout;
                 }
             }
+
         }
     }
 
@@ -100,6 +101,7 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
+
         sharedPreferences = getActivity().getSharedPreferences(
                 "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
 
@@ -114,8 +116,8 @@ public class TreeTab extends Fragment {
         // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
         ivTree = (ImageView) view.findViewById(R.id.treeButton);
-        distanceView = (TextView) view.findViewById(R.id.tvDistance);
-        stepView = (TextView) view.findViewById(R.id.tvStepCount);
+        distanceTextView = (TextView) view.findViewById(R.id.tvDistance);
+        stepTextView = (TextView) view.findViewById(R.id.tvStepCount);
 
         // Pick the right tree depending on the current Phase
         setTreePhase(currentPhase);
@@ -124,7 +126,7 @@ public class TreeTab extends Fragment {
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
-            treeView.setText("Tree, Phase: " + extras.getString("PHASE"));
+            treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
         }
 
@@ -138,6 +140,12 @@ public class TreeTab extends Fragment {
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
         view = currentLayout;
+
+        // Sends message to MainService and asks for weather
+        if (weather == null) {
+            getActivity().startService(new Intent(getActivity(), MainService.class)
+                    .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW));
+        }
 
 
         // The user can toggle to either collect "distance" or not
@@ -169,12 +177,14 @@ public class TreeTab extends Fragment {
         super.onResume();
         Log.d(TAG, "RESUME");
 
+
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
             walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
             if(sharedPreferences.getBoolean("TOGGLE", false)) {
                 Intent intent2 = new Intent(getActivity(), MainService.class);
-                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_HEAVY);
+                // TODO: Was "MSG_RESUME_HEAVY" before. Dint update stats tab correctly (Fredrik)
+                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
                 getActivity().startService(intent2);
             }else{
                 Intent intent3 = new Intent(getActivity(), MainService.class);
@@ -268,3 +278,4 @@ public class TreeTab extends Fragment {
     }
 
 }
+

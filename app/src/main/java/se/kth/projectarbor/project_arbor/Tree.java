@@ -73,16 +73,22 @@ public class Tree implements Serializable {
     private boolean timerFlag;
 
     public enum Phase {
-        SEED(1), SPROUT(2), SAPLING(3), GROWN_TREE(4);
+        SEED(1, "Seed"), SPROUT(2, "Sprout"), SAPLING(3, "Sapling"), GROWN_TREE(4, "Full Grown");
 
         private int phaseNumber;
+        private String phaseName;
 
-        private Phase(int phaseNumber) {
+        private Phase(int phaseNumber, String phaseName) {
             this.phaseNumber = phaseNumber;
+            this.phaseName = phaseName;
         }
 
         public int getPhaseNumber() {
             return phaseNumber;
+        }
+
+        public String getPhaseName() {
+            return phaseName;
         }
 
     }

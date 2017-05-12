@@ -63,7 +63,7 @@ public class NewTreeActivity extends AppCompatActivity  {
 
                 // Make new tree and game settings
                 DataManager.saveState(getApplicationContext(), MainService.filename,
-                        new Tree(), new Environment.Forecast[]{}, new Double(0), 0);
+                        new Tree(), new Environment.Forecast[]{}, 0.0, 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
                 Log.d(TAG, "new save state");
 
