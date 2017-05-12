@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
  * Edited by Jospeh Ariss and Pethrus Gardborn on 4/5/2017
+ * Edited by Lazar Cerovic and Patrik Eriksson on 12/5/2017
  */
 
 public class StatsTab extends Fragment {
@@ -173,21 +174,31 @@ public class StatsTab extends Fragment {
     private void statusImgUpd(ImageView v){
         v.setImageResource(getPhaseImage());
     }
-    // TODO : Return right images
+    // Can be changed for testing purposes, change mDistance to meter instead of kilometers
+    // Do not change here change the variable instead.
+    //This method divides the amount of distance between 0 - 60 (km) in intervals and changes the image (phase icon)
     private int getPhaseImage() {
 
-        if (((0 < mDistance) && mDistance < 2) || ((10 < mDistance) && mDistance < 14) || ((0 < mDistance) && mDistance < 2)) {
-            return R.drawable.total_distance_icon;
-        } else if (((2 < mDistance) && mDistance < 4) || ((14 < mDistance) && mDistance < 18) || ((36 < mDistance) && mDistance < 42)) {
-            return R.drawable.health_icon;
-        } else if (((4 < mDistance) && mDistance < 6) || ((18 < mDistance) && mDistance < 22) || ((42 < mDistance) && mDistance < 48)) {
-            return R.drawable.age_icon;
-        } else if (((6 < mDistance) && mDistance < 8) || ((22 < mDistance) && mDistance < 26) || ((48 < mDistance) && mDistance < 54)) {
+        if (((0 < mDistance) && mDistance < 1) || ((10 < mDistance) && mDistance < 13) || ((30 < mDistance) && mDistance < 34)) {
             return R.drawable.phase_icon;
-        } else if (((8 < mDistance) && mDistance < 10) || ((26 < mDistance) && mDistance < 30) || ((54 < mDistance) && mDistance < 60)) {
-            return R.drawable.phase_icon;
+        } else if (((1 <= mDistance) && mDistance < 3) || ((13 <= mDistance) && mDistance < 15) || ((34 <= mDistance) && mDistance < 38)) {
+            return R.drawable.phase_1;
+        } else if (((3 <= mDistance) && mDistance < 4) || ((15 <= mDistance) && mDistance < 18) || ((38 <= mDistance) && mDistance < 41)) {
+            return R.drawable.phase_2;
+        } else if (((4 <= mDistance) && mDistance < 5) || ((18 <= mDistance) && mDistance < 20) || ((41 <= mDistance) && mDistance < 45)) {
+            return R.drawable.phase_3;
+        } else if (((5 <= mDistance) && mDistance < 6) || ((20 <= mDistance) && mDistance < 23) || ((45 <= mDistance) && mDistance < 49)) {
+            return R.drawable.phase_4;
+        } else if (((6 <= mDistance) && mDistance < 8) || ((23 <= mDistance) && mDistance < 25) || ((49 <= mDistance) && mDistance < 53)) {
+            return R.drawable.phase_5;
+        } else if (((8 <= mDistance) && mDistance < 9) || ((25 <= mDistance) && mDistance < 28) || ((53 <= mDistance) && mDistance < 56)) {
+            return R.drawable.phase_6;
+        }else if (((9 <= mDistance) && mDistance < 10) || ((28 <= mDistance) && mDistance < 30) || ((56 <= mDistance) && mDistance < 60)) {
+            return R.drawable.phase_7;
+        }else if ((mDistance == 10) || (mDistance == 30) || (mDistance == 60)) {
+            return R.drawable.phase_8;
         }
-        return R.drawable.health_icon;
+        return R.drawable.phase_icon;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED
