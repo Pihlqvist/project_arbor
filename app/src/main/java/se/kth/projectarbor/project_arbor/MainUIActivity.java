@@ -37,6 +37,7 @@ public class MainUIActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private boolean snackbarSemaphore = false;
+    private static final int FULL_BUFFER_SEED = 10000;
 
     private Snackbar snackbar;
 
@@ -53,7 +54,7 @@ public class MainUIActivity extends AppCompatActivity {
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
                 Log.d("HEALTH","HEALTH");
-                statsTab.getDistanceView().setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
+                statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
                 statsTab.getStepsView().setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
                     statsTab.getHealthView().setText("DEAD");
@@ -62,9 +63,17 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getPhaseView().setText(extras.getString("PHASE"));
 
                 // TODO: Implement AGE when functionality is ready
-                // Updates buffers
-                statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
-                statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
+                int waterBufferScaled = extras.getInt("WATER") * 10;
+                int sunBufferScaled = extras.getInt("SUN") * 10;
+
+                // Updates buffers statically
+                //statsTab.getWaterAnim().setLevel(waterBufferScaled);
+                //statsTab.getSunAnim().setLevel(sunBufferScaled);
+
+                // Sets new value for animation
+                statsTab.setNewWaterLevel(waterBufferScaled);
+                statsTab.setNewSunLevel(sunBufferScaled);
+
             } else if (intent.getAction().equals("WEATHER_DATA")) {
                 // Build new weatherLayout depending on weather
                 treeTab.setWeather((Environment.Weather) extras.get("WEATHER"));
@@ -125,7 +134,22 @@ public class MainUIActivity extends AppCompatActivity {
                         Toast.makeText(MainUIActivity.this, "Tree Tab!", Toast.LENGTH_SHORT).show();
                         break;
                     case 1:
-                        Toast.makeText(MainUIActivity.this, "Stats Tab!", Toast.LENGTH_SHORT).show();
+                        // Trigger animation in StatsTab if bars have changed since last viewed.
+                        int newWaterLevel = statsTab.getNewWaterLevel();
+                        Log.d("ARBOR_STATSTAB_ANIM", "onPageSelected->previous_oldWaterLevel " + statsTab.getOldWaterLevel() + "");
+                        if (newWaterLevel != statsTab.getOldWaterLevel()) {
+
+                            //    statsTab.animateWaterBar(newWaterLevel); // Triggers animation of water bar
+
+                            //    statsTab.getWaterAnim().setLevel(2500); // Used for TESTING
+                            // statsTab.getSunAnim().setLevel(2500); // Used for TESTING
+                            // statsTab.changeBuffer(newWaterLevel);
+                            statsTab.changeBuffer(newWaterLevel, statsTab.getWaterAnim());
+                            statsTab.setOldWaterLevel(newWaterLevel);
+                            Log.d("ARBOR_STATSTAB_ANIM", "onPageSelected->oldWaterLevel " + statsTab.getOldWaterLevel() + "");
+                        }
+                        // TODO: Implement the same for Sun bar
+                        //    Toast.makeText(MainUIActivity.this, "Stats Tab!", Toast.LENGTH_SHORT).show();
                         break;
                     case 2:
                         Toast.makeText(MainUIActivity.this, "Shop Tab!", Toast.LENGTH_SHORT).show();

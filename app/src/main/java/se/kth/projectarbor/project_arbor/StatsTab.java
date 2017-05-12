@@ -48,6 +48,56 @@ public class StatsTab extends Fragment {
     ImageView imgWater;
     ImageView imgSun;
 
+    private int oldWaterLevel;
+    private int oldSunLevel;
+    private int newWaterLevel;
+    private int newSunLevel;
+
+    private SharedPreferences sharedPreferences;
+
+    public static final int LEVEL_DIFF = 100;  // Difference btw current level and level we want to reach.
+    public static final int DELAY = 50;
+    private int mLevel;
+    private int fromLevelWater;
+    private int toLevelWater;
+    private int fromLevelSun;
+    private int toLevelSun;
+
+    private Handler mRightHandler = new Handler();
+    private Runnable animateUpImageWater = new Runnable() {
+
+        @Override
+        public void run() {
+            fillBuffer(fromLevelWater, toLevelWater, waterAnim);
+        }
+    };
+    private Runnable animateUpImageSun = new Runnable() {
+
+        @Override
+        public void run() {
+            fillBuffer(fromLevelSun, toLevelSun, sunAnim);
+        }
+    };
+
+    // Left handler uses unfillBuffer
+    private Handler mLeftHandler = new Handler();
+
+    private Runnable animateDownImageWater = new Runnable() {
+
+        @Override
+        public void run() {
+            unfillBuffer(fromLevelWater, toLevelWater, waterAnim);
+        }
+    };
+
+    private Runnable animateDownImageSun = new Runnable() {
+
+        @Override
+        public void run() {
+            unfillBuffer(fromLevelSun, toLevelSun, sunAnim);
+        }
+    };
+
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
         /*private Handler mRightHandler = new Handler();
@@ -96,12 +146,30 @@ public class StatsTab extends Fragment {
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
+            Log.d("ARBOR_STATSTAB", "StatsTab->extras!=null inside");
             health.setText("" + extras.getInt("HP") + "hp");
             steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
             phase.setText(extras.getString("PHASE"));
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
-           // dist.setText( extras.getInt("DISTANCE"));
+
+            oldWaterLevel = newWaterLevel = extras.getInt("WATER") * 10;
+            oldSunLevel = newSunLevel = extras.getInt("SUN") * 10;
+
+            dist.setText("" + extras.getDouble("DISTANCE"));
+
+            // Sets old value for animation the very first time the activity is started
+            if (!sharedPreferences.contains("BARS_WATERLEVEL")) {
+                setOldWaterLevel(extras.getInt("WATER") * 10);
+                Log.d("ARBOR_STATSTAB_ANIM", "StatsTab.onCreateView() First: " + extras.getInt("WATER") * 10 + "");
+            }
+            if (!sharedPreferences.contains("BARS_SUNLEVEL")) {
+                setOldSunLevel(extras.getInt("SUN")  * 10);
+                Log.d("ARBOR_STATSTAB_ANIM", "StatsTab.onCreateView() First: " + extras.getInt("SUN") * 10 + "");
+            }
+
+            waterAnim.setLevel(oldWaterLevel);
+            sunAnim.setLevel(oldSunLevel);
         }
 
 
@@ -110,6 +178,8 @@ public class StatsTab extends Fragment {
 
     // Setup all the views
     private void setupValues() {
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
         health = (TextView) view.findViewById(R.id.tvHealth);
         age = (TextView) view.findViewById(R.id.tvAge);
         phase = (TextView) view.findViewById(R.id.tvPhase);
@@ -120,9 +190,7 @@ public class StatsTab extends Fragment {
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
 
         waterAnim = (ClipDrawable) imgWater.getDrawable();
-        waterAnim.setLevel(0);
         sunAnim = (ClipDrawable) imgSun.getDrawable();
-        sunAnim.setLevel(0);
     }
 
     TextView getDistanceView() {
@@ -149,55 +217,153 @@ public class StatsTab extends Fragment {
         return sunAnim;
     }
 
+    public void setNewWaterLevel(int newLevel) {
+        this.newWaterLevel = newLevel;
+    }
+
+    public void setNewSunLevel(int newLevel) {
+        this.newSunLevel = newLevel;
+    }
+
+    public void setOldWaterLevel(int oldLevel) {
+        this.oldWaterLevel = oldLevel;
+        sharedPreferences.edit().putInt("BARS_WATERLEVEL", oldLevel).apply();
+    }
+
+    public void setOldSunLevel(int oldLevel) {
+        this.oldSunLevel = oldLevel;
+        sharedPreferences.edit().putInt("BARS_SUNLEVEL", oldLevel).apply();
+    }
+
+    public int getNewWaterLevel() {
+        return this.newWaterLevel;
+    }
+
+    public int getNewSunLevel() {
+        return this.newSunLevel;
+    }
+
+    public int getOldWaterLevel() {
+        return this.oldWaterLevel;
+    }
+
+    public int getOldSunLevel() {
+        return this.oldSunLevel;
+    }
+
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED
+    private void fillBuffer(int fromLevel, int toLevel, ClipDrawable clipDrawable) {
+        mLevel += LEVEL_DIFF;
+        clipDrawable.setLevel(mLevel);
 
-    //*
+        Runnable animateUpImage = null;
+        if (clipDrawable == waterAnim) {
+            animateUpImage = animateUpImageWater;
 
-        /*private void fillBuffer(int fromLevel, int toLevel) {
-            mLevel += LEVEL_DIFF;
-            waterAnim.setLevel(mLevel);
-            sunAnim.setLevel(mLevel);
             if (mLevel <= toLevel) {
                 mRightHandler.postDelayed(animateUpImage, DELAY);
             } else {
-                mRightHandler.removeCallbacks(animateUpImage);
-                this.fromLevel = toLevel;
+                mRightHandler.removeCallbacks(animateUpImageWater, animateUpImageSun);
+                this.fromLevelWater = newWaterLevel;
+            }
+        } else {
+            animateUpImage = animateUpImageSun;
+
+            if (mLevel <= toLevel) {
+                mRightHandler.postDelayed(animateUpImage, DELAY);
+            } else {
+                mRightHandler.removeCallbacks(animateUpImageWater, animateUpImageSun);
+                this.fromLevelSun = toLevel;
             }
         }
+    }
 
-        private void unfillBuffer(int fromLevel, int toLevel) {
-            mLevel -= LEVEL_DIFF;
-            waterAnim.setLevel(mLevel);
-            sunAnim.setLevel(mLevel);
+    private void unfillBuffer(int fromLevel, int toLevel, ClipDrawable clipDrawable) {
+        mLevel -= LEVEL_DIFF;
+        clipDrawable.setLevel(mLevel);
+
+        Runnable animateDownImage = null;
+        if (clipDrawable == waterAnim) {
+            animateDownImage = animateDownImageWater;
             if (mLevel >= toLevel) {
                 mLeftHandler.postDelayed(animateDownImage, DELAY);
             } else {
-                mLeftHandler.removeCallbacks(animateDownImage);
-                this.fromLevel = toLevel;
+                mLeftHandler.removeCallbacks(animateDownImageWater, animateDownImageSun);
+                this.fromLevelWater = newWaterLevel;
+            }
+        } else {
+            animateDownImage = animateDownImageSun;
+            if (mLevel >= toLevel) {
+                mLeftHandler.postDelayed(animateDownImage, DELAY);
+            } else {
+                mLeftHandler.removeCallbacks(animateDownImageWater, animateDownImageSun);
+                this.fromLevelSun = toLevel;
             }
         }
+    }
 
-        // Filling and unfilling the buffers depending on textview value
-        public void changeBuffer(int v) {
-            int temp_level = (5 * MAX_LEVEL) / 100;
+    // Filling and unfilling the buffers depending on textview value
+    public void changeBuffer(int percentage, ClipDrawable clipDrawable) {
+        int temp_level = percentage; // (percentage * MAX_LEVEL) / 100;
 
-            if (toLevel == temp_level || temp_level > MAX_LEVEL) {
+            /*if (clipDrawable == waterAnim) {
+                toLevel = newWaterLevel;
+                fromLevel = oldWaterLevel;
+            } else {
+                toLevel = newSunLevel;
+                fromLevel = oldSunLevel;
+            }*/
+
+        if (clipDrawable == waterAnim) {
+            if (toLevelWater == temp_level || temp_level > MAX_LEVEL) {
                 return;
             }
-            toLevel = (temp_level <= MAX_LEVEL) ? temp_level : toLevel;
-            if (toLevel > fromLevel) {
-                // cancel previous process first
-                mLeftHandler.removeCallbacks(animateDownImage);
-                this.fromLevel = toLevel;
 
-                mRightHandler.post(animateUpImage);
+            toLevelWater = (temp_level <= MAX_LEVEL) ? temp_level : toLevelWater;
+            if (toLevelWater > fromLevelWater) {
+                // cancel previous process first
+                mLeftHandler.removeCallbacks(animateDownImageWater, animateDownImageSun);
+                this.fromLevelWater = newWaterLevel;
+
+                mRightHandler.post(animateUpImageWater);
             } else {
                 // cancel previous process first
-                mRightHandler.removeCallbacks(animateUpImage);
-                this.fromLevel = toLevel;
+                mRightHandler.removeCallbacks(animateUpImageWater, animateUpImageSun);
+                this.fromLevelWater = newWaterLevel;
 
-                mLeftHandler.post(animateDownImage);
+                mLeftHandler.post(animateDownImageWater);
             }
-        }*/
 
+        } else {
+            if (toLevelSun == temp_level || temp_level > MAX_LEVEL) {
+                return;
+            }
+
+            toLevelSun = (temp_level <= MAX_LEVEL) ? temp_level : toLevelSun;
+            if (toLevelSun > fromLevelSun) {
+                // cancel previous process first
+                mLeftHandler.removeCallbacks(animateDownImageWater, animateDownImageSun);
+                this.fromLevelSun = toLevelSun;
+                mRightHandler.post(animateUpImageSun);
+            } else {
+                // cancel previous process first
+                mRightHandler.removeCallbacks(animateUpImageWater, animateUpImageSun);
+                this.fromLevelSun = toLevelSun;
+                mLeftHandler.post(animateDownImageSun);
+            }
+
+        }
+    }
+
+//        public void animateWaterBar() {
+//            fromLevel = oldWaterLevel;
+//            toLevel = newWaterLevel;
+//            if (newWaterLevel > oldWaterLevel) {
+//                mLeftHandler.removeCallbacks(animateDownImage);
+//                mRightHandler.post(animateUpImage);
+//            } else {
+//                mLeftHandler.removeCallbacks(animateUpImage);
+//                mRightHandler.post(animateDownImage);
+//            }
+//        }
 }

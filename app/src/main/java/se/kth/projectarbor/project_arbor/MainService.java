@@ -209,7 +209,7 @@ public class MainService extends Service {
         intentToActivity.putExtra("HP", tree.getHealth());
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
         intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
-        intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalDistance());
+        intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         startActivity(intentToActivity);
     }
     // Save everything, this is so that we save essential information when the service dies
