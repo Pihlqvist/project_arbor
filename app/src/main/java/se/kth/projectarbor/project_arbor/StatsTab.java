@@ -4,14 +4,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.drawable.ClipDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.text.DecimalFormat;
@@ -20,6 +23,7 @@ import java.text.DecimalFormat;
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
  * Edited by Jospeh Ariss and Pethrus Gardborn on 4/5/2017
+ * Edited by Lazar Cerovic and Patrik Eriksson on 12/5/2017
  */
 
 public class StatsTab extends Fragment {
@@ -27,6 +31,9 @@ public class StatsTab extends Fragment {
     // Variables and constants used for static change of buffers (no animation)
 
     private final static String TAG = "ARBOR_STATSTAB";
+
+    private double mDistance;
+    private int mStepCount;
 
     private View view;
 
@@ -38,10 +45,10 @@ public class StatsTab extends Fragment {
 
     private ClipDrawable waterAnim;
     private ClipDrawable sunAnim;
+    public static final int MAX_LEVEL = 10000;
     ImageView imgWater;
     ImageView imgSun;
-
-    public static final int MAX_LEVEL = 10000;
+    ImageView phaseIcon;
 
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
@@ -85,6 +92,13 @@ public class StatsTab extends Fragment {
                 } else {
                     healthTV.setText("" + extras.getInt("HP") + "hp");
                 }
+
+                // LAZAR OCH PATRIK ANVÄNDER DESSA
+                mDistance = extras.getDouble("TOTALKM")/1000;
+                mStepCount = extras.getInt("TOTALSTEPS");
+
+                statusImgUpd(phaseIcon);
+                // SLUT PÅ DERAS
 
                 phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
                 // TODO: Implement AGE when functionality is ready
@@ -154,11 +168,40 @@ public class StatsTab extends Fragment {
 
         imgWater = (ImageView) view.findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
-
+        phaseIcon = (ImageView) view.findViewById(R.id.ivPhaseIcon);
         waterAnim = (ClipDrawable) imgWater.getDrawable();
         waterAnim.setLevel(0);
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
+    }
+    private void statusImgUpd(ImageView v){
+        v.setImageResource(getPhaseImage());
+    }
+    // Can be changed for testing purposes, change mDistance to meter instead of kilometers
+    // Do not change here change the variable instead.
+    //This method divides the amount of distance between 0 - 60 (km) in intervals and changes the image (phase icon)
+    private int getPhaseImage() {
+
+        if (((0 < mDistance) && mDistance < 1) || ((10 < mDistance) && mDistance < 13) || ((30 < mDistance) && mDistance < 34)) {
+            return R.drawable.phase_icon;
+        } else if (((1 <= mDistance) && mDistance < 3) || ((13 <= mDistance) && mDistance < 15) || ((34 <= mDistance) && mDistance < 38)) {
+            return R.drawable.phase_1;
+        } else if (((3 <= mDistance) && mDistance < 4) || ((15 <= mDistance) && mDistance < 18) || ((38 <= mDistance) && mDistance < 41)) {
+            return R.drawable.phase_2;
+        } else if (((4 <= mDistance) && mDistance < 5) || ((18 <= mDistance) && mDistance < 20) || ((41 <= mDistance) && mDistance < 45)) {
+            return R.drawable.phase_3;
+        } else if (((5 <= mDistance) && mDistance < 6) || ((20 <= mDistance) && mDistance < 23) || ((45 <= mDistance) && mDistance < 49)) {
+            return R.drawable.phase_4;
+        } else if (((6 <= mDistance) && mDistance < 8) || ((23 <= mDistance) && mDistance < 25) || ((49 <= mDistance) && mDistance < 53)) {
+            return R.drawable.phase_5;
+        } else if (((8 <= mDistance) && mDistance < 9) || ((25 <= mDistance) && mDistance < 28) || ((53 <= mDistance) && mDistance < 56)) {
+            return R.drawable.phase_6;
+        }else if (((9 <= mDistance) && mDistance < 10) || ((28 <= mDistance) && mDistance < 30) || ((56 <= mDistance) && mDistance < 60)) {
+            return R.drawable.phase_7;
+        }else if ((mDistance == 10) || (mDistance == 30) || (mDistance == 60)) {
+            return R.drawable.phase_8;
+        }
+        return R.drawable.phase_icon;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED
