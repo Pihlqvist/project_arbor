@@ -1,5 +1,7 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.Context;
+import android.media.SoundPool;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -28,15 +30,17 @@ public class MainUIActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-
+    //make a private SoundHandler despite there is a method to get a copy of the reference
+    private SoundHandler sh;
     private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
 
+        //Setup a SoundHandler to load Sounds this is time critcal operation
+        sh = new SoundHandler(this);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -47,7 +51,6 @@ public class MainUIActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mViewPager.setOffscreenPageLimit(2);
-
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
@@ -128,7 +131,43 @@ public class MainUIActivity extends AppCompatActivity {
 
 
     }
-
+    public class SoundHandler{
+        SoundPool pp;
+        int shopWater;
+        int shopSun;
+        int soundVolume;
+        SoundHandler(Context context){
+            shopSun = pp.load(context, R.raw.shopsun_3, 0);
+            shopWater = pp.load(context, R.raw.shopwater_2, 0);
+        }
+        public SoundPool getSoundPoolRef(){
+            return this.pp;
+        }
+        public void playShopWater(){
+            pp.play(shopWater, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playShopSun(){
+            pp.play(shopSun, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playShopWater(int vol){
+            pp.play(shopWater, vol, vol, 1, 0, 1);
+        }
+        public void playShopSun(int vol){
+            pp.play(shopSun, vol, vol, 1, 0, 1);
+        }
+        public void pause(){
+            pp.autoPause();
+        }
+        public void resume(){
+            pp.autoResume();
+        }
+        public void release (){
+            pp.release();
+        }
+    }
+    public SoundHandler getSoundHandler (){
+        return sh;
+    }
     @Override
     public void onBackPressed() {}
 

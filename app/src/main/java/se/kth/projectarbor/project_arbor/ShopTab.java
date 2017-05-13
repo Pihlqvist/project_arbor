@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.graphics.Typeface;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -59,6 +60,8 @@ public class ShopTab extends Fragment {
     private RelativeLayout.LayoutParams layoutParams;
     private TextView textReceipt;
 
+    //Create a reference of type SoundHandler to access mainUIActivity's cached items
+    private MainUIActivity.SoundHandler sh;
     // Add more items as needed
     public enum StoreItem {
         WATER_SMALL(75, 10),
@@ -106,8 +109,9 @@ public class ShopTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
+        //get SoundPool from MainUIActivity
 
+        View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
         // These may be used when doing animation programmatically
         //Display display = getActivity().getWindowManager().getDefaultDisplay();
         //Point size = new Point();
