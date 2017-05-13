@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
+import android.widget.TextView;
 
 public class MainUIActivity extends AppCompatActivity {
 
@@ -40,6 +41,9 @@ public class MainUIActivity extends AppCompatActivity {
     private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
 
+    // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
+    int goldenPollen;
+
     // This receiver used by all fragments
     private class Receiver extends BroadcastReceiver {
 
@@ -52,21 +56,35 @@ public class MainUIActivity extends AppCompatActivity {
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d("HEALTH","HEALTH");
-                statsTab.getDistanceView().setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
-                statsTab.getStepsView().setText("" + extras.getInt("TOTALSTEPS") + " steps");
+
+                treeTab.newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
+                if (treeTab.newPhase != treeTab.currentPhase) {
+                    treeTab.setTreePhase(treeTab.newPhase);
+                }
+
+
                 if (extras.getInt("HP") < 1) {
                     statsTab.getHealthView().setText("DEAD");
                 } else
                     statsTab.getHealthView().setText("" + extras.getInt("HP") + "hp");
                 statsTab.getPhaseView().setText(extras.getString("PHASE"));
-
                 // TODO: Implement AGE when functionality is ready
                 // Updates buffers
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
-            } else if (intent.getAction().equals("WEATHER_DATA")) {
+                statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
+                statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
+
+                // LAZAR OCH PATRIK ANVÄNDER DESSA
+                statsTab.mDistance = extras.getDouble("TOTALKM")/1000;  // 1000 is BUFFER_CONSTANT in Pedometer
+                statsTab.mStepCount = extras.getInt("TOTALSTEPS");
+                statsTab.currentPhaseNumber = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
+                statsTab.statusImgUpd(statsTab.phaseIcon);
+                // SLUT PÅ DERAS
+
+            } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
                 // Build new weatherLayout depending on weather
+                // TODO: Make sure it dose not build new, if its the same weather
                 treeTab.setWeather((se.kth.projectarbor.project_arbor.weather.Environment.Weather) extras.get("WEATHER"));
                 RelativeLayout layout = (RelativeLayout) treeTab.getTabView();
                 layout.removeView(treeTab.getWeatherLayout());
@@ -79,11 +97,14 @@ public class MainUIActivity extends AppCompatActivity {
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 treeTab.getStepView().setText(String.format("%d", extras.getInt("STEPCOUNT")));
                 treeTab.getDistanceView().setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
-            } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
-                int money = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
-                shopTab.getTextMoney().setText("Curreny: " + money);
 
-                sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
+                statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
+                statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
+
+            } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
+                goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
+                shopTab.getTextMoney().setText(goldenPollen + " gp");
+                sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
         }
     }
@@ -138,7 +159,21 @@ public class MainUIActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        // HANDLES GOLDEN POLLEN START
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
+        // If money has been stored earlier, read from sharedPreferences
+        if (sharedPreferences.contains("STORE_MONEY")) {
+            goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
+        } else {
+            goldenPollen = 10;
+            sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
+        }
+
+        shopTab.goldenPollenView = (TextView) findViewById(R.id.text_money);
+        shopTab.goldenPollenView.setText(goldenPollen + "gp");
+
+        /// HANDLES GOLDEN POLLEN END
 
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);

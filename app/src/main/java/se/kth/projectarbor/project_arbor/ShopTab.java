@@ -53,6 +53,8 @@ public class ShopTab extends Fragment {
     private ImageView btnSunLarge;
     private TextView textMoney;
 
+    TextView goldenPollenView;
+
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
 
@@ -196,6 +198,7 @@ public class ShopTab extends Fragment {
         */
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
+        /*
         // If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
@@ -207,6 +210,8 @@ public class ShopTab extends Fragment {
 
         textMoney = (TextView) view.findViewById(R.id.text_money);
         textMoney.setText(this.money + "gp");
+
+        */
 
         // Buttons that give feedback when pressed
         btnWaterSmall = (ImageView) view.findViewById(R.id.box_water_small);

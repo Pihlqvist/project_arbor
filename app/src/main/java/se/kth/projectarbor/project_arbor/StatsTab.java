@@ -35,9 +35,9 @@ public class StatsTab extends Fragment {
 
     private final static String TAG = "ARBOR_STATSTAB";
 
-    private double mDistance;
-    private int mStepCount;
-    private int currentPhaseNumber;
+    double mDistance;
+    int mStepCount;
+    int currentPhaseNumber;
 
     private View view;
 
@@ -180,7 +180,7 @@ public class StatsTab extends Fragment {
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
     }
-    private void statusImgUpd(ImageView v){
+    void statusImgUpd(ImageView v){
         v.setImageResource(getPhaseImage());
     }
     // Can be changed for testing purposes, change mDistance to meter instead of kilometers

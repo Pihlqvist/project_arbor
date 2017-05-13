@@ -59,8 +59,8 @@ public class TreeTab extends Fragment {
     private Environment.Weather weather;
     private SharedPreferences sharedPreferences;
 
-    private int currentPhase;
-    private int newPhase;
+    int currentPhase;
+    int newPhase;
 
     /* // TODO: See so it works after integrish
     //TODO:Fix messages (Ramcin)
@@ -82,7 +82,6 @@ public class TreeTab extends Fragment {
             } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
                 Log.d("ARBOR_WEATHER", "Broadcast received");
                 // Build new weather layout depending on weather
-                // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
                 Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
                 if (true) { // TODO: change to goodie (Fredrik)
                     weather = newWeather;
@@ -295,7 +294,7 @@ public class TreeTab extends Fragment {
 
 
     // Shows the right tree
-    private void setTreePhase(int phaseNumber) {
+    void setTreePhase(int phaseNumber) {
         Log.d(TAG, "setTreePhase");
         switch (phaseNumber) {
             case 1:
