@@ -58,7 +58,6 @@ public class TreeTab extends Fragment {
     private TextView stepView;
     private ImageView ivTree;
 
-
     private RelativeLayout weatherLayout;
     private Environment.Weather weather;
     private SharedPreferences sharedPreferences;
@@ -107,7 +106,9 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
-
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
         //GIF tree anim
        // WebView treeWebView = (WebView) view.findViewById(R.id.webview);
        // treeWebView.loadUrl("file:///android_asset/tree_anim.htm");
@@ -173,9 +174,6 @@ public class TreeTab extends Fragment {
 
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         t.setLayoutParams(lp);
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
         lp.setMargins(((size.x/2)+10)/2, size.y/2-20*(size.y/100), 5*(size.x/100), 0);//left, top, right, bottom
         currentLayout.addView(t);
         view = currentLayout;
