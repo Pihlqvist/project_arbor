@@ -40,7 +40,7 @@ public class MainUIActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_ui);
 
         //Setup a SoundHandler to load Sounds this is time critcal operation
-        sh = new SoundHandler(this);
+        sh = new SoundHandler(getApplicationContext());
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
