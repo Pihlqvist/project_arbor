@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -53,6 +54,7 @@ public class TreeTab extends Fragment {
     private Animation animAppear;
     private Animation animDisappear;
 
+    private MainUIActivity.SoundHandler sh;
 
     private RelativeLayout weatherLayout;
     private Environment.Weather weather;
@@ -60,6 +62,9 @@ public class TreeTab extends Fragment {
 
     private int currentPhase;
     private int newPhase;
+
+    private LoopMediaPlayer wind;
+    private LoopMediaPlayer birdies;
 
 //TODO:Fix messages (Ramcin)
     private class Receiver extends BroadcastReceiver {
@@ -107,6 +112,22 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
 
+        //SoundHandler class in MainUIActivity decoded streams available
+        sh = ((MainUIActivity)getActivity()).getSoundHandler();
+
+        //Instanciate mediaplaters
+        //TODO: implement volume setter in LoopMediaPlayer
+        wind = LoopMediaPlayer.create(getContext(), R.raw.wind_loop);
+        birdies = LoopMediaPlayer.create(getContext(), R.raw.birds_2);
+
+        //Apply mainVolume find in SoundHandler class in MainUIActivity
+        //Commented for future use, MediaPlayer's Loop does not perform
+        //wind.setVolume(sh.soundVolume, sh.soundVolume);
+        //birdies.setVolume(sh.soundVolume, sh.soundVolume);
+        //wind.setLooping(true);
+        //wind.start();
+        //birdies.setLooping(true);
+        //birdies.start();
 
         sharedPreferences = getActivity().getSharedPreferences(
                 "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
@@ -211,7 +232,8 @@ public class TreeTab extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "RESUME");
-
+        wind.onResume();
+        birdies.onResume();
 
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
@@ -312,5 +334,11 @@ public class TreeTab extends Fragment {
         }
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        wind.onPause();
+        birdies.onPause();
+    }
 }
 

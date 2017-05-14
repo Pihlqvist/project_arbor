@@ -140,10 +140,16 @@ public class MainUIActivity extends AppCompatActivity {
         int shopSun;
         int noMoney;
 
+        int sunFill;
+        int waterFill;
+
         //Stream references
         int shopWaterStream;
         int shopSunStream;
         int noMoneyStream;
+
+        int sunFillStream;
+        int waterFillStream;
 
         float soundVolume = 1;
         SoundHandler(Context context) {
@@ -151,6 +157,8 @@ public class MainUIActivity extends AppCompatActivity {
             shopSun = pp.load(context, R.raw.shopsun_3, 1);
             shopWater = pp.load(context, R.raw.shopwater_2, 1);
             noMoney = pp.load(context, R.raw.nomoney_1, 1);
+            sunFill = pp.load(context, R.raw.sunloop, 1);
+            waterFill = pp.load(context, R.raw.rainsynth_2, 1);
         }
         public SoundPool getSoundPoolRef(){
             return this.pp;
@@ -163,6 +171,12 @@ public class MainUIActivity extends AppCompatActivity {
         }
         public void playNoMoney(){
             noMoneyStream = pp.play(noMoney, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playSunFill(){
+            sunFillStream = pp.play(sunFill, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playWaterFill(){
+            waterFillStream = pp.play(waterFill, soundVolume, soundVolume, 1, 0, 1);
         }
         public void playShopWater(int vol){
             pp.play(shopWater, vol, vol, 1, 0, 1);

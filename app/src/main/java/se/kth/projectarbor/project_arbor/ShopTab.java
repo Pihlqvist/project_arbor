@@ -320,32 +320,28 @@ public class ShopTab extends Fragment {
         if (a == MotionEvent.ACTION_DOWN) {
 
             if (duration > -5) {
-
+                iV.setColorFilter(PURCHASE_BUTTON_TINT);
+                iV.setColorFilter(NO_MONEY_BUTTON_TINT);
                 x = e.getX();
                 y = e.getY();
 
 
                 Log.d("ARBOR", ("X: " + Float.toString(x) + "Y: " + Float.toString(y)));
             }
-            if(a == MotionEvent.ACTION_MOVE){
-                if(Math.abs(e.getX()-x) > 5) {
-                    return true;
-                }else{
+            return true;
+        }else if(a == MotionEvent.ACTION_UP){
+                if(!(Math.abs(e.getX()-x) > 5)) {
                     if (purchaseItem(item, color, animation)) {
-                        iV.setColorFilter(PURCHASE_BUTTON_TINT);
                         sh.playShopSun();
                     } else {
-                        iV.setColorFilter(NO_MONEY_BUTTON_TINT);
                         sh.playNoMoney();
                     }
-                    return true;
                 }
+                Log.d("ARBOR", "CLEARED");
+                iV.clearColorFilter();
+                return true;
             }
-
-        } else if (a == MotionEvent.ACTION_UP) {
-            iV.clearColorFilter();
-            return true;
-        } else if (a == MotionEvent.ACTION_CANCEL) {
+         else if (a == MotionEvent.ACTION_CANCEL) {
             iV.clearColorFilter();
             return true;
         }
