@@ -136,9 +136,9 @@ public class MainUIActivity extends AppCompatActivity {
         int shopWater;
         int shopSun;
         int soundVolume;
-        SoundHandler(Context context){
-            shopSun = pp.load(context, R.raw.shopsun_3, 0);
-            shopWater = pp.load(context, R.raw.shopwater_2, 0);
+        SoundHandler(Context context) {
+            shopSun = pp.load(context, R.raw.shopsun_3, 1);
+            shopWater = pp.load(context, R.raw.shopwater_2, 1);
         }
         public SoundPool getSoundPoolRef(){
             return this.pp;

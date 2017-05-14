@@ -109,7 +109,8 @@ public class ShopTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        //get SoundPool from MainUIActivity
+        //get SoundHandler from MainUIActivity
+        sh = ((MainUIActivity)getActivity()).getSoundHandler();
 
         View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
         // These may be used when doing animation programmatically
@@ -216,8 +217,10 @@ public class ShopTab extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(purchaseItem(StoreItem.WATER_SMALL, WATER_COLOR, animationAppear))
+                    if(purchaseItem(StoreItem.WATER_SMALL, WATER_COLOR, animationAppear)) {
+                        sh.playShopWater();
                         btnWaterSmall.setColorFilter(PURCHASE_BUTTON_TINT);
+                    }
                     else
                         btnWaterSmall.setColorFilter(NO_MONEY_BUTTON_TINT);
                     return true;
@@ -238,8 +241,10 @@ public class ShopTab extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(purchaseItem(StoreItem.WATER_MEDIUM, WATER_COLOR, animationAppear))
+                    if(purchaseItem(StoreItem.WATER_MEDIUM, WATER_COLOR, animationAppear)) {
+                        sh.playShopWater();
                         btnWaterMedium.setColorFilter(PURCHASE_BUTTON_TINT);
+                    }
                     else
                         btnWaterMedium.setColorFilter(NO_MONEY_BUTTON_TINT);
                     return true;
@@ -260,6 +265,7 @@ public class ShopTab extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sh.playShopWater();
                     if(purchaseItem(StoreItem.WATER_LARGE, WATER_COLOR, animationAppear))
                         btnWaterLarge.setColorFilter(PURCHASE_BUTTON_TINT);
                     else
@@ -282,6 +288,7 @@ public class ShopTab extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sh.playShopSun();
                     if(purchaseItem(StoreItem.SUN_SMALL, SUN_COLOR, animationAppear))
                         btnSunSmall.setColorFilter(PURCHASE_BUTTON_TINT);
                     else
@@ -304,6 +311,7 @@ public class ShopTab extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sh.playShopSun();
                     if(purchaseItem(StoreItem.SUN_MEDIUM, SUN_COLOR, animationAppear))
                         btnSunMedium.setColorFilter(PURCHASE_BUTTON_TINT);
                     else
@@ -326,6 +334,7 @@ public class ShopTab extends Fragment {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    sh.playShopSun();
                     if(purchaseItem(StoreItem.SUN_LARGE, SUN_COLOR, animationAppear))
                         btnSunLarge.setColorFilter(PURCHASE_BUTTON_TINT);
                     else
