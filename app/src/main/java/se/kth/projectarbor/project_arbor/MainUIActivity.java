@@ -1,6 +1,7 @@
 package se.kth.projectarbor.project_arbor;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.SoundPool;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -133,21 +134,35 @@ public class MainUIActivity extends AppCompatActivity {
     }
     public class SoundHandler{
         SoundPool pp;
+
+        //SoundID
         int shopWater;
         int shopSun;
-        int soundVolume;
+        int noMoney;
+
+        //Stream references
+        int shopWaterStream;
+        int shopSunStream;
+        int noMoneyStream;
+
+        float soundVolume = 1;
         SoundHandler(Context context) {
+            pp = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
             shopSun = pp.load(context, R.raw.shopsun_3, 1);
             shopWater = pp.load(context, R.raw.shopwater_2, 1);
+            noMoney = pp.load(context, R.raw.nomoney_1, 1);
         }
         public SoundPool getSoundPoolRef(){
             return this.pp;
         }
         public void playShopWater(){
-            pp.play(shopWater, soundVolume, soundVolume, 1, 0, 1);
+            shopWaterStream = pp.play(shopWater, soundVolume, soundVolume, 1, 0, 1);
         }
         public void playShopSun(){
-            pp.play(shopSun, soundVolume, soundVolume, 1, 0, 1);
+            shopSunStream = pp.play(shopSun, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playNoMoney(){
+            noMoneyStream = pp.play(noMoney, soundVolume, soundVolume, 1, 0, 1);
         }
         public void playShopWater(int vol){
             pp.play(shopWater, vol, vol, 1, 0, 1);
