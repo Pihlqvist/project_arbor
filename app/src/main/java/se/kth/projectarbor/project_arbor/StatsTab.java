@@ -17,13 +17,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
  * Edited by Jospeh Ariss and Pethrus Gardborn on 4/5/2017
- * Edited by Lazar Cerovic and Patrik Eriksson on 12/5/2017
+ * Edited by Lazar Eriksson and Patrik Cerovic on 12/5/2017
  */
 
 public class StatsTab extends Fragment {
@@ -32,9 +35,9 @@ public class StatsTab extends Fragment {
 
     private final static String TAG = "ARBOR_STATSTAB";
 
-    private double mDistance;
-    private int mStepCount;
-    private int currentPhaseNumber;
+    double mDistance;
+    int mStepCount;
+    int currentPhaseNumber;
 
     private View view;
 
@@ -76,7 +79,7 @@ public class StatsTab extends Fragment {
         private int toLevel = 0;*/
 
 
-
+/*  // TODO: See if MainUI does this correctly
     private class ReceiverStats extends BroadcastReceiver {
 
         @Override
@@ -115,7 +118,7 @@ public class StatsTab extends Fragment {
             }
         }
     }
-
+*/
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -126,12 +129,13 @@ public class StatsTab extends Fragment {
 
         setupValues();
 
+        /* // TODO: See if it works after intergirsh
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new ReceiverStats(), filter);
-
+        */
         // TEST to set levels manually
 
 //          waterAnim.setLevel(5000);
@@ -176,7 +180,7 @@ public class StatsTab extends Fragment {
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
     }
-    private void statusImgUpd(ImageView v){
+    void statusImgUpd(ImageView v){
         v.setImageResource(getPhaseImage());
     }
     // Can be changed for testing purposes, change mDistance to meter instead of kilometers
@@ -188,7 +192,7 @@ public class StatsTab extends Fragment {
             // TODO: Make a tree varibles class that we can ask
             Tree tree = new Tree();
             double k = (mDistance - tree.getNextPhase(currentPhaseNumber-1)) /
-                    tree.getNextPhase(currentPhaseNumber) - tree.getNextPhase(currentPhaseNumber-1);
+                    (tree.getNextPhase(currentPhaseNumber) - tree.getNextPhase(currentPhaseNumber-1));
             tree = null;
             if(Double.compare(k, 0.125) < 0){
                 return R.drawable.phase_icon;
@@ -212,6 +216,31 @@ public class StatsTab extends Fragment {
 
         }
         return R.drawable.phase_icon;
+    }
+
+    // TODO: Change to the right names
+    TextView getDistanceView() {
+        return totalDistanceTV;
+    }
+
+    TextView getStepsView() {
+        return totalStepsTV;
+    }
+
+    TextView getHealthView() {
+        return healthTV;
+    }
+
+    TextView getPhaseView() {
+        return phaseTV;
+    }
+
+    ClipDrawable getWaterAnim() {
+        return waterAnim;
+    }
+
+    ClipDrawable getSunAnim() {
+        return sunAnim;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED

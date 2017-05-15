@@ -51,7 +51,8 @@ public class ShopTab extends Fragment {
     private ImageView btnSunSmall;
     private ImageView btnSunMedium;
     private ImageView btnSunLarge;
-    private TextView textMoney;
+
+    private TextView goldenPollenView;
 
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
@@ -85,7 +86,7 @@ public class ShopTab extends Fragment {
         }
     }
 
-
+/* //TODO: Check if MainUI does the same as this one
     private class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -102,7 +103,7 @@ public class ShopTab extends Fragment {
             }
         }
     }
-
+*/
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -115,6 +116,7 @@ public class ShopTab extends Fragment {
         //layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
         //       ViewGroup.LayoutParams.WRAP_CONTENT);
         //textReceipt = new TextView(getActivity());
+
         textReceipt = (TextView) view.findViewById(R.id.text_receipt);
         textReceipt.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
@@ -133,7 +135,7 @@ public class ShopTab extends Fragment {
         animationAppear.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                    textReceipt.setVisibility(View.VISIBLE);
+                textReceipt.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -187,13 +189,15 @@ public class ShopTab extends Fragment {
         //layout.addView(textReceipt);
 
         // Setup a filter for money
+        /* // TODO: See if this works after integrich
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.STORE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
+        */
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
-        sharedPreferences = getActivity().getSharedPreferences("STORE_MONEY", Context.MODE_PRIVATE);
-
+        /*
         // If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
@@ -205,6 +209,12 @@ public class ShopTab extends Fragment {
 
         textMoney = (TextView) view.findViewById(R.id.text_money);
         textMoney.setText(this.money + "gp");
+
+        */
+
+        goldenPollenView = (TextView) view.findViewById(R.id.text_money);
+        goldenPollenView.setText(MainUIActivity.goldenPollen + "gp");
+
 
         // Buttons that give feedback when pressed
         btnWaterSmall = (ImageView) view.findViewById(R.id.box_water_small);
@@ -347,7 +357,7 @@ public class ShopTab extends Fragment {
         Log.d("ARBOR", "purchasing");
         textReceipt.setTextColor(ColorStateList.valueOf(color));
             if(buy(item)) {
-                textMoney.setText(ShopTab.this.money + "gp");
+                goldenPollenView.setText(ShopTab.this.money + "gp");
                 textReceipt.startAnimation(anim);
                 return true;
             }
@@ -386,6 +396,14 @@ public class ShopTab extends Fragment {
             textReceipt.setTextSize(NO_MONEY_TEXT_SIZE);
             return false;
         }
+    }
+
+    int addMoney(int newMoney) {
+        return (money += newMoney);
+    }
+
+    TextView getGoldenPollenView() {
+        return goldenPollenView;
     }
 }
 
