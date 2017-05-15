@@ -226,7 +226,7 @@ public class MainService extends Service {
             }
         }
 
-        //Update user's gender and height
+       /* //Update user's gender and height
         switch (sharedPreferences.getString("USER_GENDER", "Female")){
             case "Female":
                 userGender = Pedometer.Gender.FEMALE;
@@ -238,7 +238,7 @@ public class MainService extends Service {
                 userGender = Pedometer.Gender.NON_BINARY;
                 break;
         }
-        userLength = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
+        userLength = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);*/
     }
 
     // Foreground is created here

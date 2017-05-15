@@ -29,30 +29,28 @@
 
 
         <ImageView
-            android:id="@+id/resources"
-            android:layout_width="wrap_content"
+            android:id="@+id/pressTree"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/resources"
+            app:srcCompat="@drawable/press_tree"
             android:layout_centerHorizontal="true"/>
 
         <ImageView
-            android:id="@+id/walkAndGet"
-            android:layout_width="wrap_content"
+            android:id="@+id/walkGather"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/distance_axis"
-            android:layout_below="@id/resources"
+            app:srcCompat="@drawable/walk_n_gather"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="20dp"/>
+            android:layout_below="@id/pressTree"/>
 
         <TextView
             android:id="@+id/instruction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/walkAndGet"
-            android:text="Take care of your tree by gathering resources"
+            android:layout_below="@id/walkGather"
+            android:text="Real forecasts bring your location’s weather into the game"
             android:textAlignment="center"
             android:textColor="@color/text_grey"
-            android:layout_centerHorizontal="true"
             android:textSize="28dp" />
 
         <Button
@@ -65,6 +63,18 @@
             android:textColor="@color/colorWhite"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"/>
+
+        <Button
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/arbor_blue"
+            android:text="Previous"
+            android:textSize="20dp"
+            android:textColor="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
+
 
     </RelativeLayout>
 
