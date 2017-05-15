@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.Intent;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 public class MainUIActivity extends AppCompatActivity {
@@ -83,6 +85,25 @@ public class MainUIActivity extends AppCompatActivity {
         });
 
     }
+
+    public void goToGenderHeight(View v) {
+        Intent genderHeighIntent = new Intent(this,GenderHeightActivity.class);
+        startActivity(genderHeighIntent);
+
+    }
+
+    public void goToHowToPlay(View v){
+        Log.d("INTENT","howtoplay");
+        Intent howToPlayIntent= new Intent(this,HowToPlayActivity.class);
+        startActivity(howToPlayIntent);
+        Log.d("INTENT","Start");
+    }
+    public void goToAbout(View v){
+        Intent aboutIntent = new Intent(this,AboutActivity.class);
+        startActivity(aboutIntent);
+
+    }
+
     protected void onResume() {
         super.onResume();
 

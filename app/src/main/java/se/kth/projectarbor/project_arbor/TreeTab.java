@@ -24,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import java.util.Locale;
+
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
@@ -352,4 +354,3 @@ public class TreeTab extends Fragment {
         birdies.onPause();
     }
 }
-
