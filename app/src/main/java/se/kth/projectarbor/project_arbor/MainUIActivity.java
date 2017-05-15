@@ -44,6 +44,7 @@ public class MainUIActivity extends AppCompatActivity {
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
     static int goldenPollen;
 
+
     // This receiver used by all fragments
     private class Receiver extends BroadcastReceiver {
 
@@ -94,6 +95,8 @@ public class MainUIActivity extends AppCompatActivity {
                 treeTab.setWeatherLayout();
                 layout.addView(treeTab.getWeatherLayout());
                 treeTab.setTabView(layout);
+                treeTab.getTempView().setText(String.format("%.1f °C", extras.getDouble("TEMP")));
+
 
             // Msgs from Pedometer
 
@@ -110,6 +113,7 @@ public class MainUIActivity extends AppCompatActivity {
                 Log.d("ARBOR_RECEIVER", "STORE_BROADCAST");
                 goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getGoldenPollenView().setText(goldenPollen + " gp");
+                treeTab.getTvPollen().setText("" + goldenPollen);
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
         }
