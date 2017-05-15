@@ -1517,9 +1517,9 @@ public class GifDecoder {
 
 
 
-            previousImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            previousImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
-            currentImage = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+            currentImage = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         } catch (final OutOfMemoryError e) {
 
@@ -1535,9 +1535,9 @@ public class GifDecoder {
 
 
 
-            previousImage = Bitmap.createBitmap(width / 2, height / 2, Bitmap.Config.RGB_565);
+            previousImage = Bitmap.createBitmap(width / 2, height / 2, Bitmap.Config.ARGB_8888);
 
-            currentImage = Bitmap.createBitmap(width / 2, height / 2, Bitmap.Config.RGB_565);
+            currentImage = Bitmap.createBitmap(width / 2, height / 2, Bitmap.Config.ARGB_8888);
 
         }
 

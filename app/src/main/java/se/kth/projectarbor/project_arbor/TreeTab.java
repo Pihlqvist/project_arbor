@@ -201,7 +201,7 @@ public class TreeTab extends Fragment {
         Point size = new Point();
         display.getSize(size);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(((size.x/2)+10)/2, size.y/2-20*(size.y/100), 5*(size.x/100), 0);//left, top, right, bottom
+        lp.setMargins(((size.x/100)*10), size.y/2-20*(size.y/100), 10*(size.x/100), 30*(size.y/100));//left, top, right, bottom
         currentLayout.addView(treeAnimView, lp);
 
         view = currentLayout;

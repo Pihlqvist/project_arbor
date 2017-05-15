@@ -8,6 +8,8 @@ package se.kth.projectarbor.project_arbor.view_objects;
 
         import android.graphics.Bitmap;
 
+        import android.graphics.Color;
+        import android.graphics.drawable.Drawable;
         import android.os.Handler;
 
         import android.util.AttributeSet;
@@ -16,7 +18,7 @@ package se.kth.projectarbor.project_arbor.view_objects;
 
         import android.widget.ImageView;
 
-
+        import se.kth.projectarbor.project_arbor.R;
 
 
 public class TreeView extends ImageView implements Runnable {
@@ -42,7 +44,12 @@ public class TreeView extends ImageView implements Runnable {
         public void run() {
 
             if (tmpBitmap != null && !tmpBitmap.isRecycled()) {
+
+                setBackgroundResource(R.color.colorTransparent);
+                setBackgroundColor(getResources().getColor(R.color.colorTransparent));
                 setImageBitmap(tmpBitmap);
+                setScaleX(1.3f);
+                setScaleY(1.3f);
 
             }
 
