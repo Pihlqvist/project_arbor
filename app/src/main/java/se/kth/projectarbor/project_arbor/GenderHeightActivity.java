@@ -2,6 +2,7 @@ package se.kth.projectarbor.project_arbor;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -14,11 +15,14 @@ import android.widget.Toast;
 
 public class GenderHeightActivity extends AppCompatActivity {
 
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gender_height);
+        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
 
+        //initializes the spinner
         String[] gender_choice = {"Female", "Male", "Non-binary"};
         final Spinner spinner = (Spinner) findViewById(R.id.genderSpinner);
 // Create an ArrayAdapter using the string array and a default spinner layout
@@ -27,17 +31,42 @@ public class GenderHeightActivity extends AppCompatActivity {
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
+        //initializes the two numberpickers
         final NumberPicker meterPick = (NumberPicker) findViewById(R.id.heightMeter);
         final NumberPicker centiMeterPick = (NumberPicker) findViewById(R.id.heightCM);
-
         meterPick.setMinValue(1);
         meterPick.setMaxValue(2);
         centiMeterPick.setMinValue(0);
         centiMeterPick.setMaxValue(99);
 
-        //TODO: (Lovisa) get the saved gender and heigh values and set the numberpickers
-        centiMeterPick.setValue(26);
+        //Gets the saved data from sharedpreferences and displays current gender and height by
+        //setting the spinner and numberpickers
+        if (sharedPreferences.contains("USER_GENDER")) {
+            String current_gender = sharedPreferences.getString("USER_GENDER", "Female");
+            Log.d("arbor_GENDER", current_gender);
+            switch (current_gender){
+                case "Female":
+                    spinner.setSelection(0);
+                    break;
+                case "Male":
+                    spinner.setSelection(1);
+                    break;
+                case "Non-binary":
+                    spinner.setSelection(2);
+                    break;
+            }
+        }
+        if(sharedPreferences.contains("USER_HEIGHT")){
+            float current_height =sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
+            Log.d("arbor_HEIGHT", current_height+"");
+            int m = (int) Math.floor(current_height);
+            meterPick.setValue(m);
 
+            int cm = (int) Math.round((current_height - m)*100.0);
+            centiMeterPick.setValue(cm);
+        }
+
+        //initializes the save button
         Button saveBtn = (Button) findViewById(R.id.saveHeightGenderBtn);
         saveBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -46,12 +75,14 @@ public class GenderHeightActivity extends AppCompatActivity {
                 int meter = meterPick.getValue();
                 int centimeter = centiMeterPick.getValue();
 
-                double height = Math.round((double) meter + centimeter/100.0);
+                float height = (float) (meter + centimeter/100.0);
 
                 String gender = spinner.getSelectedItem().toString();
 
-                Log.d("arbor_genderHeight", "height " + height);
+                sharedPreferences.edit().putString("USER_GENDER", gender).apply();
+                sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
 
+                Log.d("arbor_genderHeight", "height " + gender);
                 //TODO: (Lovisa) change gender and height variables in the pedometer
 
                 Intent intent = new Intent(GenderHeightActivity.this, MainUIActivity.class);

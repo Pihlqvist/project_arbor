@@ -131,8 +131,18 @@ class Pedometer {
         this.phaseNumber = phaseNumber;
     }
 
-    void setGender(Gender gender){
-        this.gender = gender;
+    void setGender(String gender){
+        switch (gender){
+            case "Female":
+                this.gender = Gender.FEMALE;
+                break;
+            case "Male":
+                this.gender = Gender.MALE;
+                break;
+            case "Non-binary":
+                this.gender = Gender.NON_BINARY;
+                break;
+        }
     }
 
     void setHeight(float height){
