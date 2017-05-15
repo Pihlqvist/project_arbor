@@ -363,6 +363,8 @@ public class MainService extends Service {
     }
 
     //Joseph
+    // This will create a notification whenefer sun/water buffer is empty or the tree is dead
+    // Checking is done every hour... see MSG_UPDATE_NEED
     private void showNotification() {
         Log.d("JOSEPH", "SHowNotification");
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
@@ -421,6 +423,9 @@ public class MainService extends Service {
             tree.phaseChanged =false;
         }*/
     }
+
+    //Create a notification when Tree Phase is changed
+    //Checking for phasechange will happen every km... see MSG_KM_DONE
     public void phaseNotification(){
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
         resumeIntent = putTreeInformation(resumeIntent);
