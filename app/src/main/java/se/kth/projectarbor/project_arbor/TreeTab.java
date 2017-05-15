@@ -9,6 +9,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.*;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -56,6 +57,10 @@ public class TreeTab extends Fragment {
     private Animation animAppear;
     private Animation animDisappear;
 
+    //Created a class LoopMediaPlayer just for being able to loop seamlessly
+    private LoopMediaPlayer wind;
+    private LoopMediaPlayer birdies;
+
     private MainUIActivity.SoundHandler sh;
 
     private RelativeLayout weatherLayout;
@@ -65,9 +70,7 @@ public class TreeTab extends Fragment {
     private int currentPhase;
     private int newPhase;
 
-    //Created a class LoopMediaPlayer just for being able to loop seamlessly
-    private LoopMediaPlayer wind;
-    private LoopMediaPlayer birdies;
+    private FloatingActionButton fab;
 
 //TODO:Fix messages (Ramcin)
     private class Receiver extends BroadcastReceiver {
@@ -117,15 +120,20 @@ public class TreeTab extends Fragment {
         //SoundHandler class in MainUIActivity decoded streams available
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
 
+        fab = ((MainUIActivity)getActivity()).fab;
+        fab.show();
         //Instantiate mediaplaters and pause them for future resumement
         //volume is a multiplier 0-1
         //TODO: USE LoopMediaPlayer.setVolume to change volume
+        wind = ((MainUIActivity)getActivity()).getWind();
+        birdies = ((MainUIActivity)getActivity()).getBirdies();
         wind = LoopMediaPlayer.create(getContext(), R.raw.wind_loop);
         wind.onPause();
         wind.setVolume(1f);
         birdies = LoopMediaPlayer.create(getContext(), R.raw.birds_2);
         birdies.onPause();
         birdies.setVolume(1f);
+        Log.d("ARBOR TREETAB", "" + wind + birdies);
 
         //Apply mainVolume find in SoundHandler class in MainUIActivity
         //Commented for future use, MediaPlayer's Loop does not perform so uncommented for now
@@ -239,8 +247,6 @@ public class TreeTab extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "RESUME");
-        wind.onResume();
-        birdies.onResume();
 
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
@@ -350,7 +356,5 @@ public class TreeTab extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        wind.onPause();
-        birdies.onPause();
     }
 }

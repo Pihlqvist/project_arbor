@@ -37,8 +37,17 @@ public class MainUIActivity extends AppCompatActivity {
     private SoundHandler sh;
     private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
+
+    //Created a class LoopMediaPlayer just for being able to loop seamlessly
+    private LoopMediaPlayer wind;
+    private LoopMediaPlayer birdies;
+
+    public FloatingActionButton fab;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        wind = LoopMediaPlayer.create(getApplicationContext(), R.raw.wind_loop);
+        birdies = LoopMediaPlayer.create(getApplicationContext(), R.raw.birds_2);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
 
@@ -60,7 +69,8 @@ public class MainUIActivity extends AppCompatActivity {
 
 
         // TODO: Add elements to the settings_main_settings layout
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.hide();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,8 +116,15 @@ public class MainUIActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-
     }
+    @Override
+    public void onPause() {
+        Log.d("ARBOR", "HEJ");
+        super.onPause();
+        wind.onPause();
+        birdies.onPause();
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -218,8 +235,33 @@ public class MainUIActivity extends AppCompatActivity {
     public SoundHandler getSoundHandler (){
         return sh;
     }
+    public LoopMediaPlayer getWind (){
+        return wind;
+    }
+    public LoopMediaPlayer getBirdies (){
+        return birdies;
+    }
     @Override
     public void onBackPressed() {}
 
+    public void soundZERO(View view){
+        Log.d("ARBOR", "Sound: 0%");
+        this.sh.soundVolume = 0f;
+        wind.setVolume(0f);
+        birdies.setVolume(0f);
+    }
+    public void soundFIFTY(View view){
+        Log.d("ARBOR", "Sound: 50%");
+        this.sh.soundVolume = 0.5f;
+        wind.setVolume(0.5f);
+        birdies.setVolume(0.5f);
+    }
+    public void soundHUNDRED(View view){
+        Log.d("ARBOR", "Sound: 100%");
+        sh.soundVolume = 1f;
+        wind.setVolume(1f);
+        birdies.setVolume(1f);
+        Log.d("ARBOR", "" + wind + birdies);
+    }
 
 }

@@ -46,8 +46,8 @@
 
 
         <Button
-            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/NO_SOUND"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
 
@@ -55,11 +55,9 @@
             android:text=" SOUND 0%   " />
 
 
-
-
         <Button
-            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/SOME_SOUND"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="soundFIFTY"
@@ -67,12 +65,17 @@
 
 
         <Button
-            style="?android:attr/borderlessButtonStyle"
             android:id="@+id/LOUD_SOUND"
+            style="@style/Widget.AppCompat.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="soundHUNDRED"
             android:text="SOUND 100%" />
+
+        <SeekBar
+            android:id="@+id/seekBar2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
     </TableRow>
 
 

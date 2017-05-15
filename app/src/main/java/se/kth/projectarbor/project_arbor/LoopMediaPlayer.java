@@ -11,7 +11,7 @@ public class LoopMediaPlayer {
     private Context mContext = null;
     private int mResId = 0;
     private int mCounter = 1;
-
+    private float mVolume = 1;
     private MediaPlayer mCurrentPlayer = null;
     private MediaPlayer mNextPlayer = null;
 
@@ -36,6 +36,7 @@ public class LoopMediaPlayer {
 
     private void createNextMediaPlayer() {
         mNextPlayer = MediaPlayer.create(mContext, mResId);
+        mNextPlayer.setVolume(mVolume, mVolume);
         mCurrentPlayer.setNextMediaPlayer(mNextPlayer);
         mCurrentPlayer.setOnCompletionListener(onCompletionListener);
     }
@@ -57,5 +58,6 @@ public class LoopMediaPlayer {
     }
     public void setVolume(float f){
         mCurrentPlayer.setVolume(f, f);
+        mVolume = f;
     }
 }
