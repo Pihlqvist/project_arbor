@@ -42,7 +42,6 @@ public class TreeView extends ImageView implements Runnable {
         public void run() {
 
             if (tmpBitmap != null && !tmpBitmap.isRecycled()) {
-
                 setImageBitmap(tmpBitmap);
 
             }

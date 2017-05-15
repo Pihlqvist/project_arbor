@@ -28,8 +28,11 @@ import android.widget.ToggleButton;
 
 import com.google.android.gms.ads.formats.NativeAd;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
 
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
@@ -124,20 +127,31 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
         */
-        Bitmap image = getActivity().getAssets().open(tree_phase)
-        TreeView treeView = new TreeView(getActivity());
-
-        private byte[] ImageToBytes(Image image, ImageFormat format)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                image.Save(ms, format);
-                return ms.ToArray();
-            }
+        InputStream inputStream = null;
+        try{
+            inputStream = getActivity().getAssets().open("tree_life_cycle.gif");
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        TreeView treeAnimView = new TreeView(getActivity());
 
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        int nRead;
+        byte[] data = new byte[16384];
 
-
+        try {
+            while ((nRead = inputStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            buffer.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        treeAnimView.setBytes(buffer.toByteArray());
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
         , MODE_PRIVATE);
@@ -181,6 +195,8 @@ public class TreeTab extends Fragment {
         weatherLayout = new RelativeLayout(getContext());
         RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
         currentLayout.addView(weatherLayout);
+        currentLayout.addView(treeAnimView);
+
         view = currentLayout;
 
         // Sends message to MainService and asks for weather
@@ -237,7 +253,7 @@ public class TreeTab extends Fragment {
 
             }
         });
-
+        treeAnimView.startAnimation();
         return view;
     }
 
