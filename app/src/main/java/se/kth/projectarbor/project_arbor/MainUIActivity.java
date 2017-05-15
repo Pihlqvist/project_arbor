@@ -18,9 +18,12 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
+
+import se.kth.projectarbor.project_arbor.view_objects.LoadingView;
 
 public class MainUIActivity extends AppCompatActivity {
 
@@ -44,10 +47,9 @@ public class MainUIActivity extends AppCompatActivity {
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
     static int goldenPollen;
 
-
     // This receiver used by all fragments
     private class Receiver extends BroadcastReceiver {
-
+        private ImageView loadScreen;
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();

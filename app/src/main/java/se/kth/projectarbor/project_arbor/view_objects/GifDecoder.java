@@ -308,6 +308,11 @@ public class GifDecoder {
         framePointer = (framePointer + 1) % frameCount;
 
     }
+    public void devance() {
+
+        framePointer = (framePointer - 1) % frameCount;
+
+    }
 
 
 

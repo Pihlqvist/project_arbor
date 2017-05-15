@@ -23,7 +23,11 @@ package se.kth.projectarbor.project_arbor.view_objects;
 
 public class TreeView extends ImageView implements Runnable {
 
+    public boolean grow;
 
+    private int frameCount;
+
+    final int mod;
 
     private static final String TAG = "GifDecoderView";
 
@@ -46,10 +50,9 @@ public class TreeView extends ImageView implements Runnable {
             if (tmpBitmap != null && !tmpBitmap.isRecycled()) {
 
                 setBackgroundResource(R.color.colorTransparent);
-                setBackgroundColor(getResources().getColor(R.color.colorTransparent));
                 setImageBitmap(tmpBitmap);
-                setScaleX(1.3f);
-                setScaleY(1.3f);
+                setScaleX(1.5f);
+                setScaleY(1.5f);
 
             }
 
@@ -60,9 +63,10 @@ public class TreeView extends ImageView implements Runnable {
 
 
     public TreeView(final Context context, final AttributeSet attrs) {
-
         super(context, attrs);
-
+        grow  = false;
+        frameCount = 0;
+        mod = 0;
     }
 
 
@@ -70,7 +74,9 @@ public class TreeView extends ImageView implements Runnable {
     public TreeView(final Context context) {
 
         super(context);
-
+        grow = false;
+        frameCount = 0;
+        mod = 0;
     }
 
 
@@ -153,44 +159,77 @@ public class TreeView extends ImageView implements Runnable {
 
     public void run() {
 
-        final int n = gifDecoder.getFrameCount();
+        if(frameCount<gifDecoder.getFrameCount()) {
+            final int n = gifDecoder.getFrameCount() / 3;
+            animating = false;
+            do {
+                for (int i = 0; i < n; i++) {
+                    if(i==(n-1)){
+                        i=i-2;
+                        try {
 
-        do {
+                            tmpBitmap = gifDecoder.getNextFrame();
 
-            for (int i = 0; i < n; i++) {
+                            handler.post(updateResults);
+                            frameCount++;
 
-                try {
+                        } catch (final ArrayIndexOutOfBoundsException e) {
 
-                    tmpBitmap = gifDecoder.getNextFrame();
+                            Log.w(TAG, e);
 
-                    handler.post(updateResults);
+                        } catch (final IllegalArgumentException e) {
 
-                } catch (final ArrayIndexOutOfBoundsException e) {
+                            Log.w(TAG, e);
 
-                    Log.w(TAG, e);
+                        }
+                        gifDecoder.devance();
+                        try {
 
-                } catch (final IllegalArgumentException e) {
+                            Thread.sleep(gifDecoder.getNextDelay());
 
-                    Log.w(TAG, e);
+                        } catch (final InterruptedException e) {
+
+                            // suppress
+
+                        }
+                    }else {
+                        try {
+
+                            tmpBitmap = gifDecoder.getNextFrame();
+
+                            handler.post(updateResults);
+                            frameCount++;
+
+                        } catch (final ArrayIndexOutOfBoundsException e) {
+
+                            Log.w(TAG, e);
+
+                        } catch (final IllegalArgumentException e) {
+
+                            Log.w(TAG, e);
+
+                        }
+                        gifDecoder.advance();
+                        try {
+
+                            Thread.sleep(gifDecoder.getNextDelay());
+
+                        } catch (final InterruptedException e) {
+
+                            // suppress
+
+                        }
+                    }
 
                 }
 
-                gifDecoder.advance();
-
-                try {
-
-                    Thread.sleep(gifDecoder.getNextDelay());
-
-                } catch (final InterruptedException e) {
-
-                    // suppress
-
-                }
-
-            }
-
-        } while (animating);
-
+            } while (animating);
+        }else{
+            frameCount=0;
+        }
+    }
+    public void setGrow(){
+        grow = true;
     }
 
 }

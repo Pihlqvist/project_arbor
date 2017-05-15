@@ -1,5 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -67,6 +68,7 @@ public class TreeTab extends Fragment {
     private ImageView ivTree;
     private View sessionView;
     private TextView tvPollen;
+    private TreeView treeAnimView;
 
     private Animation animAppear;
     private Animation animDisappear;
@@ -129,13 +131,14 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
         */
+
         InputStream inputStream = null;
         try{
             inputStream = getActivity().getAssets().open("tree_life_cycle.gif");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        TreeView treeAnimView = new TreeView(getActivity());
+        treeAnimView = new TreeView(getActivity());
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
@@ -260,7 +263,6 @@ public class TreeTab extends Fragment {
 
             }
         });
-        treeAnimView.startAnimation();
         return view;
     }
 
@@ -370,15 +372,18 @@ public class TreeTab extends Fragment {
         switch (phaseNumber) {
             case 1:
                 //ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                treeAnimView.startAnimation();
                 //ivTree.setImageResource(R.drawable.seed_to_sprout_01);
                 Log.d(TAG, "ivTree seed");
                 break;
             case 2:
+                treeAnimView.startAnimation();
                 //ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 //ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
                 Log.d(TAG, "ivTree sprout");
                 break;
             case 3:
+                treeAnimView.startAnimation();
                 //ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 //ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
                 Log.d(TAG, "ivTree sapling");
