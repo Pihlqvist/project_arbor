@@ -146,7 +146,7 @@ class Pedometer {
     }
 
     void setHeight(float height){
-        this.height = height;
+        this.height = (double) height;
     }
 
     public void reset() {

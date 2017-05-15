@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -57,6 +58,7 @@ public class MainService extends Service {
     private double totalDistance; //distance to be stored in file and handled in mainservice
     private Environment.Weather lastWeather;
     private double lastTemperature;
+    private SharedPreferences sharedPreferences;
     // end
 
     // User information  // TODO: the user should change these thyself  (Fredrik)
@@ -74,6 +76,8 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "Service onCreate()");
+
+        SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
 
         // Load essential information from IO
         List<Object> list = DataManager.readState(this, filename);
@@ -222,7 +226,19 @@ public class MainService extends Service {
             }
         }
 
-
+        //Update user's gender and height
+        switch (sharedPreferences.getString("USER_GENDER", "Female")){
+            case "Female":
+                userGender = Pedometer.Gender.FEMALE;
+                break;
+            case "Male":
+                userGender = Pedometer.Gender.MALE;
+                break;
+            case "Non-binary":
+                userGender = Pedometer.Gender.NON_BINARY;
+                break;
+        }
+        userLength = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
     }
 
     // Foreground is created here

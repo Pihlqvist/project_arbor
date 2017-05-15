@@ -1,17 +1,14 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 public class GenderHeightActivity extends AppCompatActivity {
 
@@ -56,12 +53,12 @@ public class GenderHeightActivity extends AppCompatActivity {
                     break;
             }
         }
+
         if(sharedPreferences.contains("USER_HEIGHT")){
             float current_height =sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
             Log.d("arbor_HEIGHT", current_height+"");
             int m = (int) Math.floor(current_height);
             meterPick.setValue(m);
-
             int cm = (int) Math.round((current_height - m)*100.0);
             centiMeterPick.setValue(cm);
         }
@@ -74,11 +71,8 @@ public class GenderHeightActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int meter = meterPick.getValue();
                 int centimeter = centiMeterPick.getValue();
-
                 float height = (float) (meter + centimeter/100.0);
-
                 String gender = spinner.getSelectedItem().toString();
-
                 sharedPreferences.edit().putString("USER_GENDER", gender).apply();
                 sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
 
@@ -87,7 +81,6 @@ public class GenderHeightActivity extends AppCompatActivity {
 
                 Intent intent = new Intent(GenderHeightActivity.this, MainUIActivity.class);
                 GenderHeightActivity.this.startActivity(intent);
-
             }
 
 
