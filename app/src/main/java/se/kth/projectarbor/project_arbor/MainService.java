@@ -192,6 +192,9 @@ public class MainService extends Service {
                 sharedPreferences.edit().putBoolean("TREE_ALIVE", true);
                 pedometer.resetAll();
 
+                List<Object> list = DataManager.readState(this, filename);
+                loadState(list);
+
                 startGame();
                 Intent weatherIntent = new Intent(MainService.this.getApplicationContext(), MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);

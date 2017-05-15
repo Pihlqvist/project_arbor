@@ -18,6 +18,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
@@ -134,6 +135,17 @@ public class MainUIActivity extends AppCompatActivity {
 
         // Used for handling golden pollens and boolean "alive"
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
+        Button btnContinue = (Button) findViewById(R.id.btn_continue_new);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sharedPreferences.edit().putBoolean("FIRST_TREE", false).putBoolean("TREE_ALIVE", true).apply();
+                Intent intent = new Intent(MainUIActivity.this, NewTreeActivity.class);
+                MainUIActivity.this.startActivity(intent);
+                MainUIActivity.this.finish();
+            }
+        });
 
         boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
         // For TESTING
