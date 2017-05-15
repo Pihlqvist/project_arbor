@@ -47,10 +47,12 @@ public class TreeTab extends Fragment {
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
+    private TextView tempView;
     private TextView distanceTextView;
     private TextView stepTextView;
     private ImageView ivTree;
     private View sessionView;
+    private TextView tvPollen;
 
     private Animation animAppear;
     private Animation animDisappear;
@@ -132,6 +134,9 @@ public class TreeTab extends Fragment {
         stepTextView = (TextView) view.findViewById(R.id.tvStepCount);
         sessionView = view.findViewById(R.id.sessionView);
         sessionView.setVisibility(View.GONE);
+        tvPollen = (TextView) view.findViewById(R.id.golden_pollen);
+        tvPollen.setText("" + MainUIActivity.goldenPollen);
+        tempView = (TextView) view.findViewById(R.id.tempTV);
 
         // Pick the right tree depending on the current Phase
         setTreePhase(currentPhase);
@@ -217,7 +222,6 @@ public class TreeTab extends Fragment {
     public void onResume() {
         super.onResume();
         Log.d(TAG, "RESUME");
-
 
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
@@ -307,6 +311,11 @@ public class TreeTab extends Fragment {
         return stepTextView;
     }
 
+    TextView getTvPollen() {
+        return tvPollen;
+    }
+
+    TextView getTempView(){return tempView;}
 
 
     // Shows the right tree
@@ -359,6 +368,8 @@ public class TreeTab extends Fragment {
                 break;
         }
     }
+
+
 
 }
 
