@@ -8,7 +8,7 @@ android:layout_height="match_parent"
 android:background="@color/background_blue"
 tools:context="se.kth.projectarbor.project_arbor.GenderHeightActivity"
     android:padding="15dp"
-    style="@style/AppTheme.NoActionBar">
+    android:theme="@style/AppTheme.NoActionBar">
 
 <ImageView
     android:id="@+id/whiteRectangle"

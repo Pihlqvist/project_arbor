@@ -36,10 +36,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".GenderHeightActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity android:name=".HowToPlayActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"/>
         <activity android:name=".AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             android:screenOrientation="portrait"></activity>
     </application>
 
