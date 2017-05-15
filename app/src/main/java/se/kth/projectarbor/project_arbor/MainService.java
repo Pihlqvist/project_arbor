@@ -34,7 +34,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 10; // TODO: Change back to 60 * 60
+    public final static int ALARM_HOUR = 14; // TODO: Change back to 60 * 60
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -149,6 +149,7 @@ public class MainService extends Service {
             case MSG_UPDATE_NEED:
                 boolean alive = tree.update();
                 if (alive) {
+                    Log.d("ARBOR_MSG_UPDATE_NEED", "alive is true");
                     sendToView();
 
                     pendingIntent = PendingIntent.getService(this, 0, intent, 0);
@@ -158,6 +159,7 @@ public class MainService extends Service {
                     saveGame();
                 }
                 else {
+                    Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                     sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
                     // TODO: Check if it's enough to unregister or if reset() is needed as well.
                     // Pedometer will stop updating km to MainService
@@ -191,6 +193,7 @@ public class MainService extends Service {
                 // Used to stop updates and show death screen when tree dies
                 sharedPreferences.edit().putBoolean("TREE_ALIVE", true);
                 pedometer.resetAll();
+                pedometer.register();
 
                 List<Object> list = DataManager.readState(this, filename);
                 loadState(list);

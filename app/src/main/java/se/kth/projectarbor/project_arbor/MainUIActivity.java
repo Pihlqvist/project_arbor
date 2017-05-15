@@ -74,7 +74,8 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
-                statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
+                totalDistance = extras.getDouble("TOTALKM");
+                statsTab.getStepsView().setText(String.format("%d", (totalStepCount = extras.getInt("TOTALSTEPS"))));
 
                 // LAZAR OCH PATRIK ANVÄNDER DESSA
                 statsTab.mDistance = extras.getDouble("TOTALKM")/1000;  // 1000 is BUFFER_CONSTANT in Pedometer
@@ -104,7 +105,8 @@ public class MainUIActivity extends AppCompatActivity {
                 treeTab.getDistanceView().setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
 
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
-                statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
+                totalDistance = extras.getDouble("TOTALDISTANCE");
+                statsTab.getStepsView().setText(String.format("%d", (totalStepCount =extras.getInt("TOTALSTEPCOUNT"))));
 
 
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
@@ -127,6 +129,8 @@ public class MainUIActivity extends AppCompatActivity {
     ShopTab shopTab;
     SharedPreferences sharedPreferences;
 
+    private int totalStepCount;
+    private double totalDistance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,6 +257,11 @@ public class MainUIActivity extends AppCompatActivity {
     }
 
     private void setDeathView() {
+        // TODO: IMPLEMENT AGE
+        //((TextView) findViewById(R.id.tv_age)).setText(treeAge + "");
+        ((TextView) findViewById(R.id.tv_total_steps)).setText(totalStepCount + "");
+        ((TextView) findViewById(R.id.tv_total_distance)).setText(String.format("%.2f", totalDistance/1000));
+
         findViewById(R.id.tree_death_view).setVisibility(View.VISIBLE);
         findViewById(R.id.appbar).setVisibility(View.GONE);
     }
