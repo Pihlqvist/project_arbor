@@ -5,10 +5,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:alpha="0.60"
         android:layout_margin="12dp"
         android:fadingEdge="horizontal|vertical"
-        android:background="#ffffff"/>
+        android:background="@drawable/rounded_corners"/>
 
     <TableLayout
         android:layout_width="match_parent"
@@ -35,7 +34,7 @@
 
                 <ImageView
                     android:id="@+id/ivEmptyWater"
-                    android:layout_width="240dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:paddingBottom="0dp"
                     android:paddingEnd="0dp"
@@ -47,7 +46,7 @@
 
                 <ImageView
                     android:id="@+id/ivXmlWater"
-                    android:layout_width="240dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:padding="0dp"
                     android:paddingBottom="0dp"
@@ -79,13 +78,13 @@
 
                 <ImageView
                     android:id="@+id/ivEmptySun"
-                    android:layout_width="240dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/sbempty" />
 
                 <ImageView
                     android:id="@+id/ivXmlSun"
-                    android:layout_width="240dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/clip_source2" />
             </FrameLayout>

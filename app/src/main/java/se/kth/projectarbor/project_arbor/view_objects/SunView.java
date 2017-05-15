@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -69,8 +70,6 @@ public class SunView {
 
         sunIV.startAnimation(animSun);
         rayIV.startAnimation(animRay);
-
-
     }
 
 
@@ -86,7 +85,5 @@ public class SunView {
 
         return layout;
     }
-
-
 
 }

@@ -73,16 +73,22 @@ public class Tree implements Serializable {
     private boolean timerFlag;
 
     public enum Phase {
-        SEED(1), SPROUT(2), SAPLING(3), GROWN_TREE(4);
+        SEED(1, "Seed"), SPROUT(2, "Sprout"), SAPLING(3, "Sapling"), GROWN_TREE(4, "Full Grown");
 
         private int phaseNumber;
+        private String phaseName;
 
-        private Phase(int phaseNumber) {
+        private Phase(int phaseNumber, String phaseName) {
             this.phaseNumber = phaseNumber;
+            this.phaseName = phaseName;
         }
 
         public int getPhaseNumber() {
             return phaseNumber;
+        }
+
+        public String getPhaseName() {
+            return phaseName;
         }
 
     }
@@ -135,6 +141,20 @@ public class Tree implements Serializable {
         this.timerFlag = false;
         this.alive = true;
         this.dist = 0;
+    }
+
+    public int getNextPhase(int phaseNumber) {
+        if (phaseNumber == 0) {
+            return 0;
+        } else if (phaseNumber == Phase.SEED.getPhaseNumber()) {
+            return SEED_NEXT_PHASE;
+        } else if (phaseNumber == Phase.SPROUT.getPhaseNumber()) {
+            return SPROUT_NEXT_PHASE;
+        } else if (phaseNumber == Phase.SAPLING.getPhaseNumber()) {
+            return SAPLING_NEXT_PHASE;
+        }
+
+        return 100;
     }
 
     public int getWaterLevel(){
@@ -274,6 +294,7 @@ public class Tree implements Serializable {
         // Add fixed amount of resources depending on weather and phase.
         switch(weather) {
             case SUN:
+            case PARTLY_CLOUDY:
                 addSunIntake();
                 if (getSunLevel() > getSunBufferMax())
                     sunBuffer.setValue(getSunBufferMax());
@@ -382,10 +403,5 @@ public class Tree implements Serializable {
                 break;
 
         }
-
-
     }
-
-
-
 }

@@ -17,12 +17,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
+
 import java.text.DecimalFormat;
 
 
 /**
  * Created by Fredrik Pihlqvist on 2017-04-28.
  * Edited by Jospeh Ariss and Pethrus Gardborn on 4/5/2017
+ * Edited by Lazar Eriksson and Patrik Cerovic on 12/5/2017
  */
 
 public class StatsTab extends Fragment {
@@ -31,19 +35,24 @@ public class StatsTab extends Fragment {
 
     private final static String TAG = "ARBOR_STATSTAB";
 
-    private TextView health;
-    private TextView steps;
-    private TextView phase;
-    private TextView dist;
+    double mDistance;
+    int mStepCount;
+    int currentPhaseNumber;
+
     private View view;
-    // TODO: Implement age
-    private TextView age;
+
+    private TextView healthTV;
+    private TextView totalStepsTV;
+    private TextView phaseTV;
+    private TextView totalDistanceTV;
+    private TextView ageTV; // TODO: Implement ageTV
 
     private ClipDrawable waterAnim;
     private ClipDrawable sunAnim;
     public static final int MAX_LEVEL = 10000;
     ImageView imgWater;
     ImageView imgSun;
+    ImageView phaseIcon;
 
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
@@ -70,7 +79,7 @@ public class StatsTab extends Fragment {
         private int toLevel = 0;*/
 
 
-
+/*  // TODO: See if MainUI does this correctly
     private class ReceiverStats extends BroadcastReceiver {
 
         @Override
@@ -82,25 +91,34 @@ public class StatsTab extends Fragment {
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d(TAG,"HEALTH");
-                dist.setText(String.format("Distance: %.2f", (extras.getDouble("TOTALKM")/1000)));
-                steps.setText("" + extras.getInt("TOTALSTEPS") + " steps");
                 if (extras.getInt("HP") < 1) {
-                    health.setText("DEAD");
+                    healthTV.setText("DEAD");
                 } else {
-                    health.setText("" + extras.getInt("HP") + "hp");
+                    healthTV.setText("" + extras.getInt("HP") + "hp");
                 }
-                Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
-                phase.setText(pibos.toString());
+
+                // LAZAR OCH PATRIK ANVÄNDER DESSA
+                mDistance = extras.getDouble("TOTALKM")/1000;  // 1000 is BUFFER_CONSTANT in Pedometer
+                mStepCount = extras.getInt("TOTALSTEPS");
+                currentPhaseNumber = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
+                statusImgUpd(phaseIcon);
+                // SLUT PÅ DERAS
+
+                phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
 
                 // TODO: Implement AGE when functionality is ready
                 waterAnim.setLevel(extras.getInt("WATER") * 10);
                 sunAnim.setLevel(extras.getInt("SUN") * 10);
-                Log.d(TAG, "Water: " + extras.getInt("WATER") + ", Sun: " + extras.getInt("SUN"));
+                totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
+                totalStepsTV.setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
+
+            } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+                totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
+                totalStepsTV.setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
             }
         }
     }
-
+*/
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -111,33 +129,35 @@ public class StatsTab extends Fragment {
 
         setupValues();
 
+        /* // TODO: See if it works after intergirsh
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new ReceiverStats(), filter);
-
+        */
         // TEST to set levels manually
 
 //          waterAnim.setLevel(5000);
 //        sunAnim.setLevel(7500);
-//        health.setText("HP: LIVING");
-//        steps.setText("Many steps");
-//        phase.setText("SEED");
-//        age.setText("Age");
-//        dist.setText("");
+//        healthTV.setText("HP: LIVING");
+//        totalStepsTV.setText("Many totalStepsTV");
+//        phaseTV.setText("SEED");
+//        ageTV.setText("Age");
+//        totalDistanceTV.setText("");
 
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
-            health.setText("" + extras.getInt("HP") + "hp");
-            steps.setText("" + extras.getInt("STEPCOUNT") + "steps");
-            Tree.Phase pibos = (Tree.Phase) extras.get("PHASE");
-            phase.setText(pibos.toString());
+            Log.d(TAG, "Setup from Intent");
+            healthTV.setText("" + extras.getInt("HP") + " HP");
+            totalStepsTV.setText(String.format("%d steps", extras.getInt("TOTALSTEPS")));
+            totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
+            phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
-           // dist.setText( extras.getInt("DISTANCE"));
+           // totalDistanceTV.setText( extras.getInt("DISTANCE"));
         }
 
 
@@ -146,19 +166,81 @@ public class StatsTab extends Fragment {
 
     // Setup all the views
     private void setupValues() {
-        health = (TextView) view.findViewById(R.id.tvHealth);
-        age = (TextView) view.findViewById(R.id.tvAge);
-        phase = (TextView) view.findViewById(R.id.tvPhase);
-        steps = (TextView) view.findViewById(R.id.tvSteps);
-        dist = (TextView) view.findViewById(R.id.tvDistance);
+        healthTV = (TextView) view.findViewById(R.id.tvHealth);
+        ageTV = (TextView) view.findViewById(R.id.tvAge);
+        phaseTV = (TextView) view.findViewById(R.id.tvPhase);
+        totalStepsTV = (TextView) view.findViewById(R.id.tvSteps);
+        totalDistanceTV = (TextView) view.findViewById(R.id.tvDistance);
 
         imgWater = (ImageView) view.findViewById(R.id.ivXmlWater);  //XMl file in drawable clip_source1
         imgSun = (ImageView) view.findViewById(R.id.ivXmlSun);  // Xml file in drawable clip_source2
-
+        phaseIcon = (ImageView) view.findViewById(R.id.ivPhaseIcon);
         waterAnim = (ClipDrawable) imgWater.getDrawable();
         waterAnim.setLevel(0);
         sunAnim = (ClipDrawable) imgSun.getDrawable();
         sunAnim.setLevel(0);
+    }
+    void statusImgUpd(ImageView v){
+        v.setImageResource(getPhaseImage());
+    }
+    // Can be changed for testing purposes, change mDistance to meter instead of kilometers
+    // Do not change here change the variable instead.
+    //This method divides the amount of distance between 0 - 60 (km) in intervals and changes the image (phase icon)
+    private int getPhaseImage() {
+
+        if(mDistance <= 60){
+            // TODO: Make a tree varibles class that we can ask
+            Tree tree = new Tree();
+            double k = (mDistance - tree.getNextPhase(currentPhaseNumber-1)) /
+                    (tree.getNextPhase(currentPhaseNumber) - tree.getNextPhase(currentPhaseNumber-1));
+            tree = null;
+            if(Double.compare(k, 0.125) < 0){
+                return R.drawable.phase_icon;
+            } else if (Double.compare(k, 0.25) < 0){
+                return R.drawable.phase_1;
+            } else if (Double.compare(k, 0.375) < 0){
+                return R.drawable.phase_2;
+            } else if (Double.compare(k, 0.5) < 0){
+                return R.drawable.phase_3;
+            } else if (Double.compare(k, 0.625) < 0){
+                return R.drawable.phase_4;
+            } else if (Double.compare(k, 0.75) < 0){
+                return R.drawable.phase_5;
+            } else if (Double.compare(k, 0.875) < 0){
+                return R.drawable.phase_6;
+            } else if (Double.compare(k, 1) < 0){
+                return R.drawable.phase_7;
+            } else if (Double.compare(k, 1) == 0){
+                return R.drawable.phase_8;
+            }
+
+        }
+        return R.drawable.phase_icon;
+    }
+
+    // TODO: Change to the right names
+    TextView getDistanceView() {
+        return totalDistanceTV;
+    }
+
+    TextView getStepsView() {
+        return totalStepsTV;
+    }
+
+    TextView getHealthView() {
+        return healthTV;
+    }
+
+    TextView getPhaseView() {
+        return phaseTV;
+    }
+
+    ClipDrawable getWaterAnim() {
+        return waterAnim;
+    }
+
+    ClipDrawable getSunAnim() {
+        return sunAnim;
     }
 
     // LAST METHODS USED ONLY WHEN ANIMATION IS IMPLEMENTED

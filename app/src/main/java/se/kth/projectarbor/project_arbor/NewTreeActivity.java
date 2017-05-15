@@ -9,13 +9,16 @@ import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+import android.widget.RelativeLayout;
 
+import se.kth.projectarbor.project_arbor.view_objects.NewTreeClouds;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
@@ -35,6 +38,9 @@ public class NewTreeActivity extends AppCompatActivity  {
     private final static String TAG = "ARBOR_NEW_TREE";
     private Button newTreeBtn;
     SharedPreferences sharedPreferences = null;
+    private NewTreeClouds newTreeClouds;
+    private RelativeLayout cloudlayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,10 @@ public class NewTreeActivity extends AppCompatActivity  {
         }
 
         setContentView(R.layout.activity_new_tree);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.new_tree_layout);
+        getClouds();
+        layout.addView(cloudlayout);
+        setContentView(layout);
 
         if (!isNetworkAvailable()) {
             displayPromptForEnablingInternet();
@@ -63,7 +73,7 @@ public class NewTreeActivity extends AppCompatActivity  {
 
                 // Make new tree and game settings
                 DataManager.saveState(getApplicationContext(), MainService.filename,
-                        new Tree(), new Environment.Forecast[]{}, new Double(0), 0);
+                        new Tree(), new Environment.Forecast[]{}, 0.0, 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
                 Log.d(TAG, "new save state");
 
@@ -72,16 +82,22 @@ public class NewTreeActivity extends AppCompatActivity  {
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
                 PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
                 AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (MainService.ALARM_HOUR * 1000), pendingIntent);
+                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                        SystemClock.elapsedRealtime() + (MainService.ALARM_HOUR * 1000), pendingIntent);
 
                 // Start Game
                 Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
                 startService(updateIntent);
             }
-
         });
+
+    }
+    private void getClouds(){
+        RelativeLayout layout = new RelativeLayout(getApplicationContext());
+        newTreeClouds = new NewTreeClouds(getApplicationContext());
+        layout = newTreeClouds.addViews(layout);
+        cloudlayout = layout;
     }
 
     // check whether there is internet connection or wifi connection

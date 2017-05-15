@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.view.animation.Animation;;
+import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -17,13 +17,10 @@ import se.kth.projectarbor.project_arbor.R;
 import static android.view.animation.AnimationUtils.currentAnimationTimeMillis;
 
 /**
- * Created by fredrik on 2017-05-04.
- *
- * Creates clouds and animates them
+ * Created by Lazarko on 2017-05-12.
  */
 
-public class CloudView {
-
+public class NewTreeClouds {
     private static final String TAG = "ARBOR_CLOUDVIEW";
 
     private ImageView[] clouds;
@@ -34,28 +31,22 @@ public class CloudView {
     private int screenHeight;
     private int screenWidth;
 
-    private static int CLOUD_AMOUNT = 9;
+    private static int CLOUD_AMOUNT = 8;
 
 
-    public CloudView(Context context) {
+    public NewTreeClouds(Context context) {
 
         random = new Random();
         clouds = new ImageView[CLOUD_AMOUNT];
-        cloudResources = new int[9];
-        cloudResources[0] = R.drawable.dark_cloud_1;
-        cloudResources[1] = R.drawable.dark_cloud_2;
-        cloudResources[2] = R.drawable.dark_cloud_3;
-        cloudResources[3] = R.drawable.dark_cloud_1;
-        cloudResources[4] = R.drawable.dark_cloud_2;
-        cloudResources[5] = R.drawable.dark_cloud_3;
-        cloudResources[6] = R.drawable.dark_cloud_1;
-        cloudResources[7] = R.drawable.dark_cloud_2;
-        cloudResources[8] = R.drawable.dark_cloud_3;
-        cloudResources[6] = R.drawable.dark_cloud_1;
-        cloudResources[7] = R.drawable.dark_cloud_2;
-        cloudResources[8] = R.drawable.dark_cloud_3;
-
-
+        cloudResources = new int[8];
+        cloudResources[0] = R.drawable.cloud_1;
+        cloudResources[1] = R.drawable.cloud_2;
+        cloudResources[2] = R.drawable.cloud_3;
+        cloudResources[3] = R.drawable.cloud_4;
+        cloudResources[4] = R.drawable.cloud_1;
+        cloudResources[5] = R.drawable.cloud_2;
+        cloudResources[6] = R.drawable.cloud_3;
+        cloudResources[7] = R.drawable.cloud_4;
 
         // Get Width and Height of the available screen size of the context
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
@@ -66,7 +57,7 @@ public class CloudView {
         // Get information about the cloud.png
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inJustDecodeBounds = true;
-        BitmapFactory.decodeResource(context.getResources(), R.drawable.dark_cloud_1, opt);
+        BitmapFactory.decodeResource(context.getResources(), R.drawable.cloud_1, opt);
 
 
         for (int i=0; i<clouds.length; i++) {
@@ -75,14 +66,12 @@ public class CloudView {
             ImageView cloudIV = new ImageView(context);
             cloudIV.setImageResource(cloudResources[i]);
 
-            cloudIV.setAlpha(0.9f);
-
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
 
             // This changes the size cloud with the original ratios. The width will be
             // 30-40 % of the screens width
-            layoutParams.width = (int) (screenWidth * getRandFloat(0.4f, 0.6f));
+            layoutParams.width = (int) (screenWidth * getRandFloat(0.3f, 0.4f));
             layoutParams.height = (layoutParams.width * opt.outHeight) / opt.outWidth;
             Log.d(TAG, "[Cloud "+ i + "] Width: " + layoutParams.width + ", Height: " + layoutParams.height);
 
@@ -90,15 +79,15 @@ public class CloudView {
 
             // Animates the cloud. Starts of screen and ends of screen. Y-position is random.
             // Speed is random,
-            Float heightSpawn = getRandFloat(0.0f, 0.12f);
+            Float heightSpawn = getRandFloat(0f, 1.3f);
             TranslateAnimation cloudAnimation = new TranslateAnimation(
                     (-1f * layoutParams.width)
                     , (1f * screenWidth)
                     , heightSpawn * screenHeight, heightSpawn * screenHeight);
-            cloudAnimation.setDuration(getRandInt(30000, 34000));
+            cloudAnimation.setDuration(getRandInt(30000, 33000));
             cloudAnimation.setRepeatMode(Animation.RESTART);
             cloudAnimation.setRepeatCount(Animation.INFINITE);
-            cloudAnimation.setStartTime(currentAnimationTimeMillis() + i*3500);
+            cloudAnimation.setStartTime(currentAnimationTimeMillis() + i*5000);
 
             cloudIV.setAnimation(cloudAnimation);
 
