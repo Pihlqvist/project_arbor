@@ -3,11 +3,13 @@ package se.kth.projectarbor.project_arbor.view_objects;
 import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
+import android.graphics.drawable.AnimationDrawable;
 import android.view.Display;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,7 +24,7 @@ import se.kth.projectarbor.project_arbor.R;
 public class RainView {
 
     private Random random = new Random();
-
+    private Animation anim;
     private ImageView[] darkClouds;
     private int[] darkCloudResources;
     private ImageView[] raindropsIV;
@@ -74,6 +76,8 @@ public class RainView {
             layoutParams.topMargin = (int) (SCREEN_Y_OFFSET_PERCENTAGE * size.y - layoutParams.height/2 * heights[i]);
             leftMargins[i] = layoutParams.leftMargin;
 
+            anim = AnimationUtils.loadAnimation(darkCloudIV.getContext(),R.anim.dark_cloud_anim);
+            darkCloudIV.startAnimation(anim);
             darkCloudIV.setLayoutParams(layoutParams);
             darkClouds[i] = darkCloudIV;
         }
@@ -94,18 +98,6 @@ public class RainView {
                     , (int)(size.y * DROPS_ANIMATION_END_PERCENTAGE));
             drop.startAnimation(animation);
         }
-
-        /*  OLD CODE; TRY AGAIN IF YOU WANT BETTER DROPS
-        for (int i=NUM_OF_DROPS; i<NUM_OF_DROPS*2; i++) {
-            Animation rainAnim = raindropsIV[i-NUM_OF_DROPS].getAnimation();
-            long duration = rainAnim.getDuration();
-            ImageView sDrop = new ImageView(activity);
-            sDrop.setImageResource(R.drawable.rain_drop);
-            rainAnim.setStartOffset(duration/2);
-            sDrop.startAnimation(rainAnim);
-            raindropsIV[i] = sDrop;
-        }
-        */
     }
 
     // Gives a random animation to the raindrops
