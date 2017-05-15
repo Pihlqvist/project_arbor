@@ -116,6 +116,8 @@ public class MainUIActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
+        wind.onResume();
+        birdies.onResume();
     }
     @Override
     public void onPause() {
@@ -263,5 +265,4 @@ public class MainUIActivity extends AppCompatActivity {
         birdies.setVolume(1f);
         Log.d("ARBOR", "" + wind + birdies);
     }
-
 }

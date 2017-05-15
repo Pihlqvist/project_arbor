@@ -127,13 +127,11 @@ public class TreeTab extends Fragment {
         //TODO: USE LoopMediaPlayer.setVolume to change volume
         wind = ((MainUIActivity)getActivity()).getWind();
         birdies = ((MainUIActivity)getActivity()).getBirdies();
-        wind = LoopMediaPlayer.create(getContext(), R.raw.wind_loop);
         wind.onPause();
         wind.setVolume(1f);
-        birdies = LoopMediaPlayer.create(getContext(), R.raw.birds_2);
         birdies.onPause();
         birdies.setVolume(1f);
-        Log.d("ARBOR TREETAB", "" + wind + birdies);
+        Log.d("ARBORTREETAB", "" + wind + birdies);
 
         //Apply mainVolume find in SoundHandler class in MainUIActivity
         //Commented for future use, MediaPlayer's Loop does not perform so uncommented for now
@@ -271,20 +269,20 @@ public class TreeTab extends Fragment {
 
         switch (weather) {
             case CLOUDY:
-                birdies.onResume();
-                wind.onResume();
+                birdies.Start();
+                wind.Start();
                 cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
                 break;
             case SUN:
-                birdies.onResume();
-                wind.onPause();
+                birdies.Start();
+                wind.Stop();
                 sunView = new SunView(getActivity());
                 layout = (RelativeLayout) sunView.addViews(layout);
                 break;
             case RAIN:
-                birdies.onPause();
-                wind.onResume();
+                birdies.Stop();
+                wind.Start();
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
                 break;
@@ -351,10 +349,5 @@ public class TreeTab extends Fragment {
                 });
                 break;
         }
-    }
-
-    @Override
-    public void onPause(){
-        super.onPause();
     }
 }
