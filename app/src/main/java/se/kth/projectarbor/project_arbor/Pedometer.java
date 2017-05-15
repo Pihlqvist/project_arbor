@@ -18,6 +18,7 @@ import android.util.Log;
 class Pedometer {
     public enum Gender {
         MALE(0.415),
+        NON_BINARY(0.414),
         FEMALE(0.413);
 
         private final double multiplicativeFactor;
@@ -128,6 +129,14 @@ class Pedometer {
 
     public void setPhaseNumber(int phaseNumber) {
         this.phaseNumber = phaseNumber;
+    }
+
+    void setGender(Gender gender){
+        this.gender = gender;
+    }
+
+    void setHeight(float height){
+        this.height = height;
     }
 
     public void reset() {
