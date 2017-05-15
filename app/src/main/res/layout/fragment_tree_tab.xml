@@ -95,6 +95,29 @@
             android:id="@+id/golden_pollen"/>'
     </LinearLayout>
 
+    <RelativeLayout
+        android:id="@+id/sessionView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/temperature"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="right"
+        android:layout_marginRight="2dp">
+
+        <TextView
+            android:id="@+id/tempTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="N/A"
+            android:textSize="20sp"
+            android:layout_marginRight="5dp"
+            android:textColorHighlight="@color/colorWhite"
+            android:typeface="serif"
+            android:fontFamily="sans-serif"/>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/sessionView"
@@ -150,6 +173,7 @@
                     android:gravity="center|start"
                     android:text="0 km"
                     android:textSize="20sp" />
+
             </TableRow>
         </TableLayout>
     </RelativeLayout>
