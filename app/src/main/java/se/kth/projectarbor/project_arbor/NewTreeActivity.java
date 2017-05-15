@@ -16,6 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+import android.widget.RelativeLayout;
+
+import se.kth.projectarbor.project_arbor.view_objects.NewTreeClouds;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
@@ -35,6 +38,9 @@ public class NewTreeActivity extends AppCompatActivity  {
     private final static String TAG = "ARBOR_NEW_TREE";
     private Button newTreeBtn;
     SharedPreferences sharedPreferences = null;
+    private NewTreeClouds newTreeClouds;
+    private RelativeLayout cloudlayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +55,10 @@ public class NewTreeActivity extends AppCompatActivity  {
         }
 
         setContentView(R.layout.activity_new_tree);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.new_tree_layout);
+        getClouds();
+        layout.addView(cloudlayout);
+        setContentView(layout);
 
         if (!isNetworkAvailable()) {
             displayPromptForEnablingInternet();
@@ -81,6 +91,13 @@ public class NewTreeActivity extends AppCompatActivity  {
                 startService(updateIntent);
             }
         });
+
+    }
+    private void getClouds(){
+        RelativeLayout layout = new RelativeLayout(getApplicationContext());
+        newTreeClouds = new NewTreeClouds(getApplicationContext());
+        layout = newTreeClouds.addViews(layout);
+        cloudlayout = layout;
     }
 
     // check whether there is internet connection or wifi connection
