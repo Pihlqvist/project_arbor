@@ -51,9 +51,8 @@ public class ShopTab extends Fragment {
     private ImageView btnSunSmall;
     private ImageView btnSunMedium;
     private ImageView btnSunLarge;
-    private TextView textMoney;
 
-    TextView goldenPollenView;
+    private TextView goldenPollenView;
 
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
@@ -358,7 +357,7 @@ public class ShopTab extends Fragment {
         Log.d("ARBOR", "purchasing");
         textReceipt.setTextColor(ColorStateList.valueOf(color));
             if(buy(item)) {
-                textMoney.setText(ShopTab.this.money + "gp");
+                goldenPollenView.setText(ShopTab.this.money + "gp");
                 textReceipt.startAnimation(anim);
                 return true;
             }
@@ -403,8 +402,8 @@ public class ShopTab extends Fragment {
         return (money += newMoney);
     }
 
-    TextView getTextMoney() {
-        return textMoney;
+    TextView getGoldenPollenView() {
+        return goldenPollenView;
     }
 }
 

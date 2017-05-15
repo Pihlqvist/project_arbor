@@ -82,6 +82,7 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.statusImgUpd(statsTab.phaseIcon);
                 // SLUT PÅ DERAS
 
+
             } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
                 Log.d("ARBOR_RECEIVER", "WEATHER_DATA");
 
@@ -104,10 +105,11 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
                 statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
 
+
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
                 Log.d("ARBOR_RECEIVER", "STORE_BROADCAST");
                 goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
-                shopTab.getTextMoney().setText(goldenPollen + " gp");
+                shopTab.getGoldenPollenView().setText(goldenPollen + " gp");
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
         }

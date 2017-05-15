@@ -192,7 +192,7 @@ public class StatsTab extends Fragment {
             // TODO: Make a tree varibles class that we can ask
             Tree tree = new Tree();
             double k = (mDistance - tree.getNextPhase(currentPhaseNumber-1)) /
-                    tree.getNextPhase(currentPhaseNumber) - tree.getNextPhase(currentPhaseNumber-1);
+                    (tree.getNextPhase(currentPhaseNumber) - tree.getNextPhase(currentPhaseNumber-1));
             tree = null;
             if(Double.compare(k, 0.125) < 0){
                 return R.drawable.phase_icon;
