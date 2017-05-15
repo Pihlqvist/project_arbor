@@ -111,7 +111,13 @@ public class MainUIActivity extends AppCompatActivity {
                 goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getGoldenPollenView().setText(goldenPollen + " gp");
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
+
+            } else if (intent.getAction().equals(MainService.TREE_DEAD)) {
+                Log.d("ARBOR_RECEIVER", "TREE_DEAD_BROADCAST");
+                setDeathView();
             }
+
+
         }
     }
 
@@ -125,6 +131,17 @@ public class MainUIActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
+
+        // Used for handling golden pollens and boolean "alive"
+        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
+        boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
+        // For TESTING
+        alive = false;
+
+        if (!alive) {
+            setDeathView();
+        } else {
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -146,7 +163,7 @@ public class MainUIActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                switch(position) {
+                switch (position) {
                     case 0:
                         break;
                     case 1:
@@ -164,9 +181,6 @@ public class MainUIActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
-
-        // HANDLES GOLDEN POLLEN START
-        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
         // If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
@@ -191,36 +205,50 @@ public class MainUIActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               if(snackbarSemaphore) {
-                   if (snackbar.isShown()) {
-                       snackbar.dismiss();
-                   }else {
-                       snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
-                       Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
-                       mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
-                       snackbar.removeCallback(null);
-                       snackbar.show();
-                   }
-               }else{
-                   snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
-                   Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
-                   mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
-                   snackbar.show();
-                   snackbarSemaphore = true;
-               }
+                if (snackbarSemaphore) {
+                    if (snackbar.isShown()) {
+                        snackbar.dismiss();
+                    } else {
+                        snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                        Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                        mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                        snackbar.removeCallback(null);
+                        snackbar.show();
+                    }
+                } else {
+                    snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                    Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                    mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                    snackbar.show();
+                    snackbarSemaphore = true;
+                }
             }
         });
-
     }
-    protected void onResume() {
-        super.onResume();
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
 
+        // For TESTING
+        // alive = false;
+
+        if (!alive) {
+            setDeathView();
+        }
+    }
+
+    private void setDeathView() {
+        findViewById(R.id.tree_death_view).setVisibility(View.VISIBLE);
+        findViewById(R.id.appbar).setVisibility(View.GONE);
     }
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {

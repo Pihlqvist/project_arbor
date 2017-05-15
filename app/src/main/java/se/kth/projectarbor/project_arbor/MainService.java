@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -28,6 +29,7 @@ public class MainService extends Service {
 
     public final static String TREE_DATA = "se.kth.projectarbor.project_arbor.intent.TREE_DATA";
     public final static String WEATHER_DATA = "se.kth.projectarbor.project_arbor.intent.WEATHER_DATA";
+    public final static String TREE_DEAD = "se.kth.projectarbor.project_arbor.intent.TREE_DEAD";
     private final static String TAG = "ARBOR_SERVICE";
     final static String filename = "user42.dat";
 
@@ -57,6 +59,8 @@ public class MainService extends Service {
     private double totalDistance; //distance to be stored in file and handled in mainservice
     private Environment.Weather lastWeather;
     private double lastTemperature;
+    private SharedPreferences sharedPreferences;
+
     // end
 
     // User information  // TODO: the user should change these thyself  (Fredrik)
@@ -75,6 +79,8 @@ public class MainService extends Service {
     public void onCreate() {
         Log.d(TAG, "Service onCreate()");
 
+        // Used to know whether tree is alive or not.
+        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
         // Load essential information from IO
         List<Object> list = DataManager.readState(this, filename);
         loadState(list);
@@ -137,14 +143,26 @@ public class MainService extends Service {
 
             // Updates the tree, every hour. Will lower the trees needs and set a timer to do it again
             case MSG_UPDATE_NEED:
-                tree.update();
-                sendToView();
+                boolean alive = tree.update();
+                if (alive) {
+                    sendToView();
 
-                pendingIntent = PendingIntent.getService(this, 0, intent, 0);
+                    pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime() + (ALARM_HOUR * 1000), pendingIntent);
-                saveGame();
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                            SystemClock.elapsedRealtime() + (ALARM_HOUR * 1000), pendingIntent);
+                    saveGame();
+                }
+                else {
+                    sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
+                    // TODO: Check if it's enough to unregister or if reset() is needed as well.
+                    // Pedometer will stop updating km to MainService
+                    pedometer.unregister();
+                    Intent intentTreeDeath = new Intent();
+                    intentTreeDeath.setAction(TREE_DEAD);
+                    MainService.this.sendBroadcast(intentTreeDeath);
+                }
+
                 break;
 
             // The user have traveled 1 km and the user trees buffers will increase
@@ -166,8 +184,11 @@ public class MainService extends Service {
 
             // Start the game, this is used when the tree is first created
             case MSG_TREE_GAME:
-                startGame();
+                // Used to stop updates and show death screen when tree dies
+                sharedPreferences.edit().putBoolean("TREE_ALIVE", true);
+                pedometer.resetAll();
 
+                startGame();
                 Intent weatherIntent = new Intent(MainService.this.getApplicationContext(), MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
                 PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this, 1, weatherIntent, 0);

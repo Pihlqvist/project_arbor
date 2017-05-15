@@ -138,6 +138,15 @@ class Pedometer {
         distance = 0;
     }
 
+    public void resetAll() {
+        currentStepCount = 0;
+        stepCount = 0;
+        referenceStepCount = -1;
+        distance = 0;
+        totalDistance = 0;
+        totalStepCount = 0;
+    }
+
     public void resetAndRegister() {
         reset();
         register();

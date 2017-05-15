@@ -228,6 +228,11 @@ public class Tree implements Serializable {
     // Until timer reaches 24, timerFlag will be true and block withdrawing of HP:s. When timerFlag
     // is put to false after 24 hours and both buffers are not 0, 1 HP is added to HPBuffer.
     public boolean update() {
+
+        // Stops tree from updating when dead.
+        if(!alive)
+            return false;
+
         bufferDecrease();
         // timerFlag is true so HP cannot be decreased during this time.
 
