@@ -36,7 +36,7 @@ public class MainService extends Service {
 
     // Times in seconds that the alarm will take to repeat the service
     //TODO: change alarmhour back to 60*60
-    public final static int ALARM_HOUR = 1; //60*60
+    public final static int ALARM_HOUR = 60*60; //60*60
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -141,13 +141,13 @@ public class MainService extends Service {
 
             // Updates the tree, every hour. Will lower the trees needs and set a timer to do it again
             case MSG_UPDATE_NEED:
-                Log.d("JOSEPH","MSGUPDATENEED");
+                Log.d("JOSEPH", "MSGUPDATENEED");
                 tree.update();
                 sendToView();
 
                 //Joseph
                 showNotification();
-                Log.d("JOSEPH","JosephShowNotificationForGodSake");
+                Log.d("JOSEPH", "JosephShowNotificationForGodSake");
                 pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -157,6 +157,7 @@ public class MainService extends Service {
 
             // The user have traveled 1 km and the user trees buffers will increase
             case MSG_KM_DONE:
+                phaseNotification();
                 synchronized (lock) {
                     tree.bufferIncrease(lastWeather);
                 }
@@ -187,7 +188,7 @@ public class MainService extends Service {
 
             // Store sends this message, updates the tree with the right item
             case MSG_PURCHASE:
-                tree.purchase((ShopTab.StoreItem)intent.getExtras().get("STORE_ITEM"));
+                tree.purchase((ShopTab.StoreItem) intent.getExtras().get("STORE_ITEM"));
                 sendToView();
                 saveGame();
                 break;
@@ -212,7 +213,7 @@ public class MainService extends Service {
             totalDistance = 0;
             totalStepCount = 0;
         } else {
-            if (objects.get(0) != null && objects.get(0).getClass() == Tree.class)  {
+            if (objects.get(0) != null && objects.get(0).getClass() == Tree.class) {
                 tree = (Tree) objects.get(0);
             } else {
                 tree = new Tree();
@@ -278,7 +279,7 @@ public class MainService extends Service {
 
     //TODO: Make a pretty way of capturing expressions  (?)
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         saveGame();
     }
 
@@ -342,7 +343,7 @@ public class MainService extends Service {
         @Override
         protected void onPostExecute(PendingIntent pendingIntent) {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + (ALARM_HOUR/4*1000), pendingIntent);
+                    SystemClock.elapsedRealtime() + (ALARM_HOUR / 4 * 1000), pendingIntent);
 
             Log.d("ARBOR_WEATHER", "Exiting onPostExecute()");
         }
@@ -362,8 +363,8 @@ public class MainService extends Service {
     }
 
     //Joseph
-    private void showNotification(){
-        Log.d("JOSEPH","SHowNotification");
+    private void showNotification() {
+        Log.d("JOSEPH", "SHowNotification");
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
         resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
@@ -371,69 +372,72 @@ public class MainService extends Service {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         //Create a notification when WATERBUFFER is empty
-        if(tree.getWaterLevel()==0) {
+        if (tree.getWaterLevel() == 0) {
 
-            Log.d("JOSEPH","SHowNotificationWATER");
-            // create an intent to go to StatsTab when the notification is clicked
-         //   Intent resultIntent = new Intent(this, MainUIActivity.class);
-           // TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-           // stackBuilder.addParentStack(StatsTab.class);
+            Log.d("JOSEPH", "SHowNotificationWATER");
 
-            // Adds the Intent that starts the Activity to the top of the stack
-          //  stackBuilder.addNextIntent(resultIntent);
-          //  PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
             NotificationCompat.Builder waterBufferNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
                     .setContentTitle("Arbor")
                     .setContentText("WaterBuffer is empty!")
                     .setContentIntent(resumePending);
-                  //  .setContentIntent(resultPendingIntent);
-            mNotificationManager.notify("water",2,waterBufferNotification.build());
+            mNotificationManager.notify("water", 2, waterBufferNotification.build());
         }
 
         //Create a notification when SUNBUFFER is empty
 
-        if(tree.getSunLevel()==0){
-            Log.d("JOSEPH","SHowNotificationSUN");
-
-            // create an intent to go to StatsTab when the notification is clicked
-           // Intent resultIntent = new Intent(this, MainUIActivity.class);
-          //  TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-          //  stackBuilder.addParentStack(StatsTab.class);
-
-            // Adds the Intent that starts the Activity to the top of the stack
-          //  stackBuilder.addNextIntent(resultIntent);
-           // PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
+        if (tree.getSunLevel() == 0) {
+            Log.d("JOSEPH", "SHowNotificationSUN");
             NotificationCompat.Builder sunBufferNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
                     .setContentTitle("Arbor")
                     .setContentText("SunBuffer is empty!")
                     .setContentIntent(resumePending);
-               //     .setContentIntent(resultPendingIntent);
-            mNotificationManager.notify("sun",3,sunBufferNotification.build());
+
+            mNotificationManager.notify("sun", 3, sunBufferNotification.build());
 
         }
 
         //Create a notification when TREE IS DEAD
-        if(tree.update()==false){
-            Log.d("JOSEPH","SHowNotificationHEALTH");
+        if (tree.update() == false) {
+            Log.d("JOSEPH", "SHowNotificationHEALTH");
             NotificationCompat.Builder treeDeadNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
                     .setContentTitle("Arbor")
                     .setContentText("Your Tree Is DEAD :( ")
                     .setContentIntent(resumePending);
             Notification n2 = treeDeadNotification.build();
-            mNotificationManager.notify("tree",4,n2);
-            // create an intent to go to StatsTab when the notification is clicked
-          //  Intent resultIntent = new Intent(this, StatsTab.class);
-          //  TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
-          //  stackBuilder.addParentStack(StatsTab.class);
+            mNotificationManager.notify("tree", 4, n2);
 
-            // Adds the Intent that starts the Activity to the top of the stack
-           // stackBuilder.addNextIntent(resultIntent);
-          //  PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0,PendingIntent.FLAG_UPDATE_CURRENT);
-           // treeDeadNotification.setContentIntent(resultPendingIntent);
         }
+      /*  if (tree.phaseChanged = true) {
+            NotificationCompat.Builder phaseChangedNotification = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.phase_icon)
+                    .setContentTitle("Arbor")
+                    .setContentText("phase changed to: " +tree.getTreePhase())
+                    .setContentIntent(resumePending);
+            Notification n3 = phaseChangedNotification.build();
+            mNotificationManager.notify("phase", 5, n3);
+            tree.phaseChanged =false;
+        }*/
+    }
+    public void phaseNotification(){
+        Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        resumeIntent = putTreeInformation(resumeIntent);
+        PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (tree.phaseChanged = true) {
+            NotificationCompat.Builder phaseChangedNotification = new NotificationCompat.Builder(this)
+                    .setSmallIcon(R.drawable.phase_icon)
+                    .setContentTitle("Arbor")
+                    .setContentText("phase changed to: " +tree.getTreePhase())
+                    .setContentIntent(resumePending);
+            Notification n3 = phaseChangedNotification.build();
+            mNotificationManager.notify("phase", 5, n3);
+            tree.phaseChanged =false;
+        }
+
     }
 }
 
