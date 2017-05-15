@@ -137,7 +137,7 @@ public class MainUIActivity extends AppCompatActivity {
 
         boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
         // For TESTING
-        alive = false;
+        // alive = false;
 
         if (!alive) {
             setDeathView();
@@ -198,6 +198,7 @@ public class MainUIActivity extends AppCompatActivity {
         filter.addAction(Pedometer.STORE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         filter.addAction(MainService.WEATHER_DATA);
+        filter.addAction(MainService.TREE_DEAD);
         registerReceiver(this.new Receiver(), filter);
 
         // TODO: Add elements to the settings_main_settings layout
@@ -227,8 +228,8 @@ public class MainUIActivity extends AppCompatActivity {
     }
     }
     @Override
-    protected void onStart() {
-        super.onStart();
+    protected void onResume() {
+        super.onResume();
         boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
 
         // For TESTING

@@ -34,7 +34,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 60 * 60;
+    public final static int ALARM_HOUR = 10; // TODO: Change back to 60 * 60
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -101,6 +101,10 @@ public class MainService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
 
         // Handle the message at the start.
+        // USED FOR TESTING
+//        for (int i = 0; i < 5; i++) // TODO: Remove for after finishing testing
+//            tree.update();
+
         int msg = 0;
         if (intent.getExtras() != null) {
             msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
