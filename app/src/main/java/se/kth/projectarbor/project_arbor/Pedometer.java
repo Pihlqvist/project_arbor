@@ -17,18 +17,30 @@ import android.util.Log;
 
 class Pedometer {
     public enum Gender {
-        MALE(0.415),
-        NON_BINARY(0.414),
-        FEMALE(0.413);
+        MALE(0.415, "Male"),
+        NON_BINARY(0.414, "Non-binary"),
+        FEMALE(0.413, "Female");
 
         private final double multiplicativeFactor;
+        private final String gender;
 
-        Gender(double multiplicativeFactor) {
+
+        Gender(double multiplicativeFactor, String gender) {
             this.multiplicativeFactor = multiplicativeFactor;
+            this.gender = gender;
         }
 
         public double getMultiplicativeFactor() {
             return multiplicativeFactor;
+        }
+
+        public static Gender fromString(String gender) {
+            for (Gender g : Gender.values()) {
+                if (g.gender.equals(gender)) {
+                    return g;
+                }
+            }
+            return null;
         }
     }
 
@@ -129,6 +141,14 @@ class Pedometer {
 
     public void setPhaseNumber(int phaseNumber) {
         this.phaseNumber = phaseNumber;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
+    public void setHeight(Double height) {
+        this.height = height;
     }
 
     void setGender(String gender){

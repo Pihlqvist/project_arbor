@@ -12,6 +12,8 @@ import android.widget.Spinner;
 
 public class GenderHeightActivity extends AppCompatActivity {
 
+    private final static String TAG = "ARBOR_USER_INPUT";
+
     private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +42,7 @@ public class GenderHeightActivity extends AppCompatActivity {
         //setting the spinner and numberpickers
         if (sharedPreferences.contains("USER_GENDER")) {
             String current_gender = sharedPreferences.getString("USER_GENDER", "Female");
-            Log.d("arbor_GENDER", current_gender);
+            Log.d(TAG, current_gender);
             switch (current_gender){
                 case "Female":
                     spinner.setSelection(0);
@@ -55,8 +57,8 @@ public class GenderHeightActivity extends AppCompatActivity {
         }
 
         if(sharedPreferences.contains("USER_HEIGHT")){
-            float current_height =sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
-            Log.d("arbor_HEIGHT", current_height+"");
+            float current_height = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
+            Log.d(TAG, current_height+"");
             int m = (int) Math.floor(current_height);
             meterPick.setValue(m);
             int cm = (int) Math.round((current_height - m)*100.0);
@@ -78,6 +80,10 @@ public class GenderHeightActivity extends AppCompatActivity {
 
                 Log.d("arbor_genderHeight", "height " + gender);
                 //TODO: (Lovisa) change gender and height variables in the pedometer
+
+                Intent serviceIntent = new Intent(GenderHeightActivity.this, MainService.class);
+                serviceIntent.putExtra("MESSAGE_TYPE", MainService.MSG_USER_INPUT);
+                startService(serviceIntent);
 
                 Intent intent = new Intent(GenderHeightActivity.this, MainUIActivity.class);
                 GenderHeightActivity.this.startActivity(intent);

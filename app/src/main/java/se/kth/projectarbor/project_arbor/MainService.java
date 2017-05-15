@@ -48,6 +48,7 @@ public class MainService extends Service {
     public final static int MSG_RESUME_HEAVY = 9;
     public final static int MSG_RESUME_LIGHT = 10;
     public final static int MAIN_FOREGROUND = 111;
+    public final static int MSG_USER_INPUT = 42;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -77,7 +78,8 @@ public class MainService extends Service {
     public void onCreate() {
         Log.d(TAG, "Service onCreate()");
 
-        SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+        readUserSettings();
 
         // Load essential information from IO
         List<Object> list = DataManager.readState(this, filename);
@@ -195,6 +197,14 @@ public class MainService extends Service {
 
                 sendWeatherToView(pendingIntent);
                 break;
+
+            // User have changed settings, make the live
+            case MSG_USER_INPUT:
+                readUserSettings();
+                pedometer.setGender(userGender);
+                pedometer.setHeight(userLength);
+                break;
+
         }
         return START_NOT_STICKY;
     }
@@ -226,19 +236,7 @@ public class MainService extends Service {
             }
         }
 
-       /* //Update user's gender and height
-        switch (sharedPreferences.getString("USER_GENDER", "Female")){
-            case "Female":
-                userGender = Pedometer.Gender.FEMALE;
-                break;
-            case "Male":
-                userGender = Pedometer.Gender.MALE;
-                break;
-            case "Non-binary":
-                userGender = Pedometer.Gender.NON_BINARY;
-                break;
-        }
-        userLength = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);*/
+
     }
 
     // Foreground is created here
@@ -349,6 +347,15 @@ public class MainService extends Service {
 
     private void sendWeatherToView(final PendingIntent pendingIntent) {
         new AsyncTaskRunner().execute(pendingIntent);
+    }
+
+    private void readUserSettings() {
+        if (sharedPreferences.contains("USER_GENDER")) {
+            userGender = Pedometer.Gender.fromString(sharedPreferences.getString("USER_GENDER", "Female"));
+        } else { Log.e(TAG, "user_gender was not found"); }
+        if (sharedPreferences.contains("USER_HEIGHT")) {
+            userLength = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
+        } else { Log.e(TAG, "user_height was not found"); }
     }
 }
 
