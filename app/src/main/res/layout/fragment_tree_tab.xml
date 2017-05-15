@@ -39,9 +39,10 @@
         android:textOff="WALK"
         android:textOn="STOP"
         app:layout_constraintTop_toBottomOf="@+id/tvTree"
-        android:layout_marginBottom="27dp"
+        android:layout_marginBottom="60dp"
         android:layout_alignParentBottom="true"
         />
+
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
@@ -60,7 +61,7 @@
         android:scaleX="2"
         android:paddingBottom="80dp"
         android:layout_below="@+id/tvTree"
-        android:layout_toEndOf="@+id/tvTree">
+        android:layout_alignParentStart="true">
 
 
         <ImageButton
@@ -72,6 +73,28 @@
             android:layout_alignParentStart="true" />
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content">
+        <ImageView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:src="@drawable/golden_pollen_icon_large"
+            android:layout_gravity="center" />
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="00"
+            android:textColor="#D1A900"
+            android:textSize="32sp"
+            android:fontFamily="sans-serif"
+            android:layout_gravity="center"
+            android:id="@+id/golden_pollen"/>'
+    </LinearLayout>
+
 
     <RelativeLayout
         android:id="@+id/sessionView"
@@ -80,7 +103,7 @@
         android:background="@drawable/rounded_corners"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="20dp">
+        android:layout_marginBottom="40dp">
 
         <TableLayout
             android:layout_width="wrap_content"

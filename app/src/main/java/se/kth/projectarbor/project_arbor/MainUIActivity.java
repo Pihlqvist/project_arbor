@@ -110,6 +110,7 @@ public class MainUIActivity extends AppCompatActivity {
                 Log.d("ARBOR_RECEIVER", "STORE_BROADCAST");
                 goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getGoldenPollenView().setText(goldenPollen + " gp");
+                treeTab.getTvPollen().setText("" + goldenPollen);
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
         }
