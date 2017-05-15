@@ -8,6 +8,6 @@ public class HowToPlayActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tutorial_2);
+        setContentView(R.layout.tutorial_3);
     }
 }
