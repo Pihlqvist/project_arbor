@@ -213,6 +213,10 @@ public class ShopTab extends Fragment {
 
         */
 
+        goldenPollenView = (TextView) view.findViewById(R.id.text_money);
+        goldenPollenView.setText(MainUIActivity.goldenPollen + "gp");
+
+
         // Buttons that give feedback when pressed
         btnWaterSmall = (ImageView) view.findViewById(R.id.box_water_small);
         btnWaterSmall.setOnTouchListener(new View.OnTouchListener() {

@@ -42,7 +42,7 @@ public class MainUIActivity extends AppCompatActivity {
     private Snackbar snackbar;
 
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
-    int goldenPollen;
+    static int goldenPollen;
 
     // This receiver used by all fragments
     private class Receiver extends BroadcastReceiver {
@@ -51,11 +51,11 @@ public class MainUIActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             // DecimalFormat twoDForm = new DecimalFormat("#.0");
-            Log.d("ARBOR", "onReceive()");
 
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
+                Log.d("ARBOR_RECEIVER", "TREE_DATA");
 
                 treeTab.newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 if (treeTab.newPhase != treeTab.currentPhase) {
@@ -67,7 +67,7 @@ public class MainUIActivity extends AppCompatActivity {
                     statsTab.getHealthView().setText("DEAD");
                 } else
                     statsTab.getHealthView().setText("" + extras.getInt("HP") + "hp");
-                statsTab.getPhaseView().setText(extras.getString("PHASE"));
+                statsTab.getPhaseView().setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
                 // TODO: Implement AGE when functionality is ready
                 // Updates buffers
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
@@ -83,6 +83,8 @@ public class MainUIActivity extends AppCompatActivity {
                 // SLUT PÅ DERAS
 
             } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
+                Log.d("ARBOR_RECEIVER", "WEATHER_DATA");
+
                 // Build new weatherLayout depending on weather
                 // TODO: Make sure it dose not build new, if its the same weather
                 treeTab.setWeather((se.kth.projectarbor.project_arbor.weather.Environment.Weather) extras.get("WEATHER"));
@@ -95,6 +97,7 @@ public class MainUIActivity extends AppCompatActivity {
             // Msgs from Pedometer
 
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
+                Log.d("ARBOR_RECEIVER", "DISTANCE_BROADCAST");
                 treeTab.getStepView().setText(String.format("%d", extras.getInt("STEPCOUNT")));
                 treeTab.getDistanceView().setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
 
@@ -102,6 +105,7 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
 
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
+                Log.d("ARBOR_RECEIVER", "STORE_BROADCAST");
                 goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getTextMoney().setText(goldenPollen + " gp");
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
@@ -170,8 +174,6 @@ public class MainUIActivity extends AppCompatActivity {
             sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
         }
 
-        shopTab.goldenPollenView = (TextView) findViewById(R.id.text_money);
-        shopTab.goldenPollenView.setText(goldenPollen + "gp");
 
         /// HANDLES GOLDEN POLLEN END
 
@@ -179,6 +181,7 @@ public class MainUIActivity extends AppCompatActivity {
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(Pedometer.STORE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
+        filter.addAction(MainService.WEATHER_DATA);
         registerReceiver(this.new Receiver(), filter);
 
         // TODO: Add elements to the settings_main_settings layout
