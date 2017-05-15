@@ -53,6 +53,7 @@ public class StatsTab extends Fragment {
 
     //Creat a reference to the MainUIActivity.SoundHandler
     private MainUIActivity.SoundHandler sh;
+
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
         /*private Handler mRightHandler = new Handler();
@@ -127,8 +128,10 @@ public class StatsTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
+
         //Instantiate sh to MainUIÀctivity's SoundHandler
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
+
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);

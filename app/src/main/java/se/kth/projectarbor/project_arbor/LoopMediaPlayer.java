@@ -55,4 +55,7 @@ public class LoopMediaPlayer {
     public void onResume(){
         mCurrentPlayer.start();
     }
+    public void setVolume(float f){
+        mCurrentPlayer.setVolume(f, f);
+    }
 }

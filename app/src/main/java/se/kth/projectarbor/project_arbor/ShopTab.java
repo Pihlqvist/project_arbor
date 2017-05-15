@@ -6,29 +6,20 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.graphics.Point;
 import android.graphics.Typeface;
-import android.media.SoundPool;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
-import android.text.Layout;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Created by Fredrik Pihlqvist, Johan Andersson, Pethrus Gärdborn on 2017-04-28.
@@ -56,8 +47,10 @@ public class ShopTab extends Fragment {
     private TextView textMoney;
     //boolean test to filter moves
     private boolean filter;
-    private float x;
-    private float y;
+
+    //used by genOnTouch to track motions
+    private float xValue;
+    private float yValue;
 
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
@@ -115,8 +108,10 @@ public class ShopTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         //get SoundHandler from MainUIActivity
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
+
         filter = true;
         View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
         // These may be used when doing animation programmatically
@@ -313,26 +308,21 @@ public class ShopTab extends Fragment {
             return false;
         }
     }
+    //A generic onTouch to be used by every button
     public boolean genOnTouch(ImageView iV, int color, MotionEvent e, StoreItem item, Animation animation){
-        int a = e.getAction();
-        long duration = e.getDownTime();
-        Log.d("ARBOR", ("duartion: " + Long.toString(duration)));
-        if (a == MotionEvent.ACTION_DOWN) {
+        int action = e.getAction();
 
-            if (duration > -5) {
+        if (action == MotionEvent.ACTION_DOWN) {
                 iV.setColorFilter(PURCHASE_BUTTON_TINT);
                 iV.setColorFilter(NO_MONEY_BUTTON_TINT);
-                x = e.getX();
-                y = e.getY();
-
-
-                Log.d("ARBOR", ("X: " + Float.toString(x) + "Y: " + Float.toString(y)));
-            }
+                xValue = e.getX();
+                yValue = e.getY();
+                Log.d("ARBOR", ("X: " + Float.toString(xValue) + "Y: " + Float.toString(yValue)));
             return true;
-        }else if(a == MotionEvent.ACTION_UP){
-                if(!(Math.abs(e.getX()-x) > 5)) {
+        }else if(action == MotionEvent.ACTION_UP){
+                if(!(Math.abs(e.getX()- xValue) > 5)) {
                     if (purchaseItem(item, color, animation)) {
-                        sh.playShopSun();
+                        sh.playShopWater();
                     } else {
                         sh.playNoMoney();
                     }
@@ -341,11 +331,10 @@ public class ShopTab extends Fragment {
                 iV.clearColorFilter();
                 return true;
             }
-         else if (a == MotionEvent.ACTION_CANCEL) {
+         else if (action == MotionEvent.ACTION_CANCEL) {
             iV.clearColorFilter();
             return true;
         }
         return false;
     }
 }
-

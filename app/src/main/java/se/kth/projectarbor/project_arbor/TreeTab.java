@@ -63,6 +63,7 @@ public class TreeTab extends Fragment {
     private int currentPhase;
     private int newPhase;
 
+    //Created a class LoopMediaPlayer just for being able to loop seamlessly
     private LoopMediaPlayer wind;
     private LoopMediaPlayer birdies;
 
@@ -96,7 +97,6 @@ public class TreeTab extends Fragment {
                     view = layout;
                 }
             }
-
         }
     }
 
@@ -115,13 +115,18 @@ public class TreeTab extends Fragment {
         //SoundHandler class in MainUIActivity decoded streams available
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
 
-        //Instanciate mediaplaters
-        //TODO: implement volume setter in LoopMediaPlayer
+        //Instantiate mediaplaters and pause them for future resumement
+        //volume is a multiplier 0-1
+        //TODO: USE LoopMediaPlayer.setVolume to change volume
         wind = LoopMediaPlayer.create(getContext(), R.raw.wind_loop);
+        wind.onPause();
+        wind.setVolume(1f);
         birdies = LoopMediaPlayer.create(getContext(), R.raw.birds_2);
+        birdies.onPause();
+        birdies.setVolume(1f);
 
         //Apply mainVolume find in SoundHandler class in MainUIActivity
-        //Commented for future use, MediaPlayer's Loop does not perform
+        //Commented for future use, MediaPlayer's Loop does not perform so uncommented for now
         //wind.setVolume(sh.soundVolume, sh.soundVolume);
         //birdies.setVolume(sh.soundVolume, sh.soundVolume);
         //wind.setLooping(true);
@@ -258,14 +263,20 @@ public class TreeTab extends Fragment {
 
         switch (weather) {
             case CLOUDY:
+                birdies.onResume();
+                wind.onResume();
                 cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
                 break;
             case SUN:
+                birdies.onResume();
+                wind.onPause();
                 sunView = new SunView(getActivity());
                 layout = (RelativeLayout) sunView.addViews(layout);
                 break;
             case RAIN:
+                birdies.onPause();
+                wind.onResume();
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
                 break;
