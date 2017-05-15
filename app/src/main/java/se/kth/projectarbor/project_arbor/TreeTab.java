@@ -26,6 +26,7 @@ import android.widget.ToggleButton;
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
+import se.kth.projectarbor.project_arbor.view_objects.SunnyWithClouds;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -238,27 +239,41 @@ public class TreeTab extends Fragment {
     // Applying the right weather layout depending on IRL weather
     void setWeatherLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
-
+        View viewStat = ((MainUIActivity)getActivity()).statsTab.getView();
+        View viewTree = ((MainUIActivity)getActivity()).treeTab.getView();
+        View viewShop = ((MainUIActivity)getActivity()).shopTab.getView();
         switch (weather) {
             case CLOUDY:
                 cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
+                viewStat.setBackgroundResource(R.drawable.cloudy_background_2);
+                viewTree.setBackgroundResource(R.drawable.cloudy_background_1);
+                viewShop.setBackgroundResource(R.drawable.cloudy_background_3);
                 break;
             case SUN:
                 sunView = new SunView(getActivity());
                 layout = (RelativeLayout) sunView.addViews(layout);
+                viewStat.setBackgroundResource(R.drawable.blue_background_2);
+                viewTree.setBackgroundResource(R.drawable.blue_background_1);
+                viewShop.setBackgroundResource(R.drawable.blue_background_3);
                 break;
             case RAIN:
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
+                viewStat.setBackgroundResource(R.drawable.rain_background_2);
+                viewTree.setBackgroundResource(R.drawable.rain_background_1);
+                viewShop.setBackgroundResource(R.drawable.rain_background_3);
                 break;
 
             // TODO: Fix later when its implemented in Environment (Fredrik)
             // TODO: Does it work as intended?
             case PARTLY_CLOUDY:
                 SunView sunView = new SunView(getActivity());
-                CloudView cloudView = new CloudView(getContext());
-                layout = cloudView.addViews((RelativeLayout) sunView.addViews(layout));
+                SunnyWithClouds sunnyWithClouds = new SunnyWithClouds(getContext());
+                layout = sunnyWithClouds.addViews((RelativeLayout) sunView.addViews(layout));
+                viewStat.setBackgroundResource(R.drawable.blue_background_2);
+                viewTree.setBackgroundResource(R.drawable.blue_background_1);
+                viewShop.setBackgroundResource(R.drawable.blue_background_3);
                 break;
             default:
                 Log.d(TAG, "no case in weather switch");
