@@ -5,7 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
+import android.media.Image;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.*;
@@ -23,10 +26,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.google.android.gms.ads.formats.NativeAd;
+
+import java.io.File;
+import java.io.FileReader;
+
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
 import se.kth.projectarbor.project_arbor.view_objects.SunnyWithClouds;
+import se.kth.projectarbor.project_arbor.view_objects.TreeView;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -115,6 +124,20 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
         */
+        Bitmap image = getActivity().getAssets().open(tree_phase)
+        TreeView treeView = new TreeView(getActivity());
+
+        private byte[] ImageToBytes(Image image, ImageFormat format)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, format);
+                return ms.ToArray();
+            }
+        }
+
+
+
 
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
         , MODE_PRIVATE);
@@ -323,18 +346,18 @@ public class TreeTab extends Fragment {
         Log.d(TAG, "setTreePhase");
         switch (phaseNumber) {
             case 1:
-                ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                ivTree.setImageResource(R.drawable.seed_to_sprout_01);
+                //ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                //ivTree.setImageResource(R.drawable.seed_to_sprout_01);
                 Log.d(TAG, "ivTree seed");
                 break;
             case 2:
-                ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
+                //ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                //ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
                 Log.d(TAG, "ivTree sprout");
                 break;
             case 3:
-                ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
+                //ivTree = (ImageView) view.findViewById(R.id.treeButton);
+                //ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
                 Log.d(TAG, "ivTree sapling");
                 break;
         }
