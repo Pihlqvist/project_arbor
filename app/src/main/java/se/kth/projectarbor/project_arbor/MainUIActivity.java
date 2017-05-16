@@ -22,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import se.kth.projectarbor.project_arbor.tutorial.TutorialArbor;
+
 public class MainUIActivity extends AppCompatActivity {
 
     /**
@@ -227,6 +229,25 @@ public class MainUIActivity extends AppCompatActivity {
         });
 
     }
+
+    public void goToGenderHeight(View v) {
+        Intent genderHeighIntent = new Intent(this,GenderHeightActivity.class);
+        startActivity(genderHeighIntent);
+
+    }
+
+    public void goToHowToPlay(View v){
+        Log.d("INTENT","howtoplay");
+        Intent tutorial= new Intent(this,TutorialArbor.class);
+        startActivity(tutorial);
+        Log.d("INTENT","Start");
+    }
+    public void goToAbout(View v){
+        Intent aboutIntent = new Intent(this,AboutActivity.class);
+        startActivity(aboutIntent);
+
+    }
+
     protected void onResume() {
         super.onResume();
 

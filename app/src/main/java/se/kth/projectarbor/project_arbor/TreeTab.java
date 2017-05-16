@@ -1,6 +1,9 @@
 package se.kth.projectarbor.project_arbor;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -16,7 +19,10 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import java.util.Locale;
 
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
@@ -140,6 +146,7 @@ public class TreeTab extends Fragment {
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
+            // TODO: se if treeView is needed here
             treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
         }
@@ -370,8 +377,4 @@ public class TreeTab extends Fragment {
                 break;
         }
     }
-
-
-
 }
-

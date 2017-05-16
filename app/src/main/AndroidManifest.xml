@@ -22,10 +22,9 @@
 
         <activity
             android:name=".MainUIActivity"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:largeHeap="true"
             android:screenOrientation="portrait"
-            android:largeHeap="true">
-                  </activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".NewTreeActivity"
             android:screenOrientation="portrait"
@@ -36,5 +35,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".GenderHeightActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".tutorial.TutorialArbor"
+            android:label="@string/title_activity_tutorial_arbor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
+
 </manifest>
