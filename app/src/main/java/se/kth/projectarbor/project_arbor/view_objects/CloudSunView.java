@@ -19,7 +19,7 @@ import static android.view.animation.AnimationUtils.currentAnimationTimeMillis;
 ;
 
 /**
- * Created by Fredrik Pihlqvist and Lazar Cerovic on 2017-05-04.
+ * Created by Lazar Cerovic on 2017-05-04.
  *
  * Creates clouds and animates them from left to right
  * Add the images by giving a layout and the same layout with the
@@ -52,6 +52,7 @@ public class CloudSunView {
         int screenWidth;
         int screenHeight;
 
+        // Save image id for use later
         int[] cloudResources = new int[4];
         cloudResources[0] = R.drawable.cloud_1;
         cloudResources[1] = R.drawable.cloud_2;
@@ -74,7 +75,6 @@ public class CloudSunView {
             // Make png to ImageView
             ImageView cloudIV = new ImageView(context);
             cloudIV.setImageResource(cloudResources[i]);
-
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT);
 
