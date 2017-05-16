@@ -21,6 +21,6 @@
         android:text="NEW TREE"
         android:textColor="@color/colorWhite"
         android:textSize="36sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"/>
 
 </RelativeLayout>
