@@ -19,9 +19,12 @@ import se.kth.projectarbor.project_arbor.R;
 
 
 public class TutorialFour extends Fragment {
+
     private Button mPreviousButton;
     private Button mLetsGo;
+
     View view;
+
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.tutorial_4, container, false);
 
@@ -37,10 +40,7 @@ public class TutorialFour extends Fragment {
         mLetsGo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), MainService.class);
-                intent.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_GAME);
-                getActivity().startService(intent);
-
+                getActivity().onBackPressed();
             }
         });
 

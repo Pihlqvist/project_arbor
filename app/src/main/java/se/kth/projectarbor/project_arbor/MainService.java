@@ -50,7 +50,6 @@ public class MainService extends Service {
 
     public final static int MSG_RESUME_HEAVY = 9;
     public final static int MSG_RESUME_LIGHT = 10;
-    public final static int MSG_RESUME_GAME = 16;
     public final static int MAIN_FOREGROUND = 111;
     public final static int MSG_USER_INPUT = 42;
 
@@ -203,10 +202,6 @@ public class MainService extends Service {
                 pendingIntent = PendingIntent.getService(this.getApplicationContext(), 1, intent, 0);
 
                 sendWeatherToView(pendingIntent);
-                break;
-            // Resumes the game
-            case MSG_RESUME_GAME:
-                startGame();
                 break;
 
             // User have changed settings, make the live
