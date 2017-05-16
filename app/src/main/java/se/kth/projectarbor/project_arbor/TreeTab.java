@@ -191,7 +191,7 @@ public class TreeTab extends Fragment {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         lp.setMargins(((size.x/100)*10), size.y/2-20*(size.y/100), 10*(size.x/100), 28*(size.y/100));//left, top, right, bottom
         currentLayout.addView(treeAnimView, lp);
-        currentLayout.addView(getActivity().getLayoutInflater().inflate(R.layout.view_session, null));
+        currentLayout.addView(getActivity().getLayoutInflater().inflate(R.layout.view_resource_session, null));
         view = currentLayout;
         // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
