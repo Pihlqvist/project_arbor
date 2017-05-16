@@ -9,6 +9,8 @@
     android:fitsSystemWindows="true"
     tools:context="se.kth.projectarbor.project_arbor.MainUIActivity">
 
+
+
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
@@ -25,6 +27,7 @@
             app:tabTextColor="@color/wallet_bright_foreground_holo_dark" />
 
     </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/container"
@@ -51,6 +54,131 @@
         app:srcCompat="@android:drawable/ic_menu_help" />
 
 
+    <RelativeLayout
+        android:id = "@+id/tree_death_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/blue_background_1"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:visibility="gone">
 
+        <ImageView
+            android:id="@+id/Box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/white_box"
+            android:layout_centerInParent="true"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/Box"
+            android:layout_alignEnd="@id/Box"
+            android:layout_alignLeft="@id/Box"
+            android:layout_alignRight="@id/Box"
+            android:layout_alignTop="@id/Box"
+            android:layout_alignStart="@id/Box"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp">
+
+            <TextView
+                android:id="@+id/TreeIsDead"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif"
+                android:text="Your tree died"
+                android:textSize="36sp"
+                android:textColor="@color/text_grey"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"/>
+
+            <ImageView
+                android:id="@+id/treeHeart"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/tree_heart"
+                android:layout_below="@id/TreeIsDead"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"/>
+
+            <ImageView
+                android:id="@+id/timeGlass"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/age_icon"
+                android:layout_below="@id/treeHeart"
+                android:layout_marginBottom="25dp"/>
+
+            <TextView
+                android:id="@+id/tv_age"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:textSize="36dp"
+                android:text="days"
+                android:fontFamily="sans-serif-light"
+                android:textColor="@color/text_grey"
+                android:gravity="center"
+                android:layout_toRightOf="@id/timeGlass"
+                android:layout_below="@id/treeHeart"
+                android:layout_marginLeft="18dp"/>
+
+            <ImageView
+                android:id="@+id/StepIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/steps_icon"
+                android:layout_below="@id/timeGlass"
+                android:layout_marginBottom="25dp"/>
+
+            <TextView
+                android:id="@+id/tv_total_steps"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text=""
+                android:textSize="36dp"
+                android:textColor="@color/text_grey"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:layout_toRightOf="@id/StepIcon"
+                android:layout_below="@id/timeGlass"
+                android:layout_marginLeft="18dp"/>
+
+            <ImageView
+                android:id="@+id/TotDistIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/total_distance_icon"
+                android:layout_below="@id/StepIcon"/>
+
+            <TextView
+                android:id="@+id/tv_total_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text=""
+                android:textSize="36dp"
+                android:textColor="@color/text_grey"
+                android:fontFamily="sans-serif-light"
+                android:gravity="center"
+                android:layout_below="@id/StepIcon"
+                android:layout_toRightOf="@id/TotDistIcon"
+                android:layout_marginLeft="18dp"/>
+
+            <Button
+                android:id="@+id/btn_continue_new"
+                android:layout_width="134dp"
+                android:layout_height="52dp"
+                android:text="Continue"
+                android:textSize="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@color/arbor_blue"
+                android:textColor="@color/colorWhite"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
