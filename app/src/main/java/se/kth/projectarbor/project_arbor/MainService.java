@@ -53,6 +53,7 @@ public class MainService extends Service {
     public final static int MSG_RESUME_LIGHT = 10;
     public final static int MAIN_FOREGROUND = 111;
     public final static int MSG_USER_INPUT = 42;
+    public final static int MSG_RESUME_TREE_GAME = 41;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -167,6 +168,7 @@ public class MainService extends Service {
                 else {
                     Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                     sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
+                    sharedPreferences.edit().putBoolean("TOGGLE", false).apply();
                     // TODO: Check if it's enough to unregister or if reset() is needed as well.
                     // Pedometer will stop updating km to MainService
                     pedometer.unregister();
@@ -199,6 +201,7 @@ public class MainService extends Service {
             case MSG_TREE_GAME:
                 // Used to stop updates and show death screen when tree dies
                 sharedPreferences.edit().putBoolean("TREE_ALIVE", true);
+
                 pedometer.resetAll();
                 pedometer.register();
 
@@ -213,6 +216,19 @@ public class MainService extends Service {
 
                 sendWeatherToView(weatherPendingIntent);
                 Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME");
+
+                break;
+
+            // Resume game when you start activity
+            case MSG_RESUME_TREE_GAME:
+                startGame();
+
+                Intent weatherIntentAgain = new Intent(MainService.this.getApplicationContext(), MainService.class)
+                        .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW);
+                PendingIntent weatherPendingIntentAgain = PendingIntent.getService(MainService.this, 1, weatherIntentAgain, 0);
+
+                sendWeatherToView(weatherPendingIntentAgain);
+                Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME Again");
 
                 break;
 
@@ -257,6 +273,7 @@ public class MainService extends Service {
                         // TODO: Insert this from deathOfTree when is merged
                         Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                         sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
+                        sharedPreferences.edit().putBoolean("TOGGLE", false).apply();
                         // TODO: Check if it's enough to unregister or if reset() is needed as well.
                         // Pedometer will stop updating km to MainService
                         pedometer.unregister();

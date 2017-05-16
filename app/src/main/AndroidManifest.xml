@@ -25,8 +25,7 @@
             android:name=".MainUIActivity"
             android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:largeHeap="true">/>
+            android:largeHeap="true"/>
         <activity
             android:name=".NewTreeActivity"
             android:screenOrientation="portrait"
@@ -53,7 +52,6 @@
             android:screenOrientation="portrait">
 
         </activity>
-        <activity android:name=".ProgressBarTest" />
 
         <!-- IMPORTANT: "enabled" must be true for receiver to be able to be instantiated
          by the system. "exported" must be true to be able to receive messages from sources

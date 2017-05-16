@@ -52,7 +52,7 @@ public class NewTreeActivity extends AppCompatActivity  {
 
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             startService(new Intent(NewTreeActivity.this, MainService.class)
-            .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME));
+            .putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_TREE_GAME));
         }
 
         // TODO: Check if tree is alive or not. If not, show death screen.

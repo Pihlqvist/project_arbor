@@ -176,88 +176,90 @@ public class MainUIActivity extends AppCompatActivity {
             setDeathView();
         } else {
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            // Create the adapter that will return a fragment for each of the three
+            // primary sections of the activity.
+            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(2);
+            // Set up the ViewPager with the sections adapter.
+            mViewPager = (ViewPager) findViewById(R.id.container);
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setOffscreenPageLimit(2);
 
-        // TODO: Trigger animations in StatsTab and TreeTab with the help of addOnPageChangeListener
+            // TODO: Trigger animations in StatsTab and TreeTab with the help of addOnPageChangeListener
 
-        // Adds action when switching to certain tab. May be used to trigger animations.
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            // Adds action when switching to certain tab. May be used to trigger animations.
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch (position) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
                 }
+
+                @Override
+                public void onPageSelected(int position) {
+                    switch (position) {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            tabLayout.setupWithViewPager(mViewPager);
+
+            // If money has been stored earlier, read from sharedPreferences
+            if (sharedPreferences.contains("STORE_MONEY")) {
+                goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
+            } else {
+                goldenPollen = 10;
+                sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
 
-            @Override
-            public void onPageScrollStateChanged(int state) {
 
-            }
-        });
+            /// HANDLES GOLDEN POLLEN END
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Pedometer.DISTANCE_BROADCAST);
+            filter.addAction(Pedometer.STORE_BROADCAST);
+            filter.addAction(MainService.TREE_DATA);
+            filter.addAction(MainService.WEATHER_DATA);
+            filter.addAction(MainService.TREE_DEAD);
+            registerReceiver(this.new Receiver(), filter);
 
-        // If money has been stored earlier, read from sharedPreferences
-        if (sharedPreferences.contains("STORE_MONEY")) {
-            goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
-        } else {
-            goldenPollen = 10;
-            sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
+            // TODO: Add elements to the settings_main_settings layout
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (snackbarSemaphore) {
+                        if (snackbar.isShown()) {
+                            snackbar.dismiss();
+                        } else {
+                            snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                            Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                            mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                            snackbar.removeCallback(null);
+                            snackbar.show();
+                        }
+                    } else {
+                        snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                        Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                        mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                        snackbar.show();
+                        snackbarSemaphore = true;
+                    }
+                }
+            });
+
         }
-
-
-        /// HANDLES GOLDEN POLLEN END
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Pedometer.DISTANCE_BROADCAST);
-        filter.addAction(Pedometer.STORE_BROADCAST);
-        filter.addAction(MainService.TREE_DATA);
-        filter.addAction(MainService.WEATHER_DATA);
-        filter.addAction(MainService.TREE_DEAD);
-        registerReceiver(this.new Receiver(), filter);
-
-        // TODO: Add elements to the settings_main_settings layout
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               if(snackbarSemaphore) {
-                   if (snackbar.isShown()) {
-                       snackbar.dismiss();
-                   }else {
-                       snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
-                       Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
-                       mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
-                       snackbar.removeCallback(null);
-                       snackbar.show();
-                   }
-               }else{
-                   snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
-                   Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
-                   mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
-                   snackbar.show();
-                   snackbarSemaphore = true;
-               }
-            }
-        });
 
     }
 
@@ -279,7 +281,7 @@ public class MainUIActivity extends AppCompatActivity {
 
     }
 
-    }
+
 
     @Override
     protected void onResume() {
