@@ -166,7 +166,19 @@ public class MainService extends Service {
                 long interval = now - then;
                 interval = interval/1000/60; // number of hours
 
-                tree.onSystemBoot((int) interval);
+                for (int i = 0; i < interval; i++)
+                    if(!tree.update()) {
+                        /* TODO: Insert this from deathOfTree when is merged
+                        Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
+                        sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
+                        // TODO: Check if it's enough to unregister or if reset() is needed as well.
+                        // Pedometer will stop updating km to MainService
+                        pedometer.unregister();
+                        Intent intentTreeDeath = new Intent();
+                        intentTreeDeath.setAction(TREE_DEAD);
+                        MainService.this.sendBroadcast(intentTreeDeath);
+                        */
+                    }
 
                 Intent intentToService = new Intent(this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);

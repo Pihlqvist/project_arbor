@@ -380,7 +380,8 @@ public class Tree implements Serializable {
 
     }
 
-    public void onSystemBoot(int hours) {
+     /*public void onSystemBoot(int hours) {
+
         int changeInWater = 0;
         int changeInSun = 0;
 
@@ -405,6 +406,7 @@ public class Tree implements Serializable {
 
         changeWaterBuffer(false, changeInWater);
         changeSunBuffer(false, changeInSun);
-    }
+
+    }*/
 
 }
