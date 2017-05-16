@@ -11,14 +11,14 @@
 
     <Button
         android:id="@+id/new_tree_btn"
-        android:layout_width="195dp"
-        android:layout_height="80dp"
+        android:layout_width="227dp"
+        android:layout_height="98dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:background="@android:color/holo_red_light"
+        android:background="@color/arbor_red"
         android:fontFamily="sans-serif-light"
-        android:text="New Tree"
+        android:text="NEW TREE"
         android:textColor="@color/colorWhite"
         android:textSize="36sp"
         android:textStyle="bold" />
