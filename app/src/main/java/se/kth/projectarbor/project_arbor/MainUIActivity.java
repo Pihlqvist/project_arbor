@@ -79,6 +79,7 @@ public class MainUIActivity extends AppCompatActivity {
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
                 totalDistance = extras.getDouble("TOTALKM");
                 statsTab.getStepsView().setText(String.format("%d", (totalStepCount = extras.getInt("TOTALSTEPS"))));
+                statsTab.getAgeView().setText("" + (ageMillis = extras.getLong("AGE", 0))/1000/60/60/24);
 
                 // LAZAR OCH PATRIK ANVÄNDER DESSA
                 statsTab.mDistance = extras.getDouble("TOTALKM")/1000;  // 1000 is BUFFER_CONSTANT in Pedometer
@@ -146,6 +147,7 @@ public class MainUIActivity extends AppCompatActivity {
 
     private int totalStepCount;
     private double totalDistance;
+    private long ageMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -272,8 +274,7 @@ public class MainUIActivity extends AppCompatActivity {
     }
 
     private void setDeathView() {
-        // TODO: IMPLEMENT AGE
-        //((TextView) findViewById(R.id.tv_age)).setText(treeAge + "");
+        ((TextView) findViewById(R.id.tv_age)).setText(ageMillis/1000/60/60/24 + "");
         ((TextView) findViewById(R.id.tv_total_steps)).setText(totalStepCount + "");
         ((TextView) findViewById(R.id.tv_total_distance)).setText(String.format("%.2f", totalDistance/1000));
 

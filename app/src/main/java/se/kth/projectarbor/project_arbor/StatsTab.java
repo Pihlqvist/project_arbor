@@ -170,15 +170,17 @@ public class StatsTab extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        updateAgeView();
+        // updateAgeView();
     }
 
+    /*
     private void updateAgeView() {
         long lifespan = System.currentTimeMillis() - treeStartTime;
         Log.d("ARBOR_LIFESPAN_SEC", "" + lifespan/1000);
         lifespan = lifespan / 1000; // TODO: Change back to lifespan / 1000 / 60 / 60 / 24;
-        age.setText("" + lifespan);
+        ageTV.setText("" + lifespan);
     }
+    */
 
     // Setup all the views
     private void setupValues() {
@@ -250,6 +252,8 @@ public class StatsTab extends Fragment {
     TextView getPhaseView() {
         return phaseTV;
     }
+
+    TextView getAgeView() { return ageTV; }
 
     ClipDrawable getWaterAnim() {
         return waterAnim;

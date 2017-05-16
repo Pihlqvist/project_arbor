@@ -237,8 +237,7 @@ public class MainService extends Service {
                 long then = sharedPreferences.getLong("SHUTDOWN_TIME", now); // second argument is important
                 long interval = now - then;
                 Log.d("ARBOR_AGE", "interval millisec: " + interval);
-                // TODO: Change back to interval/1000/60/60
-                interval = 4 * interval/1000/60; // number of hours
+                interval = interval/1000/60/60; // number of hours
                 Log.d("ARBOR_AGE", "interval: " + interval);
                 Log.d("ARBOR_AGE", "Inside case MSG_BOOT");
 
@@ -246,7 +245,7 @@ public class MainService extends Service {
                 for (int i = 0; i < interval; i++) {
                     boolean alive = tree.update();
                     if (!alive) {
-                        /* TODO: Insert this from deathOfTree when is merged
+                        // TODO: Insert this from deathOfTree when is merged
                         Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                         sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
                         // TODO: Check if it's enough to unregister or if reset() is needed as well.
@@ -256,12 +255,15 @@ public class MainService extends Service {
                         intentTreeDeath.setAction(TREE_DEAD);
                         MainService.this.sendBroadcast(intentTreeDeath);
                         break break_point;
-                        */
                     }
                 }
-                sendToView();
 
                 Log.d("ARBOR_AGE", "WaterLevel: " + tree.getWaterLevel() + ", SunLevel: " + tree.getSunLevel());
+                // after reboot, save new age and buffer values
+                // (because otherwise MSG_TREE_GAME "overrides" these updated current values
+                saveGame();
+                sendToView(); // Was before saveGame();
+
                 // Start tree update 1 hour after booting.
                 Intent intentToUpdate = new Intent(this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);
