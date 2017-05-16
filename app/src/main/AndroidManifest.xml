@@ -35,9 +35,22 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GenderHeightActivity" />
-        <activity android:name=".HowToPlayActivity" />
-        <activity android:name=".AboutActivity"></activity>
+        <activity
+            android:name=".GenderHeightActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".tutorial.TutorialArbor"
+            android:label="@string/title_activity_tutorial_arbor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+
+        </activity>
     </application>
 
 </manifest>

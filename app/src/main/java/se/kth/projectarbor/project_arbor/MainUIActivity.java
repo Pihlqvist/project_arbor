@@ -22,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
+import se.kth.projectarbor.project_arbor.tutorial.TutorialArbor;
+
 public class MainUIActivity extends AppCompatActivity {
 
     /**
@@ -236,8 +238,8 @@ public class MainUIActivity extends AppCompatActivity {
 
     public void goToHowToPlay(View v){
         Log.d("INTENT","howtoplay");
-        Intent howToPlayIntent= new Intent(this,HowToPlayActivity.class);
-        startActivity(howToPlayIntent);
+        Intent tutorial= new Intent(this,TutorialArbor.class);
+        startActivity(tutorial);
         Log.d("INTENT","Start");
     }
     public void goToAbout(View v){

@@ -7,6 +7,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
@@ -49,7 +50,9 @@ public class MainService extends Service {
 
     public final static int MSG_RESUME_HEAVY = 9;
     public final static int MSG_RESUME_LIGHT = 10;
+    public final static int MSG_RESUME_GAME = 16;
     public final static int MAIN_FOREGROUND = 111;
+    public final static int MSG_USER_INPUT = 42;
 
     // MainService works with following components
     private Pedometer pedometer;
@@ -60,6 +63,7 @@ public class MainService extends Service {
     private double totalDistance; //distance to be stored in file and handled in mainservice
     private Environment.Weather lastWeather;
     private double lastTemperature;
+    private SharedPreferences sharedPreferences;
     // end
 
     // User information  // TODO: the user should change these thyself  (Fredrik)
@@ -77,6 +81,9 @@ public class MainService extends Service {
     @Override
     public void onCreate() {
         Log.d(TAG, "Service onCreate()");
+
+        sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+        readUserSettings();
 
         // Load essential information from IO
         List<Object> list = DataManager.readState(this, filename);
@@ -127,7 +134,7 @@ public class MainService extends Service {
 
             // Does activity related resume HEAVY indicates that we need to setup pedometer
             case MSG_RESUME_HEAVY:
-                pedometer.register();  // TODO: testing without
+                pedometer.register();
                 sendToView();
                 sendDistanceInfo();
                 startForeground();
@@ -140,13 +147,10 @@ public class MainService extends Service {
 
             // Updates the tree, every hour. Will lower the trees needs and set a timer to do it again
             case MSG_UPDATE_NEED:
-                Log.d("JOSEPH", "MSGUPDATENEED");
                 boolean treeUpdate = tree.update();
                 sendToView();
 
-                //Joseph
                 showNotification(treeUpdate);
-                Log.d("JOSEPH", "JosephShowNotificationForGodSake");
                 pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
                 alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
@@ -200,6 +204,18 @@ public class MainService extends Service {
 
                 sendWeatherToView(pendingIntent);
                 break;
+            // Resumes the game
+            case MSG_RESUME_GAME:
+                startGame();
+                break;
+
+            // User have changed settings, make the live
+            case MSG_USER_INPUT:
+                readUserSettings();
+                pedometer.setGender(userGender);
+                pedometer.setHeight(userLength);
+                break;
+
         }
         return START_NOT_STICKY;
     }
@@ -352,6 +368,15 @@ public class MainService extends Service {
         new AsyncTaskRunner().execute(pendingIntent);
     }
 
+    private void readUserSettings() {
+        if (sharedPreferences.contains("USER_GENDER")) {
+            userGender = Pedometer.Gender.fromString(sharedPreferences.getString("USER_GENDER", "Female"));
+        } else { Log.e(TAG, "user_gender was not found"); }
+        if (sharedPreferences.contains("USER_HEIGHT")) {
+            userLength = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
+        } else { Log.e(TAG, "user_height was not found"); }
+    }
+
     private void sendDistanceInfo() {
         Intent intent = new Intent();
         intent.setAction(Pedometer.DISTANCE_BROADCAST);
@@ -433,7 +458,6 @@ public class MainService extends Service {
             mNotificationManager.notify("phase", 5, n3);
             tree.phaseChanged =false;
         }
-
     }
 }
 

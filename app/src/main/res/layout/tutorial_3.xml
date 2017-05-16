@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_blue"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/whiteRectangle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:src="@drawable/white_box" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@+id/whiteRectangle"
+        android:layout_alignStart="@+id/whiteRectangle"
+        android:layout_alignTop="@+id/whiteRectangle"
+        android:layout_alignRight="@+id/whiteRectangle"
+        android:layout_alignEnd="@+id/whiteRectangle"
+        android:layout_alignBottom="@+id/whiteRectangle"
+        android:paddingTop="25dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
+        android:paddingBottom="25dp">
+
+
+        <ImageView
+            android:id="@+id/gardenShop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/garden_shop_icon"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:id="@+id/ShopExample"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/items_example"
+            android:layout_below="@id/gardenShop"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="20dp"/>
+
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/ShopExample"
+            android:text="Use golden pollen to buy resources at the shop"
+            android:textAlignment="center"
+            android:textColor="@color/text_grey"
+            android:textSize="28dp" />
+
+        <Button
+            android:id="@+id/next"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/arbor_blue"
+            android:text="Next &gt;"
+            android:textSize="20dp"
+            android:textColor="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"/>
+
+        <Button
+            android:id="@+id/previous"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:backgroundTint="@color/arbor_blue"
+            android:text="&lt; Previous"
+            android:textSize="20dp"
+            android:textColor="@color/colorWhite"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"/>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>

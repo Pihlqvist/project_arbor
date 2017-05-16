@@ -8,4 +8,7 @@
     <color name="colorWhite">#FFFFFFFF</color>
     <color name="arbor_green">#39B54A</color>
     <color name="arbor_darkgreen">#177A49</color>
+    <color name="arbor_blue">#00B9D3</color>
+    <color name="text_grey">#4a4a4a</color>
+    <color name="background_blue">#59A8DC</color>
 </resources>
