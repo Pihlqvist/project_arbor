@@ -286,6 +286,13 @@ public class TreeTab extends Fragment {
         weatherLayout = layout;
     }
 
+    Environment.Weather getWeather() {
+        if (weather == null)
+            return Environment.Weather.NOT_AVAILABLE;
+        else
+            return weather;
+    }
+
     // TODO: Fix the names
     void setWeather(Environment.Weather newWeather) {
         weather = newWeather;

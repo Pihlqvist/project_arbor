@@ -35,8 +35,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    //TODO: change alarmhour back to 60*60
-    public final static int ALARM_HOUR = 1;
+    public final static int ALARM_HOUR = 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -142,11 +141,11 @@ public class MainService extends Service {
             // Updates the tree, every hour. Will lower the trees needs and set a timer to do it again
             case MSG_UPDATE_NEED:
                 Log.d("JOSEPH", "MSGUPDATENEED");
-                tree.update();
+                boolean treeUpdate = tree.update();
                 sendToView();
 
                 //Joseph
-                showNotification();
+                showNotification(treeUpdate);
                 Log.d("JOSEPH", "JosephShowNotificationForGodSake");
                 pendingIntent = PendingIntent.getService(this, 0, intent, 0);
 
@@ -219,13 +218,13 @@ public class MainService extends Service {
                 tree = new Tree();
                 Log.e(TAG, "Tree was not found in file: " + filename + ", tree = new Tree()");
             }
-            if (objects.get(2) != null /* && objects.get(2).getClass() == double.class */) { //TODO: getClass not working
+            if (objects.get(2) != null  && objects.get(2).getClass() == Double.class ) { //TODO: getClass not working
                 totalDistance = (double) objects.get(2);
             } else {
                 totalDistance = 0;
                 Log.e(TAG, "totalDistance was not found in file: " + filename + ", totalDistance = 0");
             }
-            if (objects.get(3) != null /* && objects.get(3).getClass() == int.class */) { //TODO: getClass not working
+            if (objects.get(3) != null  && objects.get(3).getClass() == Integer.class ) { //TODO: getClass not working
                 totalStepCount = (int) objects.get(3);
             } else {
                 totalStepCount = 0;
@@ -343,7 +342,7 @@ public class MainService extends Service {
         @Override
         protected void onPostExecute(PendingIntent pendingIntent) {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                    SystemClock.elapsedRealtime() + (ALARM_HOUR / 4 * 1000), pendingIntent);
+                    SystemClock.elapsedRealtime() + (15 * 60 * 1000), pendingIntent);
 
             Log.d("ARBOR_WEATHER", "Exiting onPostExecute()");
         }
@@ -365,7 +364,7 @@ public class MainService extends Service {
     //Joseph
     // This will create a notification whenefer sun/water buffer is empty or the tree is dead
     // Checking is done every hour... see MSG_UPDATE_NEED
-    private void showNotification() {
+    private void showNotification(boolean treeUpdate) {
         Log.d("JOSEPH", "SHowNotification");
         Intent resumeIntent = new Intent(this, MainUIActivity.class);
         resumeIntent = putTreeInformation(resumeIntent);
@@ -401,7 +400,7 @@ public class MainService extends Service {
         }
 
         //Create a notification when TREE IS DEAD
-        if (tree.update() == false) {
+        if (!treeUpdate) {
             Log.d("JOSEPH", "SHowNotificationHEALTH");
             NotificationCompat.Builder treeDeadNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
@@ -412,27 +411,19 @@ public class MainService extends Service {
             mNotificationManager.notify("tree", 4, n2);
 
         }
-      /*  if (tree.phaseChanged = true) {
-            NotificationCompat.Builder phaseChangedNotification = new NotificationCompat.Builder(this)
-                    .setSmallIcon(R.drawable.phase_icon)
-                    .setContentTitle("Arbor")
-                    .setContentText("phase changed to: " +tree.getTreePhase())
-                    .setContentIntent(resumePending);
-            Notification n3 = phaseChangedNotification.build();
-            mNotificationManager.notify("phase", 5, n3);
-            tree.phaseChanged =false;
-        }*/
+
     }
 
     //Create a notification when Tree Phase is changed
     //Checking for phasechange will happen every km... see MSG_KM_DONE
     public void phaseNotification(){
-        Intent resumeIntent = new Intent(this, MainUIActivity.class);
-        resumeIntent = putTreeInformation(resumeIntent);
-        PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (tree.phaseChanged = true) {
+
+        if (tree.phaseChanged) {
+            Intent resumeIntent = new Intent(this, MainUIActivity.class);
+            resumeIntent = putTreeInformation(resumeIntent);
+            PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
+            NotificationManager mNotificationManager =
+                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationCompat.Builder phaseChangedNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.phase_icon)
                     .setContentTitle("Arbor")
