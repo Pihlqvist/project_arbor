@@ -200,7 +200,7 @@ public class MainService extends Service {
                 break;
             // Resumes the game
             case MSG_RESUME_GAME:
-                resumeGame();
+                startGame(); 
                 break;
 
             // User have changed settings, make the live
@@ -277,11 +277,7 @@ public class MainService extends Service {
         intent = putTreeInformation(intent);
         startActivity(intent);
     }
-    private void resumeGame() {
-        Intent intent = new Intent(this, MainUIActivity.class);
-        intent = putTreeInformation(intent);
-        startActivity(intent);
-    }
+
 
 
     // Save everything, this is so that we save essential information when the service dies
