@@ -54,84 +54,128 @@
         app:srcCompat="@android:drawable/ic_menu_help" />
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id = "@+id/tree_death_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFF"
+        android:background="@drawable/blue_background_1"
         android:orientation="vertical"
         android:gravity="center_horizontal"
         android:visibility="gone">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Your Tree Died"
-            android:fontFamily="sans-serif"
-            android:textSize="36sp"
-            android:layout_marginTop="24dp" />
-
         <ImageView
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/tree_heart" />
-
-        <LinearLayout
+            android:id="@+id/Box"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="left"
-            android:layout_marginLeft="36dp" >
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/age_icon"/>
+            app:srcCompat="@drawable/white_box"
+            android:layout_centerInParent="true"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignBottom="@id/Box"
+            android:layout_alignEnd="@id/Box"
+            android:layout_alignLeft="@id/Box"
+            android:layout_alignRight="@id/Box"
+            android:layout_alignTop="@id/Box"
+            android:layout_alignStart="@id/Box"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp">
+
             <TextView
+                android:id="@+id/TreeIsDead"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:fontFamily="sans-serif"
+                android:text="Your tree died"
+                android:textSize="44sp"
+                android:textColor="@color/text_grey"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentTop="true"/>
+
+            <ImageView
+                android:id="@+id/treeHeart"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/tree_heart"
+                android:layout_below="@id/TreeIsDead"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="5dp"/>
+
+            <ImageView
+                android:id="@+id/timeGlass"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/age_icon"
+                android:layout_below="@id/treeHeart"
+                android:layout_marginBottom="25dp"/>
+
+            <TextView
+                android:id="@+id/tv_age"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:textSize="36dp"
                 android:text="days"
-                android:id="@+id/tv_age"/>
-        </LinearLayout>
+                android:textColor="@color/text_grey"
+                android:gravity="center"
+                android:layout_toRightOf="@id/timeGlass"
+                android:layout_below="@id/treeHeart"
+                android:layout_marginLeft="18dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="left"
-            android:layout_marginLeft="36dp" >
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/steps_icon" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tv_total_steps"/>
-        </LinearLayout>
+                android:id="@+id/StepIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/steps_icon"
+                android:layout_below="@id/timeGlass"
+                android:layout_marginBottom="25dp"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp"
-            android:layout_gravity="left"
-            android:layout_marginLeft="36dp">
+            <TextView
+                android:id="@+id/tv_total_steps"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="steps"
+                android:textSize="36dp"
+                android:textColor="@color/text_grey"
+                android:gravity="center"
+                android:layout_toRightOf="@id/StepIcon"
+                android:layout_below="@id/timeGlass"
+                android:layout_marginLeft="18dp"/>
+
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/total_distance_icon" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text=""
-                android:id="@+id/tv_total_distance" />
-        </LinearLayout>
+                android:id="@+id/TotDistIcon"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/total_distance_icon"
+                android:layout_below="@id/StepIcon"/>
 
-        <Button
-            android:id="@+id/btn_continue_new"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Continue"/>
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_total_distance"
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                android:text="FOO"
+                android:textSize="36dp"
+                android:textColor="@color/text_grey"
+                android:gravity="center"
+                android:layout_below="@id/StepIcon"
+                android:layout_toRightOf="@id/TotDistIcon"
+                android:layout_marginLeft="18dp"/>
+
+            <Button
+                android:id="@+id/btn_continue_new"
+                android:layout_width="134dp"
+                android:layout_height="52dp"
+                android:text="Continue"
+                android:textSize="20dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:background="@color/arbor_blue"
+                android:textColor="@color/colorWhite"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>
