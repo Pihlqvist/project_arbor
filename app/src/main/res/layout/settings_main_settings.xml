@@ -1,81 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:paddingTop="5dp"
+    android:background="@color/arbor_darkgreen"
+    android:stretchColumns="0">
 
-
-    <TableRow>
+    <TableRow
+        android:layout_marginBottom="5dp">
 
             <Button
 
                 android:id="@+id/btnAbout"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
+                android:background="@color/arbor_green"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp"
                 android:text="@string/about"
                 android:onClick="goToAbout"
                 android:layout_weight="1" />
 
         </TableRow>
 
-        <TableRow>
+        <TableRow
+            android:layout_marginBottom="5dp">
             <Button
 
                 android:id="@+id/btnHowToPlay"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
+                android:background="@color/arbor_green"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp"
                 android:text="@string/how_to_play"
                 android:onClick="goToHowToPlay"
                 android:layout_weight="1"/>
 
         </TableRow>
 
-        <TableRow>
+        <TableRow
+            android:layout_marginBottom="5dp">
             <Button
 
                 android:id="@+id/btnGenderAndHeight"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
+                android:background="@color/arbor_green"
+                android:textColor="@color/colorWhite"
+                android:textSize="18dp"
                 android:text="@string/gender_and_height"
                 android:onClick="goToGenderHeight"
                 android:layout_weight="1"/>
 
         </TableRow>
 
-    <TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="5dp">
 
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
 
-        <Button
-            style="?android:attr/borderlessButtonStyle"
-            android:id="@+id/NO_SOUND"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+                <Button
+                    android:id="@+id/NO_SOUND"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/arbor_green"
+                    android:onClick="soundZERO"
+                    android:text="Sound\r\n0%"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18dp"
+                    android:layout_marginRight="10dp"/>
 
-            android:onClick="soundZERO"
-            android:text=" SOUND 0%   " />
+                <Button
+                    android:id="@+id/SOME_SOUND"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/arbor_green"
+                    android:onClick="soundFIFTY"
+                    android:text="Sound\r\n50%"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18dp"
+                    android:layout_marginRight="10dp"/>
 
+                <Button
+                    android:id="@+id/LOUD_SOUND"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@color/arbor_green"
+                    android:onClick="soundHUNDRED"
+                    android:text="Sound\r\n100%"
+                    android:textColor="@color/colorWhite"
+                    android:textSize="18dp" />
 
-
-
-        <Button
-            style="?android:attr/borderlessButtonStyle"
-            android:id="@+id/SOME_SOUND"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="soundFIFTY"
-            android:text="SOUND 50%" />
-
-
-        <Button
-            style="?android:attr/borderlessButtonStyle"
-            android:id="@+id/LOUD_SOUND"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="soundHUNDRED"
-            android:text="SOUND 100%" />
-    </TableRow>
-
-
+            </LinearLayout>
+        </TableRow>
 </TableLayout>
 
 
