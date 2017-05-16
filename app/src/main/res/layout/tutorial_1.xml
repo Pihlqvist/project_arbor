@@ -32,14 +32,14 @@
             android:id="@+id/resources"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/resources"
+            android:src="@drawable/resources"
             android:layout_centerHorizontal="true"/>
 
         <ImageView
             android:id="@+id/walkAndGet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/distance_axis"
+            android:src="@drawable/distance_axis"
             android:layout_below="@id/resources"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"/>
@@ -64,7 +64,8 @@
             android:textSize="20dp"
             android:textColor="@color/colorWhite"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true"
+            />
 
     </RelativeLayout>
 

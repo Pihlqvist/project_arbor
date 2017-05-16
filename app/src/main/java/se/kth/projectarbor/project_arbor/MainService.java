@@ -47,6 +47,7 @@ public class MainService extends Service {
 
     public final static int MSG_RESUME_HEAVY = 9;
     public final static int MSG_RESUME_LIGHT = 10;
+    public final static int MSG_RESUME_GAME = 16;
     public final static int MAIN_FOREGROUND = 111;
     public final static int MSG_USER_INPUT = 42;
 
@@ -197,6 +198,10 @@ public class MainService extends Service {
 
                 sendWeatherToView(pendingIntent);
                 break;
+            // Resumes the game
+            case MSG_RESUME_GAME:
+                resumeGame();
+                break;
 
             // User have changed settings, make the live
             case MSG_USER_INPUT:
@@ -272,6 +277,12 @@ public class MainService extends Service {
         intent = putTreeInformation(intent);
         startActivity(intent);
     }
+    private void resumeGame() {
+        Intent intent = new Intent(this, MainUIActivity.class);
+        intent = putTreeInformation(intent);
+        startActivity(intent);
+    }
+
 
     // Save everything, this is so that we save essential information when the service dies
     private void saveGame() {

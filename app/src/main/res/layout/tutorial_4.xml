@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_blue"
     android:padding="20dp">
-
     <ImageView
         android:id="@+id/whiteRectangle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        app:srcCompat="@drawable/white_box" />
+        android:src="@drawable/white_box" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,47 +20,39 @@
         android:layout_alignRight="@+id/whiteRectangle"
         android:layout_alignEnd="@+id/whiteRectangle"
         android:layout_alignBottom="@+id/whiteRectangle"
-        android:paddingTop="50dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp"
+        android:paddingTop="25dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="30dp"
         android:paddingBottom="25dp">
 
-
         <ImageView
-            android:id="@+id/pressTree"
+            android:id="@+id/greenPhase"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/press_tree"
-            android:layout_centerHorizontal="true"/>
-
-        <ImageView
-            android:id="@+id/walkGather"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/walk_n_gather"
+            android:src="@drawable/green_phase"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/pressTree"/>
+            android:layout_marginBottom="10dp"/>
 
         <TextView
-            android:id="@+id/instruction"
+            android:id="@+id/instructions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/walkGather"
-            android:text="Real forecasts bring your location’s weather into the game"
+            android:layout_below="@id/greenPhase"
+            android:text="Make the tree thrive and grow by gathering kilometers"
             android:textAlignment="center"
             android:textColor="@color/text_grey"
             android:textSize="28dp" />
 
         <Button
-            android:id="@+id/next"
+            android:id="@+id/letsGo"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:backgroundTint="@color/arbor_blue"
-            android:text="Next &gt;"
-            android:textSize="20dp"
-            android:textColor="@color/colorWhite"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:backgroundTint="@color/arbor_blue"
+            android:text="Lets go"
+            android:textColor="@color/colorWhite"
+            android:textSize="20dp" />
 
         <Button
             android:id="@+id/previous"
