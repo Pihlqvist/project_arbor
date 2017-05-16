@@ -17,13 +17,13 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/appbar_padding_top"
         android:theme="@style/AppTheme.AppBarOverlay"
-        android:background="@android:color/holo_blue_bright">
+        android:background="@color/arbor_blue">
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@android:color/holo_blue_bright"
+            android:background="@color/arbor_blue"
             app:tabTextColor="@color/wallet_bright_foreground_holo_dark" />
 
     </android.support.design.widget.AppBarLayout>
