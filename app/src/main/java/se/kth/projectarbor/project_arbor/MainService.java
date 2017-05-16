@@ -117,7 +117,9 @@ public class MainService extends Service {
 
             // Start pedometer and start a foreground
             case MSG_START:
-                pedometer.resetAndRegister();
+                if (!pedometer.isRegister()) {
+                    pedometer.resetAndRegister();
+                }
                 // TODO: Do we need to read here ? (Fredrik)
                 // List<Object> list = DataManager.readState(this, filename);
                 // loadState(list);
@@ -317,6 +319,9 @@ public class MainService extends Service {
         intent.putExtra("PHASE", tree.getTreePhase());
         intent.putExtra("TOTALKM", pedometer.getTotalDistance());
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+
+        intent.putExtra("SESSION_STEPS", pedometer.getSessionStepCount());
+        intent.putExtra("SESSION_DISTANCE", pedometer.getSessionDistance());
         return intent;
     }
 
