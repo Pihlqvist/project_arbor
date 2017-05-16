@@ -13,7 +13,6 @@ import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import java.util.Random;
-
 import se.kth.projectarbor.project_arbor.R;
 
 /**

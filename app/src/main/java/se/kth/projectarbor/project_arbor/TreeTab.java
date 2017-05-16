@@ -1,9 +1,6 @@
 package se.kth.projectarbor.project_arbor;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -15,18 +12,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
-import se.kth.projectarbor.project_arbor.view_objects.SunnyWithClouds;
+import se.kth.projectarbor.project_arbor.view_objects.CloudSunView;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -273,8 +268,8 @@ public class TreeTab extends Fragment {
             // TODO: Does it work as intended?
             case PARTLY_CLOUDY:
                 SunView sunView = new SunView(getActivity());
-                SunnyWithClouds sunnyWithClouds = new SunnyWithClouds(getContext());
-                layout = sunnyWithClouds.addViews((RelativeLayout) sunView.addViews(layout));
+                CloudSunView cloudSunView = new CloudSunView(getContext());
+                layout = cloudSunView.addViews((RelativeLayout) sunView.addViews(layout));
                 viewStat.setBackgroundResource(R.drawable.blue_background_2);
                 viewTree.setBackgroundResource(R.drawable.blue_background_1);
                 viewShop.setBackgroundResource(R.drawable.blue_background_3);

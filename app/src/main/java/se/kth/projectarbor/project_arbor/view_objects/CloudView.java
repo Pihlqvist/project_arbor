@@ -70,7 +70,7 @@ public class CloudView {
             ImageView ImageViewCloud = new ImageView(context);
             ImageViewCloud.setImageResource(cloudResources[i%3]);
 
-            // Set the transparency of the cloud to 90 %
+            // Set the transparency of the cloud to specific % defined above
             ImageViewCloud.setAlpha(CLOUD_ALPHA);
 
             layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
