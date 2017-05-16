@@ -3,17 +3,13 @@ package se.kth.projectarbor.project_arbor.view_objects;
 import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-
 import java.util.Random;
-
 import se.kth.projectarbor.project_arbor.R;
-
 import static android.view.animation.AnimationUtils.currentAnimationTimeMillis;
 
 /**
