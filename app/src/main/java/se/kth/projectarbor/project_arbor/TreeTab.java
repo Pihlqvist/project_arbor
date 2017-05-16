@@ -122,7 +122,7 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
-
+        Log.d("ARBOR", "Oncreate");
         /* // TODO: See if it works after integration
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
@@ -372,18 +372,18 @@ public class TreeTab extends Fragment {
         switch (phaseNumber) {
             case 1:
                 //ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                treeAnimView.startAnimation();
+                //treeAnimView.startAnimation();
                 //ivTree.setImageResource(R.drawable.seed_to_sprout_01);
                 Log.d(TAG, "ivTree seed");
                 break;
             case 2:
-                treeAnimView.startAnimation();
+                //treeAnimView.startAnimation();
                 //ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 //ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
                 Log.d(TAG, "ivTree sprout");
                 break;
             case 3:
-                treeAnimView.startAnimation();
+                //treeAnimView.startAnimation();
                 //ivTree = (ImageView) view.findViewById(R.id.treeButton);
                 //ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
                 Log.d(TAG, "ivTree sapling");

@@ -8,6 +8,7 @@ package se.kth.projectarbor.project_arbor.view_objects;
 
         import android.graphics.Bitmap;
 
+        import android.graphics.BitmapFactory;
         import android.graphics.Color;
         import android.graphics.drawable.Drawable;
         import android.os.Handler;
@@ -40,19 +41,20 @@ public class TreeView extends ImageView implements Runnable {
     private boolean animating = false;
 
     private Thread animationThread;
+    public boolean firstime;
 
     private final Runnable updateResults = new Runnable() {
 
         @Override
 
         public void run() {
-
+            Log.d("PATRIK", "UPDATE COMPLETE");
             if (tmpBitmap != null && !tmpBitmap.isRecycled()) {
 
                 setBackgroundResource(R.color.colorTransparent);
                 setImageBitmap(tmpBitmap);
-                setScaleX(1.5f);
-                setScaleY(1.5f);
+                setScaleX(2f);
+                setScaleY(2f);
 
             }
 
@@ -67,6 +69,7 @@ public class TreeView extends ImageView implements Runnable {
         grow  = false;
         frameCount = 0;
         mod = 0;
+        firstime = false;
     }
 
 
@@ -75,27 +78,37 @@ public class TreeView extends ImageView implements Runnable {
 
         super(context);
         grow = false;
+        firstime = true;
         frameCount = 0;
         mod = 0;
+        tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.grown_tree));
+        handler.post(updateResults);
     }
 
 
 
     public void setBytes(final byte[] bytes) {
-
+        Log.d("PATRIK", "DECODE STARTED");
         gifDecoder = new GifDecoder();
+        Log.d("PATRIK", "" + gifDecoder);
+        Thread async = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
 
-        try {
+                    gifDecoder.read(bytes);
+                    Log.d("PATRIK", "DECODE COMPLETE");
+                    Log.d("PATRIK", "" + gifDecoder);
+                    startAnimation();
+                } catch (final OutOfMemoryError e) {
+                    Log.d("PATRIK", "EX");
+                    gifDecoder = null;
 
-            gifDecoder.read(bytes);
 
-        } catch (final OutOfMemoryError e) {
-
-            gifDecoder = null;
-
-            return;
-
-        }
+                }
+            }
+        });
+        async.start();
 
 
 
@@ -112,7 +125,7 @@ public class TreeView extends ImageView implements Runnable {
 
 
     public void startAnimation() {
-
+        Log.d("PATRIK", "START COMPLETE");
         animating = true;
 
 
@@ -158,8 +171,7 @@ public class TreeView extends ImageView implements Runnable {
     @Override
 
     public void run() {
-
-        if(frameCount<gifDecoder.getFrameCount()) {
+            Log.d("PATRIK", "RUN COMPLETE");
             final int n = gifDecoder.getFrameCount() / 3;
             animating = false;
             do {
@@ -224,9 +236,6 @@ public class TreeView extends ImageView implements Runnable {
                 }
 
             } while (animating);
-        }else{
-            frameCount=0;
-        }
     }
     public void setGrow(){
         grow = true;
