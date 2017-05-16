@@ -27,7 +27,7 @@ public class Tree implements Serializable {
     private final int SEED_WATERBUFFER_MAX = 1000;
     private final int SEED_SUNBUFFER_MAX = 1000;
     private final int SEED_HEALTHBUFFER_MAX = 1;
-    private final int SEED_WATER_NEED = 400/24 ; // need per hour
+    private final int SEED_WATER_NEED = 400/24; // need per hour
     private final int SEED_SUN_NEED = 400 /24; // need per hour
     private final int SEED_WATER_INTAKE = 200; // intake per kilometer
     private final int SEED_SUN_INTAKE = 100; // intake per kilometer
@@ -232,6 +232,11 @@ public class Tree implements Serializable {
     // Until timer reaches 24, timerFlag will be true and block withdrawing of HP:s. When timerFlag
     // is put to false after 24 hours and both buffers are not 0, 1 HP is added to HPBuffer.
     public boolean update() {
+
+        // Stops tree from updating when dead.
+        if(!alive)
+            return false;
+
         bufferDecrease();
         // timerFlag is true so HP cannot be decreased during this time.
 
