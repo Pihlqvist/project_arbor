@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
@@ -31,7 +32,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 14;  // TODO: changed to min for testing
+    public final static int ALARM_HOUR = 15;  // TODO: changed to min for testing
     public final static int ALARM_DAY = 24 * 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
@@ -95,7 +96,8 @@ public class MainService extends Service {
         //USED TO NOTIFY
         PendingIntent pendingIntent = PendingIntent.getService(this, 0, intent, 0);
         // Depending on the msg a different action is taken
-        switch (msg) {
+        break_point: switch (msg) {  // Break point needed for MSG_BOOT to break out of case
+                                     // if tree died.
 
             // Start pedometer and start a foreground
             case MSG_START:
@@ -164,10 +166,16 @@ public class MainService extends Service {
                 SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
                 long then = sharedPreferences.getLong("SHUTDOWN_TIME", now); // second argument is important
                 long interval = now - then;
-                interval = interval/1000/60; // number of hours
+                Log.d("ARBOR_AGE", "interval millisec: " + interval);
+                // TODO: Change back to interval/1000/60/60
+                interval = 4 * interval/1000/60; // number of hours
+                Log.d("ARBOR_AGE", "interval: " + interval);
+                Log.d("ARBOR_AGE", "Inside case MSG_BOOT");
 
-                for (int i = 0; i < interval; i++)
-                    if(!tree.update()) {
+                // Do the update as many times as needed.
+                for (int i = 0; i < interval; i++) {
+                    boolean alive = tree.update();
+                    if (!alive) {
                         /* TODO: Insert this from deathOfTree when is merged
                         Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                         sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
@@ -177,13 +185,21 @@ public class MainService extends Service {
                         Intent intentTreeDeath = new Intent();
                         intentTreeDeath.setAction(TREE_DEAD);
                         MainService.this.sendBroadcast(intentTreeDeath);
+                        break break_point;
                         */
                     }
+                }
+                sendToView();
 
-                Intent intentToService = new Intent(this, MainService.class)
+                Log.d("ARBOR_AGE", "WaterLevel: " + tree.getWaterLevel() + ", SunLevel: " + tree.getSunLevel());
+                // Start tree update 1 hour after booting.
+                Intent intentToUpdate = new Intent(this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);
-
-                startService(intentToService);
+                PendingIntent pendingToUpdate = PendingIntent.getService(this, 0, intentToUpdate, PendingIntent.FLAG_CANCEL_CURRENT);
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingToUpdate);
+//                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+//                        + (ALARM_HOUR * 1000), pendingToUpdate);
                 break;
         }
         return START_NOT_STICKY;
@@ -223,6 +239,9 @@ public class MainService extends Service {
         intent.putExtra("PHASE", tree.getTreePhase().toString());
         intent.putExtra("TOTALKM", pedometer.getTotalDistance());
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+        // TODO Implement in the receiver
+        intent.putExtra("AGE",
+                System.currentTimeMillis() - getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE).getLong("TREE_START_TIME", 0));
         intent.setAction(TREE_DATA);
         getApplicationContext().sendBroadcast(intent);
     }
@@ -239,6 +258,8 @@ public class MainService extends Service {
         intentToActivity.putExtra("PHASE", tree.getTreePhase().toString());
         intentToActivity.putExtra("TOTALKM", pedometer.getTotalDistance());
         intentToActivity.putExtra("TOTALSTEPS", pedometer.getTotalDistance());
+        intentToActivity.putExtra("AGE",
+                System.currentTimeMillis() - getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE).getLong("TREE_START_TIME", 0));
         startActivity(intentToActivity);
     }
     // Save everything, this is so that we save essential information when the service dies

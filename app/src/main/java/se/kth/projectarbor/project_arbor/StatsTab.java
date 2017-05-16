@@ -153,7 +153,7 @@ public class StatsTab extends Fragment {
     private void updateAgeView() {
         long lifespan = System.currentTimeMillis() - treeStartTime;
         Log.d("ARBOR_LIFESPAN_SEC", "" + lifespan/1000);
-        lifespan = lifespan / 1000 / 60 / 60 / 24;
+        lifespan = lifespan / 1000; // TODO: Change back to lifespan / 1000 / 60 / 60 / 24;
         age.setText("" + lifespan);
     }
 
