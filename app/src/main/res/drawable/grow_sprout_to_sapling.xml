@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toSapling" android:oneshot="true">
+    <item android:drawable="@drawable/sprout_to_sapling_01" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_02" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_03" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_04" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_05" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_06" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_07" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_08" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_09" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_10" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_11" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_12" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_13" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_14" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_15" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_16" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_17" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_18" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_19" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_20" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_21" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_22" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_23" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_24" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_25" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_26" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_27" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_28" android:duration="100" />
+    <item android:drawable="@drawable/sprout_to_sapling_29" android:duration="100" />
+</animation-list>
