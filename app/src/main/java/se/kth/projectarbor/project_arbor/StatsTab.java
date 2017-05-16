@@ -54,6 +54,8 @@ public class StatsTab extends Fragment {
     ImageView imgSun;
     ImageView phaseIcon;
 
+    private long treeStartTime;
+
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
 
         /*private Handler mRightHandler = new Handler();
@@ -160,8 +162,22 @@ public class StatsTab extends Fragment {
            // totalDistanceTV.setText( extras.getInt("DISTANCE"));
         }
 
-
+        treeStartTime = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor",
+                Context.MODE_PRIVATE).getLong("TREE_START_TIME", 0);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateAgeView();
+    }
+
+    private void updateAgeView() {
+        long lifespan = System.currentTimeMillis() - treeStartTime;
+        Log.d("ARBOR_LIFESPAN_SEC", "" + lifespan/1000);
+        lifespan = lifespan / 1000; // TODO: Change back to lifespan / 1000 / 60 / 60 / 24;
+        age.setText("" + lifespan);
     }
 
     // Setup all the views

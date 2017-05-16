@@ -80,6 +80,8 @@ public class NewTreeActivity extends AppCompatActivity  {
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
                 Log.d(TAG, "new save state");
 
+                sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
+
                 // Start game storage
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);

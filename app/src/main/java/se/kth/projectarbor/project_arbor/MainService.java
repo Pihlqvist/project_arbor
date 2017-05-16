@@ -48,7 +48,7 @@ public class MainService extends Service {
     public final static int MSG_TREE_GAME = 7;
     public final static int MSG_PURCHASE = 8;
     public final static int MSG_UPDATE_WEATHER_VIEW = 12;
-
+    public final static int MSG_BOOT = 11;
     public final static int MSG_RESUME_HEAVY = 9;
     public final static int MSG_RESUME_LIGHT = 10;
     public final static int MAIN_FOREGROUND = 111;
@@ -113,7 +113,8 @@ public class MainService extends Service {
         //USED TO NOTIFY
         PendingIntent pendingIntent;
         // Depending on the msg a different action is taken
-        switch (msg) {
+        break_point: switch (msg) {  // Break point needed for MSG_BOOT to break out of case
+                                     // if tree died.
 
             // Start pedometer and start a foreground
             case MSG_START:
@@ -229,6 +230,47 @@ public class MainService extends Service {
 
                 sendWeatherToView(pendingIntent);
                 break;
+
+            case MSG_BOOT:
+                long now = System.currentTimeMillis();
+                SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+                long then = sharedPreferences.getLong("SHUTDOWN_TIME", now); // second argument is important
+                long interval = now - then;
+                Log.d("ARBOR_AGE", "interval millisec: " + interval);
+                // TODO: Change back to interval/1000/60/60
+                interval = 4 * interval/1000/60; // number of hours
+                Log.d("ARBOR_AGE", "interval: " + interval);
+                Log.d("ARBOR_AGE", "Inside case MSG_BOOT");
+
+                // Do the update as many times as needed.
+                for (int i = 0; i < interval; i++) {
+                    boolean alive = tree.update();
+                    if (!alive) {
+                        /* TODO: Insert this from deathOfTree when is merged
+                        Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
+                        sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
+                        // TODO: Check if it's enough to unregister or if reset() is needed as well.
+                        // Pedometer will stop updating km to MainService
+                        pedometer.unregister();
+                        Intent intentTreeDeath = new Intent();
+                        intentTreeDeath.setAction(TREE_DEAD);
+                        MainService.this.sendBroadcast(intentTreeDeath);
+                        break break_point;
+                        */
+                    }
+                }
+                sendToView();
+
+                Log.d("ARBOR_AGE", "WaterLevel: " + tree.getWaterLevel() + ", SunLevel: " + tree.getSunLevel());
+                // Start tree update 1 hour after booting.
+                Intent intentToUpdate = new Intent(this, MainService.class)
+                        .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);
+                PendingIntent pendingToUpdate = PendingIntent.getService(this, 0, intentToUpdate, PendingIntent.FLAG_CANCEL_CURRENT);
+                alarmManager.set(AlarmManager.RTC_WAKEUP,
+                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingToUpdate);
+//                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
+//                        + (ALARM_HOUR * 1000), pendingToUpdate);
+                break;
         }
         return START_NOT_STICKY;
     }
@@ -335,6 +377,8 @@ public class MainService extends Service {
         intent.putExtra("PHASE", tree.getTreePhase());
         intent.putExtra("TOTALKM", pedometer.getTotalDistance());
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
+        intent.putExtra("AGE",
+                System.currentTimeMillis() - getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE).getLong("TREE_START_TIME", 0));
         return intent;
     }
 
