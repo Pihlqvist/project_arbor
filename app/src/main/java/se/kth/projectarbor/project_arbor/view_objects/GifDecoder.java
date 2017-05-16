@@ -313,6 +313,9 @@ public class GifDecoder {
         framePointer = (framePointer - 1) % frameCount;
 
     }
+    public void frameOverride(int i){
+        framePointer = i;
+    }
 
 
 

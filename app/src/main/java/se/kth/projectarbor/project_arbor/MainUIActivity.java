@@ -62,9 +62,9 @@ public class MainUIActivity extends AppCompatActivity {
 
                 treeTab.newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 if (treeTab.newPhase != treeTab.currentPhase) {
-                    treeTab.setTreePhase(treeTab.newPhase);
-                }
+                    treeTab.getAnimTree().animatePhase(treeTab.newPhase, false);
 
+                }
 
                 if (extras.getInt("HP") < 1) {
                     statsTab.getHealthView().setText("DEAD");

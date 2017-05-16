@@ -3,7 +3,7 @@ package se.kth.projectarbor.project_arbor.view_objects;
 /**
  * Created by Patrik on 2017-05-15.
  */
-
+        import android.content.SharedPreferences;
         import android.content.Context;
 
         import android.graphics.Bitmap;
@@ -26,9 +26,13 @@ public class TreeView extends ImageView implements Runnable {
 
     public boolean grow;
 
+    public boolean hasAnimated;
+
     private int frameCount;
 
-    final int mod;
+    private int phase;
+
+    private int mod;
 
     private static final String TAG = "GifDecoderView";
 
@@ -39,6 +43,8 @@ public class TreeView extends ImageView implements Runnable {
     private final Handler handler = new Handler();
 
     private boolean animating = false;
+    //SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
 
     private Thread animationThread;
     public boolean firstime;
@@ -74,6 +80,33 @@ public class TreeView extends ImageView implements Runnable {
 
 
 
+    public TreeView(final Context context, int i) {
+
+        super(context);
+        phase = i;
+        grow = false;
+        firstime = true;
+        frameCount = 0;
+        mod = 0;
+        switch (phase-1){
+            case 0 :
+                tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.seed_to_sprout_01));
+                break;
+            case 1 :
+                tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.sprout_glow));
+                break;
+            case 2 :
+                tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.sapling_glow));
+                break;
+            case 3 :
+                tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.tree_glow));
+                break;
+        }
+        handler.post(updateResults);
+        hasAnimated = false;
+
+    }
+
     public TreeView(final Context context) {
 
         super(context);
@@ -99,6 +132,8 @@ public class TreeView extends ImageView implements Runnable {
                     gifDecoder.read(bytes);
                     Log.d("PATRIK", "DECODE COMPLETE");
                     Log.d("PATRIK", "" + gifDecoder);
+                    mod = gifDecoder.getFrameCount()/3;
+                    Log.d("PATRIK", "" + mod);
                     startAnimation();
                 } catch (final OutOfMemoryError e) {
                     Log.d("PATRIK", "EX");
@@ -155,6 +190,7 @@ public class TreeView extends ImageView implements Runnable {
             animationThread = null;
 
         }
+        startAnimation();
 
     }
 
@@ -171,74 +207,96 @@ public class TreeView extends ImageView implements Runnable {
     @Override
 
     public void run() {
-            Log.d("PATRIK", "RUN COMPLETE");
-            final int n = gifDecoder.getFrameCount() / 3;
-            animating = false;
-            do {
-                for (int i = 0; i < n; i++) {
-                    if(i==(n-1)){
-                        i=i-2;
-                        try {
+            if(!hasAnimated) {
+                Log.d("PATRIK", "RUN COMPLETE");
+                int n = mod * (phase - 1);
+                gifDecoder.framePointer = n;
+                    for (int i = 0; i < mod; i++) {
+                       // if (i == (mod) - 1) {
+                         //   i = i - 2;
+                           /* try {
 
-                            tmpBitmap = gifDecoder.getNextFrame();
+                                tmpBitmap = gifDecoder.getNextFrame();
 
-                            handler.post(updateResults);
-                            frameCount++;
+                                handler.post(updateResults);
+                                frameCount++;
 
-                        } catch (final ArrayIndexOutOfBoundsException e) {
+                            } catch (final ArrayIndexOutOfBoundsException e) {
 
-                            Log.w(TAG, e);
+                                Log.w(TAG, e);
 
-                        } catch (final IllegalArgumentException e) {
+                            } catch (final IllegalArgumentException e) {
 
-                            Log.w(TAG, e);
+                                Log.w(TAG, e);
 
-                        }
-                        gifDecoder.devance();
-                        try {
+                            }
+                            gifDecoder.devance();
+                            try {
 
-                            Thread.sleep(gifDecoder.getNextDelay());
+                                Thread.sleep(gifDecoder.getNextDelay());
 
-                        } catch (final InterruptedException e) {
+                            } catch (final InterruptedException e) {
 
-                            // suppress
+                                // suppress
 
-                        }
-                    }else {
-                        try {
+                            }*/
+                       /* } else {*/
+                            try {
 
-                            tmpBitmap = gifDecoder.getNextFrame();
+                                tmpBitmap = gifDecoder.getNextFrame();
 
-                            handler.post(updateResults);
-                            frameCount++;
+                                handler.post(updateResults);
+                                frameCount++;
 
-                        } catch (final ArrayIndexOutOfBoundsException e) {
+                            } catch (final ArrayIndexOutOfBoundsException e) {
 
-                            Log.w(TAG, e);
+                                Log.w(TAG, e);
 
-                        } catch (final IllegalArgumentException e) {
+                            } catch (final IllegalArgumentException e) {
 
-                            Log.w(TAG, e);
+                                Log.w(TAG, e);
 
-                        }
-                        gifDecoder.advance();
-                        try {
+                            }
+                            gifDecoder.advance();
+                            try {
 
-                            Thread.sleep(gifDecoder.getNextDelay());
+                                Thread.sleep(gifDecoder.getNextDelay());
 
-                        } catch (final InterruptedException e) {
+                            } catch (final InterruptedException e) {
 
-                            // suppress
+                                // suppress
 
-                        }
+                            }
+                       // }
+
                     }
+                    hasAnimated = true;
+                    animating = false;
+                    stopAnimation();
+            }else{
+                Log.d("PATRIK", "RUN COMPLETE" + phase);
 
+                switch (phase){
+                    case 1 :
+                        tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.sprout_glow));
+                        break;
+                    case 2 :
+                        tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.sapling_glow));
+                        break;
+                    case 3 :
+                        tmpBitmap = (BitmapFactory.decodeResource(getResources(), R.drawable.tree_glow));
+                        break;
                 }
-
-            } while (animating);
+                handler.post(updateResults);
+            }
     }
     public void setGrow(){
         grow = true;
+    }
+    public void animatePhase(int newPhase, boolean animate){
+        phase = newPhase;
+        hasAnimated = animate;
+        stopAnimation();
     }
 
 }

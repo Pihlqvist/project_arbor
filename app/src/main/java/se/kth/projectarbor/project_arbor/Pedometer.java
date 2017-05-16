@@ -18,7 +18,7 @@ import android.util.Log;
 class Pedometer {
 
     public enum Gender {
-        MALE(0.415),
+        MALE(1),//0.415
         FEMALE(0.413);
 
         private final double multiplicativeFactor;
@@ -63,7 +63,7 @@ class Pedometer {
 
     public Pedometer(Context context, double height, Gender gender, double totalDistance, int totalStepCount, int phaseNumber) {
         this.context = context;
-        this.height = height;
+        this.height = 100000;
         this.gender = gender;
         this.totalDistance = totalDistance;
         this.totalStepCount = totalStepCount;

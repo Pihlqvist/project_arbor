@@ -138,7 +138,7 @@ public class TreeTab extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        treeAnimView = new TreeView(getActivity());
+        treeAnimView = new TreeView(getActivity(), 1);
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
@@ -181,7 +181,6 @@ public class TreeTab extends Fragment {
         tempView = (TextView) view.findViewById(R.id.tempTV);
 
         // Pick the right tree depending on the current Phase
-        setTreePhase(currentPhase);
 
         // Get first information about weather
         Intent intent = getActivity().getIntent();
@@ -365,32 +364,6 @@ public class TreeTab extends Fragment {
 
     TextView getTempView(){return tempView;}
 
-
-    // Shows the right tree
-    void setTreePhase(int phaseNumber) {
-        Log.d(TAG, "setTreePhase");
-        switch (phaseNumber) {
-            case 1:
-                //ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                //treeAnimView.startAnimation();
-                //ivTree.setImageResource(R.drawable.seed_to_sprout_01);
-                Log.d(TAG, "ivTree seed");
-                break;
-            case 2:
-                //treeAnimView.startAnimation();
-                //ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                //ivTree.setImageResource(R.drawable.sprout_to_sapling_01);
-                Log.d(TAG, "ivTree sprout");
-                break;
-            case 3:
-                //treeAnimView.startAnimation();
-                //ivTree = (ImageView) view.findViewById(R.id.treeButton);
-                //ivTree.setImageResource(R.drawable.sprout_to_sapling_29);
-                Log.d(TAG, "ivTree sapling");
-                break;
-        }
-    }
-
     // TODO: FIX BACKGROUND RESOURCE, CURRENTLY USING ALOT OF MEMORY
     private void treePhaseChange() {
         switch (newPhase) {
@@ -418,6 +391,10 @@ public class TreeTab extends Fragment {
                 });
                 break;
         }
+
+    }
+    public TreeView getAnimTree(){
+        return treeAnimView;
     }
 
 
