@@ -18,6 +18,7 @@ import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
@@ -78,7 +79,9 @@ public class MainUIActivity extends AppCompatActivity {
                 Log.d("ARBOR_TREE_DATA", "Water: " + extras.getInt("WATER"));
                 Log.d("ARBOR_TREE_DATA", "Sun: " + extras.getInt("SUN"));
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
-                statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
+                totalDistance = extras.getDouble("TOTALKM");
+                statsTab.getStepsView().setText(String.format("%d", (totalStepCount = extras.getInt("TOTALSTEPS"))));
+                statsTab.getAgeView().setText("" + (ageMillis = extras.getLong("AGE", 0))/1000/60/60/24);
 
                 // LAZAR OCH PATRIK ANVÄNDER DESSA
                 statsTab.mDistance = extras.getDouble("TOTALKM")/1000;  // 1000 is BUFFER_CONSTANT in Pedometer
@@ -119,7 +122,8 @@ public class MainUIActivity extends AppCompatActivity {
                 treeTab.getDistanceView().setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
 
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALDISTANCE")/1000)));
-                statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPCOUNT"))));
+                totalDistance = extras.getDouble("TOTALDISTANCE");
+                statsTab.getStepsView().setText(String.format("%d", (totalStepCount =extras.getInt("TOTALSTEPCOUNT"))));
 
 
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
@@ -128,6 +132,10 @@ public class MainUIActivity extends AppCompatActivity {
                 shopTab.getGoldenPollenView().setText(goldenPollen + " gp");
                 treeTab.getTvPollen().setText("" + goldenPollen);
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
+
+            } else if (intent.getAction().equals(MainService.TREE_DEAD)) {
+                Log.d("ARBOR_RECEIVER", "TREE_DEAD_BROADCAST");
+                setDeathView();
             }
         }
     }
@@ -137,96 +145,121 @@ public class MainUIActivity extends AppCompatActivity {
     ShopTab shopTab;
     SharedPreferences sharedPreferences;
 
+    private int totalStepCount;
+    private double totalDistance;
+    private long ageMillis;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
 
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        mViewPager.setOffscreenPageLimit(2);
-
-        // TODO: Trigger animations in StatsTab and TreeTab with the help of addOnPageChangeListener
-
-        // Adds action when switching to certain tab. May be used to trigger animations.
-        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                switch(position) {
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        // HANDLES GOLDEN POLLEN START
+        // Used for handling golden pollens and boolean "alive"
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
-        // If money has been stored earlier, read from sharedPreferences
-        if (sharedPreferences.contains("STORE_MONEY")) {
-            goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
-        } else {
-            goldenPollen = 10;
-            sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
-        }
-
-
-        /// HANDLES GOLDEN POLLEN END
-
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(Pedometer.DISTANCE_BROADCAST);
-        filter.addAction(Pedometer.STORE_BROADCAST);
-        filter.addAction(MainService.TREE_DATA);
-        filter.addAction(MainService.WEATHER_DATA);
-        registerReceiver(this.new Receiver(), filter);
-
-        // TODO: Add elements to the settings_main_settings layout
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        Button btnContinue = (Button) findViewById(R.id.btn_continue_new);
+        btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-               if(snackbarSemaphore) {
-                   if (snackbar.isShown()) {
-                       snackbar.dismiss();
-                   }else {
-                       snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
-                       Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
-                       mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
-                       snackbar.removeCallback(null);
-                       snackbar.show();
-                   }
-               }else{
-                   snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
-                   Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
-                   mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
-                   snackbar.show();
-                   snackbarSemaphore = true;
-               }
+            public void onClick(View v) {
+                sharedPreferences.edit().putBoolean("FIRST_TREE", false).putBoolean("TREE_ALIVE", true).apply();
+                Intent intent = new Intent(MainUIActivity.this, NewTreeActivity.class);
+                MainUIActivity.this.startActivity(intent);
+                MainUIActivity.this.finish();
             }
         });
+
+        boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
+        // For TESTING
+        // alive = false;
+
+        if (!alive) {
+            setDeathView();
+        } else {
+
+            // Create the adapter that will return a fragment for each of the three
+            // primary sections of the activity.
+            mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+
+            // Set up the ViewPager with the sections adapter.
+            mViewPager = (ViewPager) findViewById(R.id.container);
+            mViewPager.setAdapter(mSectionsPagerAdapter);
+            mViewPager.setOffscreenPageLimit(2);
+
+            // TODO: Trigger animations in StatsTab and TreeTab with the help of addOnPageChangeListener
+
+            // Adds action when switching to certain tab. May be used to trigger animations.
+            mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+                @Override
+                public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+                }
+
+                @Override
+                public void onPageSelected(int position) {
+                    switch (position) {
+                        case 0:
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onPageScrollStateChanged(int state) {
+
+                }
+            });
+
+            TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+            tabLayout.setupWithViewPager(mViewPager);
+
+            // If money has been stored earlier, read from sharedPreferences
+            if (sharedPreferences.contains("STORE_MONEY")) {
+                goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
+            } else {
+                goldenPollen = 10;
+                sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
+            }
+
+
+            /// HANDLES GOLDEN POLLEN END
+
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(Pedometer.DISTANCE_BROADCAST);
+            filter.addAction(Pedometer.STORE_BROADCAST);
+            filter.addAction(MainService.TREE_DATA);
+            filter.addAction(MainService.WEATHER_DATA);
+            filter.addAction(MainService.TREE_DEAD);
+            registerReceiver(this.new Receiver(), filter);
+
+            // TODO: Add elements to the settings_main_settings layout
+            FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (snackbarSemaphore) {
+                        if (snackbar.isShown()) {
+                            snackbar.dismiss();
+                        } else {
+                            snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                            Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                            mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                            snackbar.removeCallback(null);
+                            snackbar.show();
+                        }
+                    } else {
+                        snackbar = Snackbar.make(view, "", Snackbar.LENGTH_INDEFINITE);
+                        Snackbar.SnackbarLayout mSnacks = (Snackbar.SnackbarLayout) snackbar.getView();
+                        mSnacks.addView(getLayoutInflater().inflate(R.layout.settings_main_settings, null));
+                        snackbar.show();
+                        snackbarSemaphore = true;
+                    }
+                }
+            });
+
+        }
 
     }
 
@@ -248,9 +281,27 @@ public class MainUIActivity extends AppCompatActivity {
 
     }
 
+
+
+    @Override
     protected void onResume() {
         super.onResume();
+        boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
+        // For TESTING
+        // alive = false;
 
+        if (!alive) {
+            setDeathView();
+        }
+    }
+
+    private void setDeathView() {
+        ((TextView) findViewById(R.id.tv_age)).setText(ageMillis/1000/60/60/24 + "");
+        ((TextView) findViewById(R.id.tv_total_steps)).setText(totalStepCount + "");
+        ((TextView) findViewById(R.id.tv_total_distance)).setText(String.format("%.2f", totalDistance/1000));
+
+        findViewById(R.id.tree_death_view).setVisibility(View.VISIBLE);
+        findViewById(R.id.appbar).setVisibility(View.GONE);
     }
 
     /**

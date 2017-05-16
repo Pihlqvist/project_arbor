@@ -49,10 +49,13 @@ public class NewTreeActivity extends AppCompatActivity  {
         // Controls if a tree exist or not, will go to main activity if the tree exist.
         // If a tree dose not exist it will set up the new tree view.
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             startService(new Intent(NewTreeActivity.this, MainService.class)
-            .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME));
+            .putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_TREE_GAME));
         }
+
+        // TODO: Check if tree is alive or not. If not, show death screen.
 
         setContentView(R.layout.activity_new_tree);
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.new_tree_layout);
@@ -76,6 +79,8 @@ public class NewTreeActivity extends AppCompatActivity  {
                         new Tree(), new Environment.Forecast[]{}, 0.0, 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
                 Log.d(TAG, "new save state");
+
+                sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
 
                 // Start game storage
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
