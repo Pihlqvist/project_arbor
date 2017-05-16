@@ -1,10 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="se.kth.projectarbor.project_arbor.AboutActivity"
-    android:theme="@style/AppTheme.NoActionBar">
+    android:background="@drawable/blue_background"
+    android:theme="@style/AppTheme.NoActionBar"
+    tools:context="se.kth.projectarbor.project_arbor.AboutActivity">
 
-</android.support.constraint.ConstraintLayout>
+
+<ImageView
+    android:id="@+id/WhiteRec"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:srcCompat="@drawable/translucent_rectangle"
+    android:layout_centerInParent="true"/>
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignTop="@+id/WhiteRec"
+    android:layout_alignRight="@+id/WhiteRec"
+    android:layout_alignEnd="@+id/WhiteRec"
+    android:layout_alignBottom="@+id/WhiteRec"
+    android:layout_centerInParent="true"
+    android:layout_alignLeft="@id/WhiteRec"
+    android:layout_alignStart="@id/WhiteRec"
+    android:paddingTop="20dp"
+    android:paddingLeft="40dp"
+    android:paddingRight="40dp"
+    android:paddingBottom="5dp">
+
+
+    <ImageView
+        android:id="@+id/arborIcon"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:srcCompat="@drawable/arbor_icon"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:id="@+id/About"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="About"
+        android:textColor="@color/text_blue"
+        android:textSize="40sp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/arborIcon"/>
+
+    <RelativeLayout
+        android:id="@+id/Creators"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/About"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:id="@+id/createdBy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Created by"
+            android:textColor="@color/text_blue"
+            android:textSize="18sp"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Lovisa Josefsson, Fredrik Pihlqvist, Lazar Cerovic, Johan Andersson, Ramcin Oudishu, Pethrus Gärdborn, Patrik Eriksson, Joseph Ariss"
+            android:textSize="14sp"
+            android:textColor="@color/text_blue"
+            android:layout_below="@id/createdBy"
+            android:gravity="center"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/contact"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/Creators"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="5dp">
+
+        <TextView
+            android:id="@+id/ContactUs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Contact us"
+            android:textSize="18sp"
+            android:textColor="@color/text_blue"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="projectarbor.team@gmail.com"
+            android:textSize="14sp"
+            android:textColor="@color/text_blue"
+            android:layout_below="@id/ContactUs"
+            android:layout_centerHorizontal="true"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/Website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contact"
+        android:layout_centerHorizontal="true"
+        android:paddingBottom="15dp">
+
+        <TextView
+            android:id="@+id/titleWeb"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Website"
+            android:textSize="18sp"
+            android:textColor="@color/text_blue"
+            android:layout_centerHorizontal="true"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="projectarbor.wordpress.com"
+            android:textSize="14sp"
+            android:textColor="@color/text_blue"
+            android:layout_below="@id/titleWeb"
+            android:layout_centerHorizontal="true"/>
+
+    </RelativeLayout>
+
+
+    <TextView
+        android:id="@+id/SMHI"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="Weather provided by SMHI, Swedish Meteorological and Hydrological Institute, smhi.se"
+        android:textSize="18sp"
+        android:textColor="@color/text_blue"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@id/Website"/>
+
+</RelativeLayout>
+</RelativeLayout>
+
+
+
+
