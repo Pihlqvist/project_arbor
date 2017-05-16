@@ -85,8 +85,9 @@ public class GenderHeightActivity extends AppCompatActivity {
                 serviceIntent.putExtra("MESSAGE_TYPE", MainService.MSG_USER_INPUT);
                 startService(serviceIntent);
 
-                Intent intent = new Intent(GenderHeightActivity.this, MainUIActivity.class);
-                GenderHeightActivity.this.startActivity(intent);
+                //Intent intent = new Intent(GenderHeightActivity.this, MainUIActivity.class);
+                //GenderHeightActivity.this.startActivity(intent);
+                onBackPressed();
             }
 
 
