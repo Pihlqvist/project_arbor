@@ -73,6 +73,8 @@ public class MainUIActivity extends AppCompatActivity {
                 // Updates buffers
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
+                Log.d("ARBOR_TREE_DATA", "Water: " + extras.getInt("WATER"));
+                Log.d("ARBOR_TREE_DATA", "Sun: " + extras.getInt("SUN"));
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
                 statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
 
@@ -89,13 +91,22 @@ public class MainUIActivity extends AppCompatActivity {
 
                 // Build new weatherLayout depending on weather
                 // TODO: Make sure it dose not build new, if its the same weather
-                treeTab.setWeather((se.kth.projectarbor.project_arbor.weather.Environment.Weather) extras.get("WEATHER"));
-                RelativeLayout layout = (RelativeLayout) treeTab.getTabView();
-                layout.removeView(treeTab.getWeatherLayout());
-                treeTab.setWeatherLayout();
-                layout.addView(treeTab.getWeatherLayout());
-                treeTab.setTabView(layout);
-                treeTab.getTempView().setText(String.format("%.1f °C", extras.getDouble("TEMP")));
+                se.kth.projectarbor.project_arbor.weather.Environment.Weather newWeather;
+                newWeather = (se.kth.projectarbor.project_arbor.weather.Environment.Weather) extras.get("WEATHER");
+                if (!treeTab.getWeather().equals(newWeather)) {
+                    treeTab.setWeather(newWeather);
+                    RelativeLayout layout = (RelativeLayout) treeTab.getTabView();
+                    layout.removeView(treeTab.getWeatherLayout());
+                    treeTab.setWeatherLayout();
+                    layout.addView(treeTab.getWeatherLayout());
+                    treeTab.setTabView(layout);
+                }
+                Double newTemp = extras.getDouble("TEMP");
+                if (newTemp.equals(Double.NaN)) {
+                    treeTab.getTempView().setText("N/A  ");
+                } else {
+                    treeTab.getTempView().setText(String.format("%.1f °C", newTemp));
+                }
 
 
             // Msgs from Pedometer
@@ -120,7 +131,7 @@ public class MainUIActivity extends AppCompatActivity {
     }
 
     StatsTab statsTab;
-    TreeTab treeTab;
+    public TreeTab treeTab;
     ShopTab shopTab;
     SharedPreferences sharedPreferences;
 

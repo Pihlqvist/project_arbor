@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.*;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -138,17 +140,23 @@ public class Environment implements android.location.LocationListener {
     }
 
     public Forecast[] getForecasts() {
-        return Arrays.<Forecast>copyOf(forecasts, forecasts.length);
+        if (forecasts == null) {
+            return new Forecast[] {};
+        } else {
+            return Arrays.<Forecast>copyOf(forecasts, forecasts.length);
+        }
     }
 
     // Ask the SMHIParser for new data and store it in the class.
     private Weather newForecast(Calendar rightNow) {
 
-        try {
-            forecasts = parser.getForecast(rightNow);
-            return forecasts[0].weather;
-        } catch (Exception e) {
-            Log.e("ARBOR_ENV", "catch: " + e);
+        if (isNetworkAvailable()) {
+            try {
+                forecasts = parser.getForecast(rightNow);
+                return forecasts[0].weather;
+            } catch (Exception e) {
+                Log.e("ARBOR_ENV", "catch: " + e);
+            }
         }
 
         return Weather.NOT_AVAILABLE;
@@ -156,11 +164,13 @@ public class Environment implements android.location.LocationListener {
 
     private double newTempForecast(Calendar rightNow) {
 
-        try {
-            forecasts = parser.getForecast(rightNow);
-            return forecasts[0].celsius;
-        } catch (Exception e) {
-            Log.e("ARBOR_ENV", "catch: " + e);
+        if (isNetworkAvailable()) {
+            try {
+                forecasts = parser.getForecast(rightNow);
+                return forecasts[0].celsius;
+            } catch (Exception e) {
+                Log.e("ARBOR_ENV", "catch: " + e);
+            }
         }
 
         return Double.NaN;
@@ -216,6 +226,19 @@ public class Environment implements android.location.LocationListener {
         }
 
         return temperature;
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return  true;
+        } else {
+            return false;
+        }
+
     }
 
 }
