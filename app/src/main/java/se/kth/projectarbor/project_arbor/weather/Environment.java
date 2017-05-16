@@ -67,7 +67,7 @@ public class Environment implements android.location.LocationListener {
                     this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
                 } else {
                     newLocation = new Location("GPS");
-                    this.parser = new SMHIParser(0,0);
+                    this.parser = new SMHIParser(59.858563,17.638926);
                     Log.e(TAG, "Location received was null");
                 }
             } else {

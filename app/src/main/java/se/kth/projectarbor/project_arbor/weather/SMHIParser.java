@@ -29,11 +29,15 @@ class SMHIParser {
 
     private double LATITUDE;
     private double LONGITUDE;
+    private final static String FAIL_SAFE_LONGITUDE = "17.638926";
+    private final static String FAIL_SAFE_LATITUDE  = "59.858563";
     private final static String CATEGORY = "pmp2g";
     private final static int VERSION = 2;
     private final static String START_URL = "http://opendata-download-metfcst.smhi.se";
+
     private Environment.Forecast[] forecasts;
     private Calendar rightNow;
+
 
 
     public SMHIParser(double LATITUDE, double LONGITUDE) {
@@ -43,29 +47,24 @@ class SMHIParser {
 
     public Environment.Forecast[] getForecast(Calendar rightNow) {
         this.rightNow = rightNow;
-        String url = START_URL;
 
         // Locale.ENGLISH is used because format() may use a e.g. comma when converting a float to
         // a string; SMHI only understands periods
         String longitude = String.format(Locale.ENGLISH, "%.6f", LONGITUDE);
         String latitude = String.format(Locale.ENGLISH, "%.6f", LATITUDE);
 
-        url = START_URL + "/api/category/" + CATEGORY + "/version/" + VERSION +
+        String url = START_URL + "/api/category/" + CATEGORY + "/version/" + VERSION +
                 "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json";
-
 
         try {
             JSONtostring(url);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
 
-            // Uppsala coordinates
-            longitude = "17.638926";
-            latitude = "59.858563";
+            // Fail safe location is used instead
             url = START_URL + "/api/category/" + CATEGORY + "/version/" + VERSION +
-                    "/geoexceptionAgaintype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json";
-
-            Log.d(TAG, "uppsala is now used");
+                    "/geotype/point/lon/" + FAIL_SAFE_LONGITUDE +
+                    "/lat/"+ FAIL_SAFE_LATITUDE + "/data.json";
 
             try {
                 JSONtostring(url);
