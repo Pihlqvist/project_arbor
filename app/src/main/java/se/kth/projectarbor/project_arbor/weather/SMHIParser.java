@@ -1,6 +1,5 @@
 package se.kth.projectarbor.project_arbor.weather;
 
-import android.os.AsyncTask;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -24,20 +23,22 @@ import java.util.Locale;
  * class decides
  */
 
-class SMHIParser /*implements Serializable */{
+class SMHIParser {
 
-    //private static final long serialVersionUID = 7746966029121214890L;
+    private final static String TAG = "ARBOR_SMHIPARSER";
 
     private double LATITUDE;
     private double LONGITUDE;
-    private String CATEGORY = "pmp2g";
-    private int VERSION = 2;
-    private String START_URL = "http://opendata-download-metfcst.smhi.se";
-    private Environment.Forecast[] forcasts;
+    private final static String FAIL_SAFE_LONGITUDE = "17.638926";
+    private final static String FAIL_SAFE_LATITUDE  = "59.858563";
+    private final static String CATEGORY = "pmp2g";
+    private final static int VERSION = 2;
+    private final static String START_URL = "http://opendata-download-metfcst.smhi.se";
+
+    private Environment.Forecast[] forecasts;
     private Calendar rightNow;
 
-    private SMHIParser() {
-    }
+
 
     public SMHIParser(double LATITUDE, double LONGITUDE) {
         this.LATITUDE = LATITUDE;
@@ -46,44 +47,34 @@ class SMHIParser /*implements Serializable */{
 
     public Environment.Forecast[] getForecast(Calendar rightNow) {
         this.rightNow = rightNow;
-        String url = START_URL;
 
         // Locale.ENGLISH is used because format() may use a e.g. comma when converting a float to
         // a string; SMHI only understands periods
         String longitude = String.format(Locale.ENGLISH, "%.6f", LONGITUDE);
         String latitude = String.format(Locale.ENGLISH, "%.6f", LATITUDE);
 
-        url = url.concat("/api/category/" + CATEGORY + "/version/" + VERSION +
-                "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json");
-
-        Log.d("ARBOR_PARSER", "URL: " + url);
-
-        // TODO: waiting for other thread to be done, fixme later
-        // new GetUrl().execute(url);
+        String url = START_URL + "/api/category/" + CATEGORY + "/version/" + VERSION +
+                "/geotype/point/lon/" + longitude + "/lat/"+ latitude + "/data.json";
 
         try {
             JSONtostring(url);
         } catch (Exception e) {
-            Log.e("ARBOR", e.toString());
-        }
-        return forcasts;
-    }
+            Log.e(TAG, e.toString());
 
-    /*
-    private class GetUrl extends AsyncTask<String, Void, String> {
-       // private static final long serialVersionUID = 4326855909443156638L;
+            // Fail safe location is used instead
+            url = START_URL + "/api/category/" + CATEGORY + "/version/" + VERSION +
+                    "/geotype/point/lon/" + FAIL_SAFE_LONGITUDE +
+                    "/lat/"+ FAIL_SAFE_LATITUDE + "/data.json";
 
-        @Override
-        protected String doInBackground(String... params) {
             try {
-                JSONtostring(params[0]);
-            } catch (Exception e) {
-                Log.e("ARBOR", e.toString());
+                JSONtostring(url);
+            } catch (Exception exceptionAgain) {
+                Log.e(TAG, exceptionAgain.toString());
+                this.forecasts = new Environment.Forecast[] {};
             }
-            return "";
         }
-
-    }*/
+        return this.forecasts;
+    }
 
 
     // Returns a list of Forecast objects, this method will make a connection with SMHI
@@ -145,7 +136,7 @@ class SMHIParser /*implements Serializable */{
             forecasts[i-plats] = new Environment.Forecast(date, temp, weather);
         }
 
-        this.forcasts = forecasts;
+        this.forecasts = forecasts;
     }
 
     // Takes a string with time information from SMHI API JSON file and returns a
@@ -166,7 +157,6 @@ class SMHIParser /*implements Serializable */{
 
     // Decode an int between 1-15 to a specific ENUM
     private Environment.Weather decodeWeather(int code) {
-        Log.d("ARBOR_PARSER", "code: " + code);
         if(code == 1 || code == 2){
             return Environment.Weather.SUN;
         } else if (code == 3 || code == 4) {
