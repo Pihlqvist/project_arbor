@@ -5,5 +5,7 @@
     <color name="colorAccent">#ffffffff</color>
     <color name="colorTransparent">#00000000</color>
     <color name="colorBlack">#FF000000</color>
-    <color name="colorWhite">#ffffff</color>
+    <color name="colorWhite">#FFFFFFFF</color>
+    <color name="arbor_green">#39B54A</color>
+    <color name="arbor_darkgreen">#177A49</color>
 </resources>

@@ -227,6 +227,25 @@ public class MainUIActivity extends AppCompatActivity {
         });
 
     }
+
+    public void goToGenderHeight(View v) {
+        Intent genderHeighIntent = new Intent(this,GenderHeightActivity.class);
+        startActivity(genderHeighIntent);
+
+    }
+
+    public void goToHowToPlay(View v){
+        Log.d("INTENT","howtoplay");
+        Intent howToPlayIntent= new Intent(this,HowToPlayActivity.class);
+        startActivity(howToPlayIntent);
+        Log.d("INTENT","Start");
+    }
+    public void goToAbout(View v){
+        Intent aboutIntent = new Intent(this,AboutActivity.class);
+        startActivity(aboutIntent);
+
+    }
+
     protected void onResume() {
         super.onResume();
 
