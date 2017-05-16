@@ -73,6 +73,8 @@ public class MainUIActivity extends AppCompatActivity {
                 // Updates buffers
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
+                Log.d("ARBOR_TREE_DATA", "Water: " + extras.getInt("WATER"));
+                Log.d("ARBOR_TREE_DATA", "Sun: " + extras.getInt("SUN"));
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
                 statsTab.getStepsView().setText(String.format("%d", (extras.getInt("TOTALSTEPS"))));
 
@@ -120,7 +122,7 @@ public class MainUIActivity extends AppCompatActivity {
     }
 
     StatsTab statsTab;
-    TreeTab treeTab;
+    public TreeTab treeTab;
     ShopTab shopTab;
     SharedPreferences sharedPreferences;
 

@@ -276,6 +276,7 @@ public class ShopTab extends Fragment {
         textReceipt.setTextColor(ColorStateList.valueOf(color));
             if(buy(item)) {
                 goldenPollenView.setText(MainUIActivity.goldenPollen + "gp");
+                ((MainUIActivity)getActivity()).treeTab.getTvPollen().setText(MainUIActivity.goldenPollen + "gp");
                 textReceipt.startAnimation(anim);
                 return true;
             }

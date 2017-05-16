@@ -36,7 +36,7 @@ public class MainService extends Service {
 
     // Times in seconds that the alarm will take to repeat the service
     //TODO: change alarmhour back to 60*60
-    public final static int ALARM_HOUR = 60*60; //60*60
+    public final static int ALARM_HOUR = 1;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
