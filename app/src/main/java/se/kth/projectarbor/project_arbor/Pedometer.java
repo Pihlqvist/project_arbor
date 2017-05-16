@@ -18,7 +18,7 @@ import android.util.Log;
 class Pedometer {
 
     public enum Gender {
-        MALE(1),//0.415
+        MALE(3),//0.415
         FEMALE(0.413);
 
         private final double multiplicativeFactor;

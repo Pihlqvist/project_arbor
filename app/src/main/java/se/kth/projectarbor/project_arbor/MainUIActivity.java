@@ -43,6 +43,8 @@ public class MainUIActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
+    public Tree.Phase phase;
+    private boolean hasAnimated;
 
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
     static int goldenPollen;
@@ -62,7 +64,11 @@ public class MainUIActivity extends AppCompatActivity {
 
                 treeTab.newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 if (treeTab.newPhase != treeTab.currentPhase) {
+                    if(treeTab.newPhase == 1){
+                        treeTab.getAnimTree().startAnimation();
+                    }
                     treeTab.getAnimTree().animatePhase(treeTab.newPhase, false);
+                    treeTab.currentPhase = treeTab.newPhase;
 
                 }
 
@@ -131,6 +137,8 @@ public class MainUIActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
+        hasAnimated = false;
+
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -181,7 +189,6 @@ public class MainUIActivity extends AppCompatActivity {
             goldenPollen = 10;
             sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
         }
-
 
         /// HANDLES GOLDEN POLLEN END
 

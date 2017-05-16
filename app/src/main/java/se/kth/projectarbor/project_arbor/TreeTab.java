@@ -131,6 +131,19 @@ public class TreeTab extends Fragment {
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
         */
+        //Get tree phase critical for treeview
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
+                , MODE_PRIVATE);
+
+        // looks for the last used phase number
+        if (sharedPreferences.contains("CURRENT_TREE_PHASE")) {
+            currentPhase = sharedPreferences.getInt("CURRENT_TREE_PHASE", 1);
+        } else {
+            sharedPreferences.edit().putInt("CURRENT_TREE_PHASE", 1).apply();
+            currentPhase = 1;
+        }
+
+        //Here Patrik did a construct for the treeview; treeview is a special extention of ImageView to fit our use
 
         InputStream inputStream = null;
         try{
@@ -138,8 +151,8 @@ public class TreeTab extends Fragment {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        treeAnimView = new TreeView(getActivity(), 1);
-
+        treeAnimView = new TreeView(getActivity(), currentPhase);
+        Log.d("PATRIK", "" + currentPhase);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
         byte[] data = new byte[16384];
@@ -158,17 +171,28 @@ public class TreeTab extends Fragment {
         }
         treeAnimView.setBytes(buffer.toByteArray());
 
-        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
-        , MODE_PRIVATE);
+        // Get first information about weather
+        Intent intent = getActivity().getIntent();
+        Bundle extras = intent.getExtras();
 
-        // looks for the last used phase number
-        if (sharedPreferences.contains("CURRENT_TREE_PHASE")) {
-            currentPhase = sharedPreferences.getInt("CURRENT_TREE_PHASE", 1);
-        } else {
-            sharedPreferences.edit().putInt("CURRENT_TREE_PHASE", 1).apply();
-            currentPhase = 1;
-        }
 
+        // If the tree's phase changed it will start an animation if you press it
+        /*if (currentPhase < newPhase) {
+            //treePhaseChange();
+        } NOT IN USE SINCE RECEIVER EXISTS IN MAIN-UI-ACTIVITY*/
+
+        // Change weather view depending on "weather"
+        weatherLayout = new RelativeLayout(getContext());
+        RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
+        currentLayout.addView(weatherLayout);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.setMargins(((size.x/100)*10), size.y/2-20*(size.y/100), 10*(size.x/100), 28*(size.y/100));//left, top, right, bottom
+        currentLayout.addView(treeAnimView, lp);
+        currentLayout.addView(getActivity().getLayoutInflater().inflate(R.layout.view_session, null));
+        view = currentLayout;
         // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
         ivTree = (ImageView) view.findViewById(R.id.treeButton);
@@ -179,42 +203,15 @@ public class TreeTab extends Fragment {
         tvPollen = (TextView) view.findViewById(R.id.golden_pollen);
         tvPollen.setText("" + MainUIActivity.goldenPollen);
         tempView = (TextView) view.findViewById(R.id.tempTV);
-
-        // Pick the right tree depending on the current Phase
-
-        // Get first information about weather
-        Intent intent = getActivity().getIntent();
-        Bundle extras = intent.getExtras();
-        if (extras != null) {
-            treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
-            newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
-        }
-
-        // If the tree's phase changed it will start an animation if you press it
-        if (currentPhase < newPhase) {
-            //treePhaseChange();
-        }
-
-        // Change weather view depending on "weather"
-        weatherLayout = new RelativeLayout(getContext());
-        RelativeLayout currentLayout = (RelativeLayout) view.findViewById(R.id.treefragmentlayout);
-        currentLayout.addView(weatherLayout);
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        lp.setMargins(((size.x/100)*10), size.y/2-20*(size.y/100), 10*(size.x/100), 30*(size.y/100));//left, top, right, bottom
-        currentLayout.addView(treeAnimView, lp);
-
-        view = currentLayout;
-
         // Sends message to MainService and asks for weather
         if (weather == null) {
             getActivity().startService(new Intent(getActivity(), MainService.class)
                     .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_WEATHER_VIEW));
         }
-
-
+        if (extras != null) {
+            treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
+            newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
+        }
         // Animations for session
         animAppear = AnimationUtils.loadAnimation(getContext(), R.anim.session_appear);
         animDisappear = AnimationUtils.loadAnimation(getContext(), R.anim.session_disappear);
@@ -231,7 +228,6 @@ public class TreeTab extends Fragment {
             @Override
             public void onAnimationRepeat(Animation animation) {}
         });
-
 
         // The user can toggle to either collect "distance" or not
         walkBtn = (ToggleButton) view.findViewById(R.id.toggleButton);
@@ -364,7 +360,8 @@ public class TreeTab extends Fragment {
 
     TextView getTempView(){return tempView;}
 
-    // TODO: FIX BACKGROUND RESOURCE, CURRENTLY USING ALOT OF MEMORY
+    //
+    // NOT IN USE , A MORE MEMORY SAVING METHOD IS USED
     private void treePhaseChange() {
         switch (newPhase) {
             case 2:
@@ -396,8 +393,5 @@ public class TreeTab extends Fragment {
     public TreeView getAnimTree(){
         return treeAnimView;
     }
-
-
-
 }
 
