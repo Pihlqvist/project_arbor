@@ -43,7 +43,6 @@ import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
 import se.kth.projectarbor.project_arbor.view_objects.CloudSunView;
-import se.kth.projectarbor.project_arbor.view_objects.SunnyWithClouds;
 import se.kth.projectarbor.project_arbor.view_objects.TreeView;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 

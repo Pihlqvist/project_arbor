@@ -37,7 +37,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 60 * 60;
+    public final static int ALARM_HOUR = 10;  // TODO 60 * 60
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -295,7 +295,7 @@ public class MainService extends Service {
                         .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);
                 PendingIntent pendingToUpdate = PendingIntent.getService(this, 0, intentToUpdate, PendingIntent.FLAG_CANCEL_CURRENT);
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingToUpdate);
+                        System.currentTimeMillis() + (15 * 60 * 1000), pendingToUpdate);
 //                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
 //                        + (ALARM_HOUR * 1000), pendingToUpdate);
                 break;
