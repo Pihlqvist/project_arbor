@@ -6,6 +6,26 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.*;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Point;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -62,6 +82,9 @@ public class ShopTab extends Fragment {
     private RelativeLayout.LayoutParams layoutParams;
     private TextView textReceipt;
 
+    //Create a reference of type SoundHandler to access mainUIActivity's cached items
+    private MainUIActivity.SoundHandler sh;
+
     // Add more items as needed
     public enum StoreItem {
         WATER_SMALL(75, 10),
@@ -109,6 +132,11 @@ public class ShopTab extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        //get SoundHandler from MainUIActivity
+        sh = ((MainUIActivity)getActivity()).getSoundHandler();
+
+
         View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
 
         // These may be used when doing animation programmatically
@@ -223,7 +251,7 @@ public class ShopTab extends Fragment {
         btnWaterSmall.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return genOnTouch(btnWaterSmall, WATER_COLOR, event, StoreItem.WATER_SMALL, animationAppear);
+                return genOnTouch(btnWaterSmall, WATER_COLOR, event, StoreItem.WATER_SMALL,animationAppear);
             }
         });
 
@@ -343,9 +371,9 @@ public class ShopTab extends Fragment {
         }else if(action == MotionEvent.ACTION_UP){
             if(!(Math.abs(e.getX()- xValue) > 10)) {
                 if (purchaseItem(item, color, animation)) {
-                    //sh.playShopWater();
+                    sh.playShopWater();
                 } else {
-                    //sh.playNoMoney();
+                    sh.playNoMoney();
                 }
             }
             Log.d("ARBOR", "CLEARED");

@@ -11,8 +11,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.graphics.drawable.AnimationDrawable;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.*;
 import android.util.Log;
 import android.view.Display;
@@ -60,7 +62,6 @@ public class TreeTab extends Fragment {
     private ToggleButton walkBtn;
     private TextView treeView;
     private View view;
-
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
@@ -75,6 +76,12 @@ public class TreeTab extends Fragment {
     private Animation animAppear;
     private Animation animDisappear;
 
+    //Created a class LoopMediaPlayer just for being able to loop seamlessly
+    private LoopMediaPlayer wind;
+    private LoopMediaPlayer birdies;
+    private LoopMediaPlayer rain;
+
+    private MainUIActivity.SoundHandler sh;
 
     private RelativeLayout weatherLayout;
     private Environment.Weather weather;
@@ -136,6 +143,34 @@ public class TreeTab extends Fragment {
         //Get tree phase critical for treeview
         sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor"
                 , MODE_PRIVATE);
+
+        //SoundHandler class in MainUIActivity decoded streams available
+        sh = ((MainUIActivity)getActivity()).getSoundHandler();
+
+
+        //Instantiate mediaplaters and pause them for future resumement
+        //volume is a multiplier 0-1
+        //TODO: USE LoopMediaPlayer.setVolume to change volume
+        wind = ((MainUIActivity)getActivity()).getWind();
+        birdies = ((MainUIActivity)getActivity()).getBirdies();
+        rain = ((MainUIActivity)getActivity()).getRain();
+        rain.onPause();
+        wind.onPause();
+        birdies.onPause();
+
+        Log.d("ARBORTREETAB", "" + wind + birdies);
+
+        //Apply mainVolume find in SoundHandler class in MainUIActivity
+        //Commented for future use, MediaPlayer's Loop does not perform so uncommented for now
+        //wind.setVolume(sh.soundVolume, sh.soundVolume);
+        //birdies.setVolume(sh.soundVolume, sh.soundVolume);
+        //wind.setLooping(true);
+        //wind.start();
+        //birdies.setLooping(true);
+        //birdies.start();
+
+        sharedPreferences = getActivity().getSharedPreferences(
+                "se.kth.projectarbor.project_arbor", MODE_PRIVATE);
 
         // looks for the last used phase number
         if (sharedPreferences.contains("CURRENT_TREE_PHASE")) {
@@ -293,6 +328,9 @@ public class TreeTab extends Fragment {
         View viewShop = ((MainUIActivity)getActivity()).shopTab.getView();
         switch (weather) {
             case CLOUDY:
+                birdies.Start();
+                wind.Start();
+                rain.Stop();
                 cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
                 viewStat.setBackgroundResource(R.drawable.cloudy_background_2);
@@ -300,6 +338,9 @@ public class TreeTab extends Fragment {
                 viewShop.setBackgroundResource(R.drawable.cloudy_background_3);
                 break;
             case SUN:
+                birdies.Start();
+                wind.Stop();
+                rain.Stop();
                 sunView = new SunView(getActivity());
                 layout = (RelativeLayout) sunView.addViews(layout);
                 viewStat.setBackgroundResource(R.drawable.blue_background_2);
@@ -307,6 +348,9 @@ public class TreeTab extends Fragment {
                 viewShop.setBackgroundResource(R.drawable.blue_background_3);
                 break;
             case RAIN:
+                birdies.Stop();
+                wind.Start();
+                rain.Start();
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
                 viewStat.setBackgroundResource(R.drawable.rain_background_2);
@@ -327,7 +371,6 @@ public class TreeTab extends Fragment {
             default:
                 Log.d(TAG, "no case in weather switch");
         }
-
         weatherLayout = layout;
     }
 
