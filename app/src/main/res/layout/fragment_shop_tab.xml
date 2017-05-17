@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="se.kth.projectarbor.project_arbor.ShopTab"
-    android:id="@+id/shop_top_layout" >
+    android:id="@+id/shop_top_layout"
+    android:background="@drawable/blue_background_3">
 
     <View
         android:layout_width="match_parent"

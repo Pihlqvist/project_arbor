@@ -159,6 +159,7 @@ public class StatsTab extends Fragment {
             phaseTV.setText(((Tree.Phase) extras.get("PHASE")).getPhaseName());
             waterAnim.setLevel(extras.getInt("WATER") * 10);
             sunAnim.setLevel(extras.getInt("SUN") * 10);
+            ageTV.setText("" + (extras.getLong("AGE", 0)/1000/60/60/24));
            // totalDistanceTV.setText( extras.getInt("DISTANCE"));
         }
 

@@ -69,7 +69,7 @@ class Pedometer {
     private Intent storeBroadcast;
     private double coefficient;
     private int updateOn = 10;
-    private boolean registered = false;
+    private boolean registerd = false;
 
     public Pedometer(Context context, double height, Gender gender) {
         this(context, height, gender, 0, 0, 1);
@@ -99,13 +99,13 @@ class Pedometer {
 
     public void register() {
         Log.d(TAG, "register()");
-        registered = true;
+        registerd = true;
         sensorManager.registerListener(listener, stepCounter, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void unregister() {
         Log.d(TAG, "unregister()");
-        registered = false;
+        registerd = false;
         sensorManager.unregisterListener(listener);
     }
 
@@ -158,7 +158,7 @@ class Pedometer {
     }
     
     public boolean isRegisterd() {
-        return registered;
+        return registerd;
     }
 
     void setGender(String gender){
