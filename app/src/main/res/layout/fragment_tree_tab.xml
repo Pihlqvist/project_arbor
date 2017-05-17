@@ -33,15 +33,16 @@
 
     <ToggleButton
         android:id="@+id/toggleButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="350dp"
         android:autoText="false"
         android:text="Walk"
         android:textOff="WALK"
         android:textOn="STOP"
         app:layout_constraintTop_toBottomOf="@+id/tvTree"
         android:layout_marginBottom="60dp"
-        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:alpha="0"
         />
 
 
