@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/new_tree_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/blue_background"
     tools:context="se.kth.projectarbor.project_arbor.NewTreeActivity">
+
 
     <Button
         android:id="@+id/new_tree_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="195dp"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
         android:layout_gravity="center"
-        android:fontFamily="sans-serif-condensed"
+        android:background="@android:color/holo_red_light"
+        android:fontFamily="sans-serif-light"
         android:text="New Tree"
+        android:textColor="@color/colorWhite"
         android:textSize="36sp"
         android:textStyle="bold" />
 
-</android.support.design.widget.CoordinatorLayout>
+</RelativeLayout>

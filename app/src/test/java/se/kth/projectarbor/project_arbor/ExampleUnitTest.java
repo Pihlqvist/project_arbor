@@ -1,6 +1,7 @@
 package se.kth.projectarbor.project_arbor;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Categories;
 
 import java.io.Serializable;
 import java.util.Random;
@@ -194,5 +195,4 @@ public class ExampleUnitTest {
 
 
     }
-
 }

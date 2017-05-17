@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.*;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -14,7 +16,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 
 /**
- * Created by fredrik, johan and joseph on 2017-04-20.
+ * Created by Fredrik Pihlqvist, Johan <Placeholder> and Joseph Ariss on 2017-04-20.
  *
  * This class is taking care of everything around the tree, you are able to make calls to
  * this class without having to think about system resources. Information is being cached
@@ -23,19 +25,17 @@ import java.util.Calendar;
 
 public class Environment implements android.location.LocationListener {
 
-    // private static final long serialVersionUID = 2265456326653633040L;
-    private final long LOCATION_UPDATE_INTERVAL = 2 * 1000; // 1000*60*5;
-    private final long LOCATION_UPDATE_INTERVAL_FAST = 5000; // 1000*60*4;
-    private final float DISPLACEMENT_LIMIT = 2000; // 2000;
+    private final static String TAG = "ARBOR_ENVIRONMENT";
+
+    private final static long LOCATION_UPDATE_INTERVAL = 10 * 1000;  // How much it updates in sec
+    // distance in meter you have to travel to get a new coordinate
+    private final static float DISPLACEMENT_LIMIT = 2 * 1000;
 
     private Forecast[] forecasts = {};
     private SMHIParser parser;
     private Location newLocation;
     private Context context;
     private boolean displacementExceeded = false;
-
-    private android.location.LocationManager locationManager;
-    private boolean isNetworkEnabled;
 
     // Interpet SMHI symbol data
     public enum Weather {
@@ -47,44 +47,36 @@ public class Environment implements android.location.LocationListener {
     }
 
     public Environment(Context context, Forecast[] forecasts) {
-        locationManager = (android.location.LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-        isNetworkEnabled = locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER);
-
-        Log.d("ARBOR_ENV", "is NetworkEnable: "+isNetworkEnabled);
+        android.location.LocationManager locationManager =
+                (android.location.LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        boolean isNetworkEnabled =
+                locationManager.isProviderEnabled(android.location.LocationManager.NETWORK_PROVIDER);
 
         if(isNetworkEnabled) {
-            if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            int selfPermission = ContextCompat.checkSelfPermission(
+                    context, android.Manifest.permission.ACCESS_COARSE_LOCATION);
+
+            if (selfPermission == PackageManager.PERMISSION_GRANTED) {
                 newLocation = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                Log.d("ARBOR_ENV", "Start Location: " + newLocation.getLatitude() + ", " + newLocation.getLongitude());
-                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_UPDATE_INTERVAL, DISPLACEMENT_LIMIT, this);
-                Log.d("ARBOR_ENV", "requestLocationUpdates() done");
+                locationManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, LOCATION_UPDATE_INTERVAL,
+                        DISPLACEMENT_LIMIT, this);
+
+                // Setup parser with coordinates
+                if (newLocation != null) {
+                    this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
+                } else {
+                    newLocation = new Location("GPS");
+                    this.parser = new SMHIParser(59.858563,17.638926);
+                    Log.e(TAG, "Location received was null");
+                }
             } else {
-                // TODO: request permission from user
-                // UPPSALA
-                newLocation = new Location("");
-                newLocation.setLatitude(59.858563);
-                newLocation.setLongitude(17.638926);
-                Log.d("ARBOR_ENV", "dint get permission");
+                Log.e(TAG, "PackageManager did not give permission");
             }
-        }else {
-            // UPPSALA
-            newLocation = new Location("");
-            newLocation.setLatitude(59.858563);
-            newLocation.setLongitude(17.638926);
-            Log.d("ARBOR_ENV", "dint get permission");
-        }
-
-        Log.d("ARBOR_ENV", "before parser");
-        this.parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
-        Log.d("ARBOR_ENV", "after parser, before forecast");
-
-        /* // TODO: ask for permission from the user to use internet
-        if (forecasts.length < 1) {
-            this.forecasts = parser.getForecast(Calendar.getInstance());
         } else {
-            this.forecasts = forecasts;
+            Log.e(TAG, "Network was not available");
         }
-        Log.d("ARBOR_ENV", "after forecast"); */
+
 
         this.forecasts = forecasts;
         this.context = context;
@@ -92,8 +84,6 @@ public class Environment implements android.location.LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d("ARBOR_ENV", "onLocationChanged()");
-        Log.d("ARBOR_ENV", "Coordinates: " + location.getLatitude() + ", " + location.getLongitude());
         displacementExceeded = true;
         newLocation = location;
     }
@@ -138,17 +128,23 @@ public class Environment implements android.location.LocationListener {
     }
 
     public Forecast[] getForecasts() {
-        return Arrays.<Forecast>copyOf(forecasts, forecasts.length);
+        if (forecasts == null) {
+            return new Forecast[] {};
+        } else {
+            return Arrays.<Forecast>copyOf(forecasts, forecasts.length);
+        }
     }
 
     // Ask the SMHIParser for new data and store it in the class.
     private Weather newForecast(Calendar rightNow) {
 
-        try {
-            forecasts = parser.getForecast(rightNow);
-            return forecasts[0].weather;
-        } catch (Exception e) {
-            Log.e("ARBOR_ENV", "catch: " + e);
+        if (isNetworkAvailable()) {
+            try {
+                forecasts = parser.getForecast(rightNow);
+                return forecasts[0].weather;
+            } catch (Exception e) {
+                Log.e(TAG, "catch: " + e);
+            }
         }
 
         return Weather.NOT_AVAILABLE;
@@ -156,11 +152,13 @@ public class Environment implements android.location.LocationListener {
 
     private double newTempForecast(Calendar rightNow) {
 
-        try {
-            forecasts = parser.getForecast(rightNow);
-            return forecasts[0].celsius;
-        } catch (Exception e) {
-            Log.e("ARBOR_ENV", "catch: " + e);
+        if (isNetworkAvailable()) {
+            try {
+                forecasts = parser.getForecast(rightNow);
+                return forecasts[0].celsius;
+            } catch (Exception e) {
+                Log.e(TAG, "catch: " + e);
+            }
         }
 
         return Double.NaN;
@@ -168,6 +166,10 @@ public class Environment implements android.location.LocationListener {
     // Looks trough the cached data and determine if its relevant or new data is needed
     private Weather getWeatherFromForecast(Calendar rightNow) {
         Weather weather;
+
+        if (newLocation == null) {
+            return Weather.NOT_AVAILABLE;
+        }
 
         if (displacementExceeded) {
             parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
@@ -195,6 +197,10 @@ public class Environment implements android.location.LocationListener {
     public double getTempFromForecast(Calendar rightNow){
         double temperature;
 
+        if (newLocation == null) {
+            return Double.NaN;
+        }
+
         if (displacementExceeded) {
             parser = new SMHIParser(newLocation.getLatitude(), newLocation.getLongitude());
             displacementExceeded = false;
@@ -216,6 +222,19 @@ public class Environment implements android.location.LocationListener {
         }
 
         return temperature;
+    }
+
+    private boolean isNetworkAvailable() {
+
+        ConnectivityManager connectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+                connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
+            //we are connected to a network
+            return  true;
+        } else {
+            return false;
+        }
+
     }
 
 }

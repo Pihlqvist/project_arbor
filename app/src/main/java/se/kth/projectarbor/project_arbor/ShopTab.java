@@ -20,6 +20,33 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
+import android.graphics.Point;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.*;
+import android.text.Layout;
+import android.util.Log;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TableLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Fredrik Pihlqvist, Johan Andersson, Pethrus Gärdborn on 2017-04-28.
@@ -36,7 +63,9 @@ public class ShopTab extends Fragment {
     private final int NO_MONEY_BUTTON_TINT = 0x1FFF0000;
 
     //private boolean animReady;
-
+    //Detect Movements over time
+    float xValue;
+    float yValue;
 
     private ImageView btnWaterSmall;
     private ImageView btnWaterMedium;
@@ -44,13 +73,8 @@ public class ShopTab extends Fragment {
     private ImageView btnSunSmall;
     private ImageView btnSunMedium;
     private ImageView btnSunLarge;
-    private TextView textMoney;
-    //boolean test to filter moves
-    private boolean filter;
 
-    //used by genOnTouch to track motions
-    private float xValue;
-    private float yValue;
+    private TextView goldenPollenView;
 
     // To store money and make it available to other parts of app
     private SharedPreferences sharedPreferences;
@@ -87,7 +111,7 @@ public class ShopTab extends Fragment {
         }
     }
 
-
+/* //TODO: Check if MainUI does the same as this one
     private class Receiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -104,7 +128,7 @@ public class ShopTab extends Fragment {
             }
         }
     }
-
+*/
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -112,8 +136,9 @@ public class ShopTab extends Fragment {
         //get SoundHandler from MainUIActivity
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
 
-        filter = true;
+
         View view = inflater.inflate(R.layout.fragment_shop_tab, container, false);
+
         // These may be used when doing animation programmatically
         //Display display = getActivity().getWindowManager().getDefaultDisplay();
         //Point size = new Point();
@@ -121,6 +146,7 @@ public class ShopTab extends Fragment {
         //layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
         //       ViewGroup.LayoutParams.WRAP_CONTENT);
         //textReceipt = new TextView(getActivity());
+
         textReceipt = (TextView) view.findViewById(R.id.text_receipt);
         textReceipt.setTypeface(Typeface.SANS_SERIF, Typeface.BOLD);
         textReceipt.setTextSize(PURCHASE_TEXT_SIZE);
@@ -139,7 +165,7 @@ public class ShopTab extends Fragment {
         animationAppear.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                    textReceipt.setVisibility(View.VISIBLE);
+                textReceipt.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -193,24 +219,32 @@ public class ShopTab extends Fragment {
         //layout.addView(textReceipt);
 
         // Setup a filter for money
+        /* // TODO: See if this works after integrich
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.STORE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
+        */
+        sharedPreferences = getActivity().getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
 
-        sharedPreferences = getActivity().getSharedPreferences("STORE_MONEY", Context.MODE_PRIVATE);
-
-        // If money has been stored earlier, read from sharedPreferences
+        /*
+        //If money has been stored earlier, read from sharedPreferences
         if (sharedPreferences.contains("STORE_MONEY")) {
             money = sharedPreferences.getInt("STORE_MONEY", 0);
         // Else, set initial money value
         } else {
-            money = 100;
+            money = 10;
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
         }
 
         textMoney = (TextView) view.findViewById(R.id.text_money);
         textMoney.setText(this.money + "gp");
+
+        */
+
+        goldenPollenView = (TextView) view.findViewById(R.id.text_money);
+        goldenPollenView.setText(MainUIActivity.goldenPollen + "gp");
+
 
         // Buttons that give feedback when pressed
         btnWaterSmall = (ImageView) view.findViewById(R.id.box_water_small);
@@ -225,14 +259,15 @@ public class ShopTab extends Fragment {
         btnWaterMedium.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return genOnTouch(btnWaterMedium, WATER_COLOR, event, StoreItem.WATER_MEDIUM,animationAppear);
+                return genOnTouch(btnWaterMedium, WATER_COLOR, event, StoreItem.WATER_MEDIUM, animationAppear);
             }
         });
+
         btnWaterLarge = (ImageView) view.findViewById(R.id.box_water_large);
         btnWaterLarge.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return genOnTouch(btnWaterLarge, WATER_COLOR, event, StoreItem.WATER_LARGE,animationAppear);
+                return genOnTouch(btnWaterLarge, WATER_COLOR, event, StoreItem.WATER_LARGE, animationAppear);
             }
         });
 
@@ -240,7 +275,7 @@ public class ShopTab extends Fragment {
         btnSunSmall.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return genOnTouch(btnSunSmall, SUN_COLOR, event, StoreItem.SUN_SMALL,animationAppear);
+                return genOnTouch(btnSunSmall, SUN_COLOR, event, StoreItem.SUN_SMALL, animationAppear);
             }
         });
 
@@ -248,7 +283,7 @@ public class ShopTab extends Fragment {
         btnSunMedium.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return genOnTouch(btnSunMedium, SUN_COLOR, event, StoreItem.SUN_MEDIUM,animationAppear);
+                return genOnTouch(btnSunMedium, SUN_COLOR, event, StoreItem.SUN_MEDIUM, animationAppear);
             }
         });
 
@@ -256,7 +291,7 @@ public class ShopTab extends Fragment {
         btnSunLarge.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                return genOnTouch(btnSunLarge, SUN_COLOR, event, StoreItem.SUN_LARGE,animationAppear);
+                return genOnTouch(btnSunLarge, SUN_COLOR, event, StoreItem.SUN_LARGE, animationAppear);
             }
         });
 
@@ -268,7 +303,8 @@ public class ShopTab extends Fragment {
         Log.d("ARBOR", "purchasing");
         textReceipt.setTextColor(ColorStateList.valueOf(color));
             if(buy(item)) {
-                textMoney.setText(ShopTab.this.money + "gp");
+                goldenPollenView.setText(MainUIActivity.goldenPollen + "gp");
+                ((MainUIActivity)getActivity()).treeTab.getTvPollen().setText(MainUIActivity.goldenPollen + "gp");
                 textReceipt.startAnimation(anim);
                 return true;
             }
@@ -280,11 +316,11 @@ public class ShopTab extends Fragment {
 
     // Returns true if possible to make purchase
     private boolean withdrawMoney(int purchase) {
-        if (money - purchase < 0) {
+        if (MainUIActivity.goldenPollen - purchase < 0) {
             return false;
         }
         else {
-            this.money -= purchase;
+            MainUIActivity.goldenPollen -= purchase;
             sharedPreferences.edit().putInt("STORE_MONEY", money).apply();
             return true;
         }
@@ -308,33 +344,46 @@ public class ShopTab extends Fragment {
             return false;
         }
     }
+
+    int addMoney(int newMoney) {
+        return (MainUIActivity.goldenPollen += newMoney);
+    }
+
+    TextView getGoldenPollenView() {
+        return goldenPollenView;
+    }
     //A generic onTouch to be used by every button
     public boolean genOnTouch(ImageView iV, int color, MotionEvent e, StoreItem item, Animation animation){
         int action = e.getAction();
 
         if (action == MotionEvent.ACTION_DOWN) {
-                iV.setColorFilter(PURCHASE_BUTTON_TINT);
-                iV.setColorFilter(NO_MONEY_BUTTON_TINT);
-                xValue = e.getX();
-                yValue = e.getY();
-                Log.d("ARBOR", ("X: " + Float.toString(xValue) + "Y: " + Float.toString(yValue)));
+            iV.setColorFilter(PURCHASE_BUTTON_TINT);
+            iV.setColorFilter(NO_MONEY_BUTTON_TINT);
+            xValue = e.getX();
+            yValue = e.getY();
+            Log.d("ARBOR", ("X: " + Float.toString(xValue) + "Y: " + Float.toString(yValue)));
             return true;
-        }else if(action == MotionEvent.ACTION_UP){
-                if(!(Math.abs(e.getX()- xValue) > 5)) {
-                    if (purchaseItem(item, color, animation)) {
-                        sh.playShopWater();
-                    } else {
-                        sh.playNoMoney();
-                    }
-                }
-                Log.d("ARBOR", "CLEARED");
+        }else if(action == MotionEvent.ACTION_MOVE){
+            if((Math.abs(e.getX()- xValue) > 10)){
                 iV.clearColorFilter();
-                return true;
             }
-         else if (action == MotionEvent.ACTION_CANCEL) {
+
+        }else if(action == MotionEvent.ACTION_UP){
+            if(!(Math.abs(e.getX()- xValue) > 5)) {
+                if (purchaseItem(item, color, animation)) {
+                    //sh.playShopWater();
+                } else {
+                    //sh.playNoMoney();
+                }
+            }
+            Log.d("ARBOR", "CLEARED");
+            iV.clearColorFilter();
+            return true;
+        }else if (action == MotionEvent.ACTION_CANCEL) {
             iV.clearColorFilter();
             return true;
         }
         return false;
     }
 }
+

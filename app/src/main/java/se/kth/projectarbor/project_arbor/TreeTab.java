@@ -30,6 +30,7 @@ import java.util.Locale;
 import se.kth.projectarbor.project_arbor.view_objects.CloudView;
 import se.kth.projectarbor.project_arbor.view_objects.RainView;
 import se.kth.projectarbor.project_arbor.view_objects.SunView;
+import se.kth.projectarbor.project_arbor.view_objects.CloudSunView;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -49,10 +50,12 @@ public class TreeTab extends Fragment {
     private SunView sunView;
     private RainView rainView;
     private CloudView cloudView;
+    private TextView tempView;
     private TextView distanceTextView;
     private TextView stepTextView;
     private ImageView ivTree;
     private View sessionView;
+    private TextView tvPollen;
 
     private Animation animAppear;
     private Animation animDisappear;
@@ -67,12 +70,12 @@ public class TreeTab extends Fragment {
     private Environment.Weather weather;
     private SharedPreferences sharedPreferences;
 
-    private int currentPhase;
-    private int newPhase;
+    int currentPhase;
+    int newPhase;
 
-    private FloatingActionButton fab;
 
-//TODO:Fix messages (Ramcin)
+    /* // TODO: See so it works after integrish
+    //TODO:Fix messages (Ramcin)
     private class Receiver extends BroadcastReceiver {
 
         @Override
@@ -91,9 +94,8 @@ public class TreeTab extends Fragment {
             } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
                 Log.d("ARBOR_WEATHER", "Broadcast received");
                 // Build new weather layout depending on weather
-                // TODO: Here only becuse WEATHER_DATA is not done (Fredrik)
                 Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
-                if (true/*newWeather != weather*/) { // TODO: change back after
+                if (true) { // TODO: change to goodie (Fredrik)
                     weather = newWeather;
                     RelativeLayout layout = (RelativeLayout) view;
                     layout.removeView(weatherLayout);
@@ -102,20 +104,25 @@ public class TreeTab extends Fragment {
                     view = layout;
                 }
             }
+
+
         }
     }
+    */
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
 
+        /* // TODO: See if it works after integration
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(MainService.WEATHER_DATA);
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
         filter.addAction(MainService.TREE_DATA);
         getActivity().registerReceiver(this.new Receiver(), filter);
+        */
 
         //SoundHandler class in MainUIActivity decoded streams available
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
@@ -160,6 +167,9 @@ public class TreeTab extends Fragment {
         stepTextView = (TextView) view.findViewById(R.id.tvStepCount);
         sessionView = view.findViewById(R.id.sessionView);
         sessionView.setVisibility(View.GONE);
+        tvPollen = (TextView) view.findViewById(R.id.golden_pollen);
+        tvPollen.setText("" + MainUIActivity.goldenPollen);
+        tempView = (TextView) view.findViewById(R.id.tempTV);
 
         // Pick the right tree depending on the current Phase
         setTreePhase(currentPhase);
@@ -168,6 +178,7 @@ public class TreeTab extends Fragment {
         Intent intent = getActivity().getIntent();
         Bundle extras = intent.getExtras();
         if (extras != null) {
+            // TODO: se if treeView is needed here
             treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
         }
@@ -264,35 +275,49 @@ public class TreeTab extends Fragment {
     }
 
     // Applying the right weather layout depending on IRL weather
-    private void setWeatherLayout() {
+    void setWeatherLayout() {
         RelativeLayout layout = new RelativeLayout(getContext());
-
+        View viewStat = ((MainUIActivity)getActivity()).statsTab.getView();
+        View viewTree = ((MainUIActivity)getActivity()).treeTab.getView();
+        View viewShop = ((MainUIActivity)getActivity()).shopTab.getView();
         switch (weather) {
             case CLOUDY:
                 birdies.Start();
                 wind.Start();
                 cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
+                viewStat.setBackgroundResource(R.drawable.cloudy_background_2);
+                viewTree.setBackgroundResource(R.drawable.cloudy_background_1);
+                viewShop.setBackgroundResource(R.drawable.cloudy_background_3);
                 break;
             case SUN:
                 birdies.Start();
                 wind.Stop();
                 sunView = new SunView(getActivity());
                 layout = (RelativeLayout) sunView.addViews(layout);
+                viewStat.setBackgroundResource(R.drawable.blue_background_2);
+                viewTree.setBackgroundResource(R.drawable.blue_background_1);
+                viewShop.setBackgroundResource(R.drawable.blue_background_3);
                 break;
             case RAIN:
                 birdies.Stop();
                 wind.Start();
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
+                viewStat.setBackgroundResource(R.drawable.rain_background_2);
+                viewTree.setBackgroundResource(R.drawable.rain_background_1);
+                viewShop.setBackgroundResource(R.drawable.rain_background_3);
                 break;
 
             // TODO: Fix later when its implemented in Environment (Fredrik)
             // TODO: Does it work as intended?
             case PARTLY_CLOUDY:
                 SunView sunView = new SunView(getActivity());
-                CloudView cloudView = new CloudView(getContext());
-                layout = cloudView.addViews((RelativeLayout) sunView.addViews(layout));
+                CloudSunView cloudSunView = new CloudSunView(getContext());
+                layout = cloudSunView.addViews((RelativeLayout) sunView.addViews(layout));
+                viewStat.setBackgroundResource(R.drawable.blue_background_2);
+                viewTree.setBackgroundResource(R.drawable.blue_background_1);
+                viewShop.setBackgroundResource(R.drawable.blue_background_3);
                 break;
             default:
                 Log.d(TAG, "no case in weather switch");
@@ -300,8 +325,47 @@ public class TreeTab extends Fragment {
         weatherLayout = layout;
     }
 
+    Environment.Weather getWeather() {
+        if (weather == null)
+            return Environment.Weather.NOT_AVAILABLE;
+        else
+            return weather;
+    }
+
+    // TODO: Fix the names
+    void setWeather(Environment.Weather newWeather) {
+        weather = newWeather;
+    }
+
+    ViewGroup getWeatherLayout() {
+        return weatherLayout;
+    }
+
+    View getTabView() {
+        return view;
+    }
+
+    void setTabView(View newView) {
+        view = newView;
+    }
+
+    TextView getDistanceView() {
+        return distanceTextView;
+    }
+
+    TextView getStepView() {
+        return stepTextView;
+    }
+
+    TextView getTvPollen() {
+        return tvPollen;
+    }
+
+    TextView getTempView(){return tempView;}
+
+
     // Shows the right tree
-    private void setTreePhase(int phaseNumber) {
+    void setTreePhase(int phaseNumber) {
         Log.d(TAG, "setTreePhase");
         switch (phaseNumber) {
             case 1:

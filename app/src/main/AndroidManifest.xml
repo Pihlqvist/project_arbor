@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -22,9 +23,9 @@
 
         <activity
             android:name=".MainUIActivity"
-            android:largeHeap="true"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:largeHeap="true"/>
         <activity
             android:name=".NewTreeActivity"
             android:screenOrientation="portrait"
@@ -35,9 +36,44 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GenderHeightActivity" />
-        <activity android:name=".HowToPlayActivity" />
-        <activity android:name=".AboutActivity"></activity>
+        <activity
+            android:name=".GenderHeightActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".tutorial.TutorialArbor"
+            android:label="@string/title_activity_tutorial_arbor"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait">
+
+        </activity>
+
+        <!-- IMPORTANT: "enabled" must be true for receiver to be able to be instantiated
+         by the system. "exported" must be true to be able to receive messages from sources
+         outside of the application. -->
+        <receiver
+            android:name=".ShutdownReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+                <action android:name="android.intent.action.QUICKBOOT_POWEROFF" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

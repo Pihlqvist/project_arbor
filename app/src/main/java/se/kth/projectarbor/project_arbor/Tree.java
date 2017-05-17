@@ -19,14 +19,16 @@ public class Tree implements Serializable {
     private static final long serialVersionUID = 5911304372524803500L;
     private SharedPreferences sharedPreferences;
 
+    //Joseph
+    public boolean phaseChanged = false;
     // TODO: fix values
 
     //Seed phase constants
     private final int SEED_WATERBUFFER_MAX = 1000;
     private final int SEED_SUNBUFFER_MAX = 1000;
     private final int SEED_HEALTHBUFFER_MAX = 1;
-    private final int SEED_WATER_NEED = 400 / 24; // need per hour
-    private final int SEED_SUN_NEED = 400 / 24; // need per hour
+    private final int SEED_WATER_NEED = 400/24; // need per hour
+    private final int SEED_SUN_NEED = 400 /24; // need per hour
     private final int SEED_WATER_INTAKE = 200; // intake per kilometer
     private final int SEED_SUN_INTAKE = 100; // intake per kilometer
     private final int SEED_NEXT_PHASE = 10; // number of km where SEED goes into next phase
@@ -199,7 +201,7 @@ public class Tree implements Serializable {
                 this.sunBuffer.setValue(SPROUT_SUNBUFFER_MAX);
                 this.healthBuffer.setMax(SPROUT_HEALTHBUFFER_MAX);
                 this.healthBuffer.setValue(SPROUT_HEALTHBUFFER_MAX);
-
+                this.phaseChanged =true;
                 break;
             case SPROUT:
                 this.treePhase = Phase.SAPLING;
@@ -210,6 +212,7 @@ public class Tree implements Serializable {
                 this.sunBuffer.setValue(SAPLING_SUNBUFFER_MAX);
                 this.healthBuffer.setMax(SAPLING_HEALTHBUFFER_MAX);
                 this.healthBuffer.setValue(SAPLING_HEALTHBUFFER_MAX);
+                this.phaseChanged=true;
                 break;
             case SAPLING:
                 this.treePhase = Phase.GROWN_TREE;
@@ -220,6 +223,7 @@ public class Tree implements Serializable {
                 this.sunBuffer.setValue(GROWN_TREE_SUNBUFFER_MAX);
                 this.healthBuffer.setMax(GROWN_TREE_HEALTHBUFFER_MAX);
                 this.healthBuffer.setValue(GROWN_TREE_HEALTHBUFFER_MAX);
+                this.phaseChanged=true;
                 break;
         }
     }
@@ -228,6 +232,11 @@ public class Tree implements Serializable {
     // Until timer reaches 24, timerFlag will be true and block withdrawing of HP:s. When timerFlag
     // is put to false after 24 hours and both buffers are not 0, 1 HP is added to HPBuffer.
     public boolean update() {
+
+        // Stops tree from updating when dead.
+        if(!alive)
+            return false;
+
         bufferDecrease();
         // timerFlag is true so HP cannot be decreased during this time.
 

@@ -16,6 +16,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
 import android.view.View;
+import android.widget.RelativeLayout;
+
+import se.kth.projectarbor.project_arbor.view_objects.NewTreeClouds;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
 /*
@@ -35,6 +38,9 @@ public class NewTreeActivity extends AppCompatActivity  {
     private final static String TAG = "ARBOR_NEW_TREE";
     private Button newTreeBtn;
     SharedPreferences sharedPreferences = null;
+    private NewTreeClouds newTreeClouds;
+    private RelativeLayout cloudlayout;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +49,19 @@ public class NewTreeActivity extends AppCompatActivity  {
         // Controls if a tree exist or not, will go to main activity if the tree exist.
         // If a tree dose not exist it will set up the new tree view.
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
+
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             startService(new Intent(NewTreeActivity.this, MainService.class)
-            .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME));
+            .putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_TREE_GAME));
         }
 
+        // TODO: Check if tree is alive or not. If not, show death screen.
+
         setContentView(R.layout.activity_new_tree);
+        RelativeLayout layout = (RelativeLayout) findViewById(R.id.new_tree_layout);
+        getClouds();
+        layout.addView(cloudlayout);
+        setContentView(layout);
 
         if (!isNetworkAvailable()) {
             displayPromptForEnablingInternet();
@@ -67,6 +80,8 @@ public class NewTreeActivity extends AppCompatActivity  {
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
                 Log.d(TAG, "new save state");
 
+                sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
+
                 // Start game storage
                 Intent intent = new Intent(NewTreeActivity.this, MainService.class)
                         .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
@@ -81,6 +96,13 @@ public class NewTreeActivity extends AppCompatActivity  {
                 startService(updateIntent);
             }
         });
+
+    }
+    private void getClouds(){
+        RelativeLayout layout = new RelativeLayout(getApplicationContext());
+        newTreeClouds = new NewTreeClouds(getApplicationContext());
+        layout = newTreeClouds.addViews(layout);
+        cloudlayout = layout;
     }
 
     // check whether there is internet connection or wifi connection
