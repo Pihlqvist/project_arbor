@@ -355,7 +355,9 @@ public class MainUIActivity extends AppCompatActivity {
 
 
     }
-
+    public void soundZERO(View v){}
+    public void soundFIFTY(View v){}
+    public void soundHUNDRED(View v){}
     @Override
     public void onBackPressed() {}
 

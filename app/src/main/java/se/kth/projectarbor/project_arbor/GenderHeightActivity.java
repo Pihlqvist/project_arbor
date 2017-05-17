@@ -79,14 +79,11 @@ public class GenderHeightActivity extends AppCompatActivity {
                 sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
 
                 Log.d("arbor_genderHeight", "height " + gender);
-                //TODO: (Lovisa) change gender and height variables in the pedometer
 
                 Intent serviceIntent = new Intent(GenderHeightActivity.this, MainService.class);
                 serviceIntent.putExtra("MESSAGE_TYPE", MainService.MSG_USER_INPUT);
                 startService(serviceIntent);
 
-                //Intent intent = new Intent(GenderHeightActivity.this, MainUIActivity.class);
-                //GenderHeightActivity.this.startActivity(intent);
                 onBackPressed();
             }
 
