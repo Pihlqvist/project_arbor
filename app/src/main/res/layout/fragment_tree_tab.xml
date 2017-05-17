@@ -118,7 +118,7 @@
             android:fontFamily="sans-serif"/>
 
     </RelativeLayout>
-
+<!--
     <RelativeLayout
         android:id="@+id/sessionView"
         android:layout_width="wrap_content"
@@ -179,6 +179,6 @@
     </RelativeLayout>
 
 
-
+-->
 
 </RelativeLayout>

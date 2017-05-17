@@ -31,7 +31,7 @@ public class Tree implements Serializable {
     private final int SEED_SUN_NEED = 400 /24; // need per hour
     private final int SEED_WATER_INTAKE = 200; // intake per kilometer
     private final int SEED_SUN_INTAKE = 100; // intake per kilometer
-    private final int SEED_NEXT_PHASE = 10; // number of km where SEED goes into next phase
+    private final int SEED_NEXT_PHASE = 1; // number of km where SEED goes into next phase
 
     //Sprout phase constants
     private final int SPROUT_WATERBUFFER_MAX = 1000;
@@ -41,7 +41,7 @@ public class Tree implements Serializable {
     private final int SPROUT_SUN_NEED = 600 / 24; // need per hour
     private final int SPROUT_WATER_INTAKE = 250; // intake per kilometer
     private final int SPROUT_SUN_INTAKE = 150; // intake per kilometer
-    private final int SPROUT_NEXT_PHASE = 30; // number of km where SPROUT goes into next phase
+    private final int SPROUT_NEXT_PHASE = 2; // number of km where SPROUT goes into next phase
 
     //Sapling phase constants
     private final int SAPLING_WATERBUFFER_MAX = 1000;
@@ -51,7 +51,7 @@ public class Tree implements Serializable {
     private final int SAPLING_SUN_NEED = 800 / 24; // need per hour
     private final int SAPLING_WATER_INTAKE = 300; // intake per kilometer
     private final int SAPLING_SUN_INTAKE = 200; // intake per kilometer
-    private final int SAPLING_NEXT_PHASE = 60; // number of km where SAPLING goes into next phase
+    private final int SAPLING_NEXT_PHASE = 3; // number of km where SAPLING goes into next phase
 
     //Grown tree phase constants
     private final int GROWN_TREE_WATERBUFFER_MAX = 1000;
