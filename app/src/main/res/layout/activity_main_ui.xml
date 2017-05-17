@@ -47,7 +47,6 @@
         android:layout_margin="@dimen/fab_margin"
         android:visibility="visible"
         app:backgroundTint="@color/colorTransparent"
-        app:elevation="4dp"
         app:fabSize="mini"
         app:srcCompat="@drawable/settings_icon" />
 

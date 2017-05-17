@@ -19,9 +19,7 @@ public class LoopMediaPlayer {
 
     public static LoopMediaPlayer create(Context context, int resId) {
         return new LoopMediaPlayer(context, resId);
-
     }
-
     private LoopMediaPlayer(Context context, int resId) {
         isPlaying = false;
         mContext = context;
@@ -34,31 +32,26 @@ public class LoopMediaPlayer {
                 allowStart = true;
             }
         });
-
         createNextMediaPlayer();
     }
-
     private void createNextMediaPlayer() {
         mNextPlayer = MediaPlayer.create(mContext, mResId);
         mNextPlayer.setVolume(mVolume, mVolume);
         mCurrentPlayer.setNextMediaPlayer(mNextPlayer);
         mCurrentPlayer.setOnCompletionListener(onCompletionListener);
     }
-
     private MediaPlayer.OnCompletionListener onCompletionListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
             mediaPlayer.release();
             mCurrentPlayer = mNextPlayer;
-
             createNextMediaPlayer();
         }
     };
     public void onPause(){
-        mCurrentPlayer.pause();
+            mCurrentPlayer.pause();
     }
     public void onResume(){
-
         if(isPlaying) {
             mCurrentPlayer.start();
         }

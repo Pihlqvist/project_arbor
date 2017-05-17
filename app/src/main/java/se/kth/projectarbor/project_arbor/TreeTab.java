@@ -63,6 +63,7 @@ public class TreeTab extends Fragment {
     //Created a class LoopMediaPlayer just for being able to loop seamlessly
     private LoopMediaPlayer wind;
     private LoopMediaPlayer birdies;
+    private LoopMediaPlayer rain;
 
     private MainUIActivity.SoundHandler sh;
 
@@ -133,10 +134,11 @@ public class TreeTab extends Fragment {
         //TODO: USE LoopMediaPlayer.setVolume to change volume
         wind = ((MainUIActivity)getActivity()).getWind();
         birdies = ((MainUIActivity)getActivity()).getBirdies();
+        rain = ((MainUIActivity)getActivity()).getRain();
+        rain.onPause();
         wind.onPause();
-        wind.setVolume(1f);
         birdies.onPause();
-        birdies.setVolume(1f);
+
         Log.d("ARBORTREETAB", "" + wind + birdies);
 
         //Apply mainVolume find in SoundHandler class in MainUIActivity
@@ -279,10 +281,11 @@ public class TreeTab extends Fragment {
         View viewStat = ((MainUIActivity)getActivity()).statsTab.getView();
         View viewTree = ((MainUIActivity)getActivity()).treeTab.getView();
         View viewShop = ((MainUIActivity)getActivity()).shopTab.getView();
-        switch (weather) {
+        switch (weather.SUN) {
             case CLOUDY:
                 birdies.Start();
                 wind.Start();
+                rain.Stop();
                 cloudView = new CloudView(getContext());
                 layout = cloudView.addViews(layout);
                 viewStat.setBackgroundResource(R.drawable.cloudy_background_2);
@@ -292,6 +295,7 @@ public class TreeTab extends Fragment {
             case SUN:
                 birdies.Start();
                 wind.Stop();
+                rain.Stop();
                 sunView = new SunView(getActivity());
                 layout = (RelativeLayout) sunView.addViews(layout);
                 viewStat.setBackgroundResource(R.drawable.blue_background_2);
@@ -301,6 +305,7 @@ public class TreeTab extends Fragment {
             case RAIN:
                 birdies.Stop();
                 wind.Start();
+                rain.Start();
                 rainView = new RainView(getActivity());
                 layout = (RelativeLayout) rainView.addViews(layout);
                 viewStat.setBackgroundResource(R.drawable.rain_background_2);

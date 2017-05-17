@@ -52,6 +52,7 @@ public class MainUIActivity extends AppCompatActivity {
     //Created a class LoopMediaPlayer just for being able to loop seamlessly
     private LoopMediaPlayer wind;
     private LoopMediaPlayer birdies;
+    private LoopMediaPlayer rain;
 
     public FloatingActionButton fab;
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
@@ -161,15 +162,18 @@ public class MainUIActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        wind = LoopMediaPlayer.create(getApplicationContext(), R.raw.wind_loop);
-        birdies = LoopMediaPlayer.create(getApplicationContext(), R.raw.birds_2);
-        wind.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
-        birdies.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_ui);
-
         // Used for handling golden pollens and boolean "alive"
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
+        wind = LoopMediaPlayer.create(getApplicationContext(), R.raw.wind_loop);
+        birdies = LoopMediaPlayer.create(getApplicationContext(), R.raw.birds_2);
+        rain = LoopMediaPlayer.create(getApplicationContext(), R.raw.rain_loop2);
+
+        wind.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+        birdies.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+        rain.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_ui);
 
         Button btnContinue = (Button) findViewById(R.id.btn_continue_new);
         btnContinue.setOnClickListener(new View.OnClickListener() {
@@ -297,6 +301,7 @@ public class MainUIActivity extends AppCompatActivity {
         // alive = false;
         wind.onResume();
         birdies.onResume();
+        rain.onResume();
         if (!alive) {
             setDeathView();
         }
@@ -317,6 +322,7 @@ public class MainUIActivity extends AppCompatActivity {
         super.onPause();
         wind.onPause();
         birdies.onPause();
+        rain.onPause();
     }
 
 
@@ -437,6 +443,9 @@ public class MainUIActivity extends AppCompatActivity {
     public LoopMediaPlayer getBirdies (){
         return birdies;
     }
+    public LoopMediaPlayer getRain (){
+        return rain;
+    }
     @Override
     public void onBackPressed() {}
 
@@ -446,6 +455,7 @@ public class MainUIActivity extends AppCompatActivity {
         sharedPreferences.edit().putFloat("SOUNDVOLUME", 0f).apply();
         wind.setVolume(0f);
         birdies.setVolume(0f);
+        rain.setVolume(0f);
     }
     public void soundFIFTY(View view){
         Log.d("ARBOR", "Sound: 50%");
@@ -453,6 +463,7 @@ public class MainUIActivity extends AppCompatActivity {
         sharedPreferences.edit().putFloat("SOUNDVOLUME", 0.5f).apply();
         wind.setVolume(0.5f);
         birdies.setVolume(0.5f);
+        rain.setVolume(0.5f);
     }
     public void soundHUNDRED(View view){
         Log.d("ARBOR", "Sound: 100%");
@@ -460,6 +471,7 @@ public class MainUIActivity extends AppCompatActivity {
         sharedPreferences.edit().putFloat("SOUNDVOLUME", 1).apply();
         wind.setVolume(1f);
         birdies.setVolume(1f);
+        rain.setVolume(1f);
         Log.d("ARBOR", "" + wind + birdies);
     }
 }
