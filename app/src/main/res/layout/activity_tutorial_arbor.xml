@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="se.kth.projectarbor.project_arbor.tutorial.TutorialArbor">
+    tools:context="se.kth.projectarbor.project_arbor.tutorial.TutorialArbor"
+    android:background="@drawable/blue_background_1">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/appbar"

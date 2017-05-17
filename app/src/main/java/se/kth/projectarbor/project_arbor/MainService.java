@@ -341,10 +341,10 @@ public class MainService extends Service {
         resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arbor_app_icon);
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher_a)
+                .setSmallIcon(R.mipmap.arbor_app_icon)
                 .setLargeIcon(bitmap)
                 .setContentTitle("Arbor")
                 .setContentText(getText(R.string.content_text))
