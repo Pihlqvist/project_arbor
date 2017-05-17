@@ -228,7 +228,7 @@ public class MainUIActivity extends AppCompatActivity {
             if (sharedPreferences.contains("STORE_MONEY")) {
                 goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
             } else {
-                goldenPollen = 10;
+                goldenPollen = 100; // TODO 10;
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
 
