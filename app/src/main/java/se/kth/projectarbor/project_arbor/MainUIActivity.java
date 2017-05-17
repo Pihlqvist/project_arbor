@@ -108,7 +108,7 @@ public class MainUIActivity extends AppCompatActivity {
                 }
                 Double newTemp = extras.getDouble("TEMP");
                 if (newTemp.equals(Double.NaN)) {
-                    treeTab.getTempView().setText("N/A  ");
+                    treeTab.getTempView().setText("N/A ");
                 } else {
                     treeTab.getTempView().setText(String.format("%.1f °C", newTemp));
                 }

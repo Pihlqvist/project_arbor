@@ -110,12 +110,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="N/A"
-            android:textSize="20sp"
             android:layout_marginRight="5dp"
+            android:fontFamily="sans-serif"
+            android:text="N/A"
+            android:textColor="@android:color/background_light"
             android:textColorHighlight="@color/colorWhite"
-            android:typeface="serif"
-            android:fontFamily="sans-serif"/>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:typeface="serif" />
 
     </RelativeLayout>
 
