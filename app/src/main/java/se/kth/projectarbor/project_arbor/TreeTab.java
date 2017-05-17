@@ -127,8 +127,7 @@ public class TreeTab extends Fragment {
         //SoundHandler class in MainUIActivity decoded streams available
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
 
-        fab = ((MainUIActivity)getActivity()).fab;
-        fab.show();
+
         //Instantiate mediaplaters and pause them for future resumement
         //volume is a multiplier 0-1
         //TODO: USE LoopMediaPlayer.setVolume to change volume

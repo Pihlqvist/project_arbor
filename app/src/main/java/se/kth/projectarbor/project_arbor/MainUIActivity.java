@@ -163,7 +163,8 @@ public class MainUIActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         wind = LoopMediaPlayer.create(getApplicationContext(), R.raw.wind_loop);
         birdies = LoopMediaPlayer.create(getApplicationContext(), R.raw.birds_2);
-
+        wind.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+        birdies.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
 
@@ -294,7 +295,8 @@ public class MainUIActivity extends AppCompatActivity {
         boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
         // For TESTING
         // alive = false;
-
+        wind.onResume();
+        birdies.onResume();
         if (!alive) {
             setDeathView();
         }
@@ -383,12 +385,14 @@ public class MainUIActivity extends AppCompatActivity {
 
         float soundVolume = 1;
         SoundHandler(Context context) {
+            soundVolume = sharedPreferences.getFloat("SOUNDVOLUME", 1);
             pp = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
             shopSun = pp.load(context, R.raw.shopsun_3, 1);
             shopWater = pp.load(context, R.raw.shopwater_2, 1);
             noMoney = pp.load(context, R.raw.nomoney_1, 1);
             sunFill = pp.load(context, R.raw.sunloop, 1);
             waterFill = pp.load(context, R.raw.rainsynth_2, 1);
+
         }
         public SoundPool getSoundPoolRef(){
             return this.pp;
@@ -439,18 +443,21 @@ public class MainUIActivity extends AppCompatActivity {
     public void soundZERO(View view){
         Log.d("ARBOR", "Sound: 0%");
         this.sh.soundVolume = 0f;
+        sharedPreferences.edit().putFloat("SOUNDVOLUME", 0f).apply();
         wind.setVolume(0f);
         birdies.setVolume(0f);
     }
     public void soundFIFTY(View view){
         Log.d("ARBOR", "Sound: 50%");
         this.sh.soundVolume = 0.5f;
+        sharedPreferences.edit().putFloat("SOUNDVOLUME", 0.5f).apply();
         wind.setVolume(0.5f);
         birdies.setVolume(0.5f);
     }
     public void soundHUNDRED(View view){
         Log.d("ARBOR", "Sound: 100%");
         sh.soundVolume = 1f;
+        sharedPreferences.edit().putFloat("SOUNDVOLUME", 1).apply();
         wind.setVolume(1f);
         birdies.setVolume(1f);
         Log.d("ARBOR", "" + wind + birdies);

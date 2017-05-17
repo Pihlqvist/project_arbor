@@ -14,16 +14,19 @@ public class LoopMediaPlayer {
     private float mVolume = 1;
     private MediaPlayer mCurrentPlayer = null;
     private MediaPlayer mNextPlayer = null;
-    private boolean allowStart = false;
+    public boolean allowStart;
+    public boolean isPlaying;
 
     public static LoopMediaPlayer create(Context context, int resId) {
         return new LoopMediaPlayer(context, resId);
+
     }
 
     private LoopMediaPlayer(Context context, int resId) {
+        isPlaying = false;
         mContext = context;
         mResId = resId;
-
+        allowStart = false;
         mCurrentPlayer = MediaPlayer.create(mContext, mResId);
         mCurrentPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
             @Override
@@ -55,7 +58,10 @@ public class LoopMediaPlayer {
         mCurrentPlayer.pause();
     }
     public void onResume(){
-        mCurrentPlayer.start();
+
+        if(isPlaying) {
+            mCurrentPlayer.start();
+        }
     }
     public void setVolume(float f){
         mCurrentPlayer.setVolume(f, f);
@@ -63,8 +69,10 @@ public class LoopMediaPlayer {
     }
     public void Start(){
         mCurrentPlayer.start();
+        isPlaying = true;
     }
     public void Stop(){
         mCurrentPlayer.stop();
+        isPlaying = false;
     }
 }

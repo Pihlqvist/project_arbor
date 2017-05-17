@@ -133,6 +133,7 @@ public class StatsTab extends Fragment {
         Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
+
         //Instantiate sh to MainUIÀctivity's SoundHandler
         sh = ((MainUIActivity)getActivity()).getSoundHandler();
 
