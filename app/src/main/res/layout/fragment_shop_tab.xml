@@ -4,9 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="se.kth.projectarbor.project_arbor.ShopTab"
-    android:id="@+id/shop_top_layout"
-    android:paddingTop="22dp"
-    android:paddingBottom="5dp">
+    android:id="@+id/shop_top_layout" >
 
     <View
         android:layout_width="match_parent"
@@ -21,16 +19,12 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent" >
 
-        <TableRow
-            android:gravity="center_horizontal"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp">
+        <TableRow android:gravity="center_horizontal" android:layout_marginTop="@dimen/shop_element_margin">
             <ImageView
                 android:src="@drawable/garden_shop_icon"
                 android:layout_gravity="center"/>
             <LinearLayout
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="5dp">
+                android:layout_gravity="center_horizontal">
                 <ImageView
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -48,28 +42,28 @@
             </LinearLayout>
         </TableRow>
 
-        <TableRow android:gravity="center_horizontal" android:layout_marginTop="10dp">
+        <TableRow android:gravity="center_horizontal" android:layout_marginTop="@dimen/shop_element_margin">
             <ImageView android:src="@drawable/shop_box_sf_s" android:layout_marginRight="@dimen/shop_element_margin"
                 android:id="@+id/box_sun_small"/>
             <ImageView android:src="@drawable/shop_box_wf_s" android:layout_marginLeft="@dimen/shop_element_margin"
                 android:id="@+id/box_water_small"/>
         </TableRow>
 
-        <TableRow android:gravity="center_horizontal" android:layout_marginTop="10dp">
+        <TableRow android:gravity="center_horizontal" android:layout_marginTop="@dimen/shop_element_margin">
             <ImageView android:src="@drawable/shop_box_sf_m" android:layout_marginRight="@dimen/shop_element_margin"
                 android:id="@+id/box_sun_medium"/>
             <ImageView android:src="@drawable/shop_box_wf_m" android:layout_marginLeft="@dimen/shop_element_margin"
                 android:id="@+id/box_water_medium"/>
         </TableRow>
 
-        <TableRow android:gravity="center_horizontal" android:layout_marginTop="10dp">
+        <TableRow android:gravity="center_horizontal" android:layout_marginTop="@dimen/shop_element_margin">
             <ImageView android:src="@drawable/shop_box_sf_l" android:layout_marginRight="@dimen/shop_element_margin"
                 android:id="@+id/box_sun_large"/>
             <ImageView android:src="@drawable/shop_box_wf_l" android:layout_marginLeft="@dimen/shop_element_margin"
                 android:id="@+id/box_water_large"/>
         </TableRow>
     </TableLayout>
-    
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -79,5 +73,5 @@
         android:shadowDx="3"
         android:shadowDy="8"
         android:shadowRadius="8"/>
-        //android:textAllCaps="true"
+    //android:textAllCaps="true"
 </RelativeLayout>
