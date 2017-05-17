@@ -67,7 +67,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Lovisa Josefsson, Fredrik Pihlqvist, Lazar Cerovic, Johan Andersson, Ramcin Oudishu, Pethrus Gärdborn, Patrik Eriksson, Joseph Ariss"
+            android:text="Fredrik Pihlqvist, Johan Andersson, Joseph Ariss, Lazar Cerovic, Lovisa Josefsson, Patrik Eriksson, Pethrus Gärdborn, Ramcin Oudishu"
             android:textSize="14sp"
             android:textColor="@color/text_blue"
             android:layout_below="@id/createdBy"
@@ -141,7 +141,8 @@
         android:textSize="18sp"
         android:textColor="@color/text_blue"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/Website"/>
+        android:layout_below="@id/Website"
+        android:layout_marginTop="30dp"/>
 
 </RelativeLayout>
 </RelativeLayout>
