@@ -149,6 +149,9 @@ public class TreeTab extends Fragment {
             // TODO: se if treeView is needed here
             treeView.setText("Tree, Phase: " + ((Tree.Phase) extras.get("PHASE")).getPhaseName());
             newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
+
+            distanceTextView.setText(String.format("%.2f km", extras.getDouble("SESSION_DISTANCE")));
+            stepTextView.setText(String.format("%d", extras.getInt("SESSION_STEPS")));
         }
 
         // If the tree's phase changed it will start an animation if you press it
@@ -228,16 +231,16 @@ public class TreeTab extends Fragment {
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
             walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));
-            if(sharedPreferences.getBoolean("TOGGLE", false)) {
-                Intent intent2 = new Intent(getActivity(), MainService.class);
-                // TODO: Was "MSG_RESUME_HEAVY" before. Dint update stats tab correctly (Fredrik)
-                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
-                getActivity().startService(intent2);
-            }else{
-                Intent intent3 = new Intent(getActivity(), MainService.class);
-                intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
-                getActivity().startService(intent3);
-            }
+//            if(sharedPreferences.getBoolean("TOGGLE", false)) {
+//                Intent intent2 = new Intent(getActivity(), MainService.class);
+//                // TODO: Was "MSG_RESUME_HEAVY" before. Dint update stats tab correctly (Fredrik)
+//                intent2.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
+//                getActivity().startService(intent2);
+//            }else{
+//                Intent intent3 = new Intent(getActivity(), MainService.class);
+//                intent3.putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_LIGHT);
+//                getActivity().startService(intent3);
+//            }
         }
 
     }
