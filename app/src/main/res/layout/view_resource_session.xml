@@ -1,74 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    android:id="@+id/sessionView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_alignParentStart="true"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/treefragmentlayout"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
     tools:context="se.kth.projectarbor.project_arbor.TreeTab"
     tools:layout_editor_absoluteX="0dp"
-    tools:layout_editor_absoluteY="81dp">
+    tools:layout_editor_absoluteY="81dp"
+    android:layout_centerHorizontal="true">
+
+    <ImageView
+        android:id="@+id/sessionBox"
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:src="@drawable/rounded_corners"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"/>
 
     <RelativeLayout
-        android:id="@+id/sessionView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/rounded_corners"
-        android:layout_alignParentStart="true">
+        android:layout_alignBottom="@id/sessionBox"
+        android:layout_alignLeft="@id/sessionBox"
+        android:layout_alignStart="@id/sessionBox"
+        android:layout_alignTop="@id/sessionBox"
+        android:layout_alignEnd="@id/sessionBox"
+        android:layout_alignRight="@id/sessionBox"
+        android:padding="15dp">
 
-        <TableLayout
+
+        <TextView
+            android:id="@+id/stepTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="32dp"
-            android:layout_marginEnd="114dp">
+            android:layout_marginEnd="5dp"
+            android:fontFamily="sans-serif"
+            android:gravity="center|start"
+            android:text="Steps"
+            android:textColor="@color/colorBlack"
+            android:textColorHighlight="@color/colorWhite"
+            android:textSize="20sp"
+            android:typeface="serif"
+            android:layout_marginBottom="10dp"/>
 
-            <TableRow android:gravity="center_horizontal">
+        <TextView
+            android:id="@+id/tvStepCount"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="sans-serif"
+            android:gravity="center|start"
+            android:text="0"
+            android:textSize="20sp"
+            android:layout_toRightOf="@id/stepTitle"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="10dp"/>
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center|start"
-                    android:text="Steps"
-                    android:textColor="@color/colorBlack"
-                    android:textColorHighlight="@color/colorWhite"
-                    android:textSize="20sp"
-                    android:typeface="serif" />
+        <TextView
+            android:id="@+id/distanceTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="7dp"
+            android:fontFamily="sans-serif"
+            android:text="Distance"
+            android:textColor="@color/colorBlack"
+            android:textColorHighlight="@color/colorWhite"
+            android:textSize="20sp"
+            android:layout_below="@id/stepTitle"/>
 
-                <TextView
-                    android:id="@+id/tvStepCount"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center|start"
-                    android:text="0"
-                    android:textSize="20sp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_marginTop="7dp"
-                android:gravity="center_horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="7dp"
-                    android:fontFamily="sans-serif"
-                    android:text="Distance"
-                    android:textColor="@color/colorBlack"
-                    android:textColorHighlight="@color/colorWhite"
-                    android:textSize="20sp" />
-
-                <TextView
-                    android:id="@+id/tvDistance"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="sans-serif"
-                    android:gravity="center|start"
-                    android:text="0 km"
-                    android:textSize="20sp" />
-
-            </TableRow>
-        </TableLayout>
+        <TextView
+            android:id="@+id/tvDistance"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:fontFamily="sans-serif"
+            android:gravity="center|start"
+            android:text="0 km"
+            android:textSize="20sp"
+            android:layout_below="@id/tvStepCount"
+            android:layout_toRightOf="@id/distanceTitle"
+            android:layout_marginLeft="10dp"/>
     </RelativeLayout>
+
 </RelativeLayout>
