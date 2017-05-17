@@ -71,7 +71,6 @@ public class TreeTab extends Fragment {
     private View sessionView;
     private TextView tvPollen;
     private TreeView treeAnimView;
-
     private Animation animAppear;
     private Animation animDisappear;
 
@@ -189,8 +188,11 @@ public class TreeTab extends Fragment {
         currentLayout.addView(treeAnimView, lp);
 
         RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        currentLayout.addView(getActivity().getLayoutInflater().inflate(R.layout.grass_tuva_layout, null), lp2);
 
-        currentLayout.addView(getActivity().getLayoutInflater().inflate(R.layout.view_resource_session, null), lp2);
+        RelativeLayout.LayoutParams lp3 = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        currentLayout.addView(getActivity().getLayoutInflater().inflate(R.layout.view_resource_session, null), lp3);
         view = currentLayout;
         // Setup Views
         treeView = (TextView) view.findViewById(R.id.tvTree);
