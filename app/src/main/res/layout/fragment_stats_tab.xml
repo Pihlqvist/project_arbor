@@ -4,7 +4,8 @@
     android:layout_height="match_parent"
     android:paddingTop="15dp"
     android:paddingLeft="5dp"
-    android:paddingRight="5dp">
+    android:paddingRight="5dp"
+    android:background="@drawable/blue_background_2">
 
     <View
         android:id="@+id/whiteBox"
