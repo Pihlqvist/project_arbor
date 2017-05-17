@@ -19,11 +19,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 import android.widget.TextView;
 
 import se.kth.projectarbor.project_arbor.tutorial.TutorialArbor;
+import se.kth.projectarbor.project_arbor.view_objects.LoadingView;
 
 public class MainUIActivity extends AppCompatActivity {
 
@@ -43,14 +45,15 @@ public class MainUIActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
+    public Tree.Phase phase;
+    private boolean hasAnimated;
 
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
     static int goldenPollen;
 
-
     // This receiver used by all fragments
     private class Receiver extends BroadcastReceiver {
-
+        private ImageView loadScreen;
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
@@ -63,9 +66,13 @@ public class MainUIActivity extends AppCompatActivity {
 
                 treeTab.newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 if (treeTab.newPhase != treeTab.currentPhase) {
-                    treeTab.setTreePhase(treeTab.newPhase);
-                }
+                    if(treeTab.newPhase == 1){
+                        treeTab.getAnimTree().startAnimation();
+                    }
+                    treeTab.getAnimTree().animatePhase(treeTab.newPhase, false);
+                    treeTab.currentPhase = treeTab.newPhase;
 
+                }
 
                 if (extras.getInt("HP") < 1) {
                     statsTab.getHealthView().setText("DEAD");
@@ -108,7 +115,7 @@ public class MainUIActivity extends AppCompatActivity {
                 }
                 Double newTemp = extras.getDouble("TEMP");
                 if (newTemp.equals(Double.NaN)) {
-                    treeTab.getTempView().setText("N/A  ");
+                    treeTab.getTempView().setText("N/A ");
                 } else {
                     treeTab.getTempView().setText(String.format("%.1f °C", newTemp));
                 }
@@ -153,6 +160,8 @@ public class MainUIActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_ui);
+        hasAnimated = false;
+
 
         // Used for handling golden pollens and boolean "alive"
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
@@ -258,9 +267,7 @@ public class MainUIActivity extends AppCompatActivity {
                     }
                 }
             });
-
         }
-
     }
 
     public void goToGenderHeight(View v) {
@@ -348,7 +355,9 @@ public class MainUIActivity extends AppCompatActivity {
 
 
     }
-
+    public void soundZERO(View v){}
+    public void soundFIFTY(View v){}
+    public void soundHUNDRED(View v){}
     @Override
     public void onBackPressed() {}
 

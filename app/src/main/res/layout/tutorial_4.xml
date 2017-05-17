@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_blue"
-    android:padding="20dp">
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:paddingLeft="15dp"
+    android:paddingRight="15dp">
     <ImageView
         android:id="@+id/whiteRectangle"
         android:layout_width="match_parent"
@@ -20,10 +22,10 @@
         android:layout_alignRight="@+id/whiteRectangle"
         android:layout_alignEnd="@+id/whiteRectangle"
         android:layout_alignBottom="@+id/whiteRectangle"
-        android:paddingTop="25dp"
-        android:paddingLeft="30dp"
-        android:paddingRight="30dp"
-        android:paddingBottom="25dp">
+        android:paddingTop="50dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="30dp">
 
         <ImageView
             android:id="@+id/greenPhase"
@@ -31,7 +33,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/green_phase"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginBottom="40dp"/>
 
         <TextView
             android:id="@+id/instructions"
@@ -50,9 +52,10 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
             android:backgroundTint="@color/arbor_blue"
-            android:text="Lets go"
+            android:text="Let's go"
             android:textColor="@color/colorWhite"
-            android:textSize="20dp" />
+            android:textSize="20dp"
+            android:layout_marginBottom="20dp"/>
 
         <Button
             android:id="@+id/previous"
@@ -63,7 +66,8 @@
             android:textSize="20dp"
             android:textColor="@color/colorWhite"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true" />
+            android:layout_alignParentLeft="true"
+            android:layout_marginBottom="20dp"/>
 
 
     </RelativeLayout>

@@ -341,7 +341,7 @@ public class ShopTab extends Fragment {
             }
 
         }else if(action == MotionEvent.ACTION_UP){
-            if(!(Math.abs(e.getX()- xValue) > 5)) {
+            if(!(Math.abs(e.getX()- xValue) > 10)) {
                 if (purchaseItem(item, color, animation)) {
                     //sh.playShopWater();
                 } else {

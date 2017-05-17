@@ -295,7 +295,7 @@ public class MainService extends Service {
                         .putExtra("MESSAGE_TYPE", MSG_UPDATE_NEED);
                 PendingIntent pendingToUpdate = PendingIntent.getService(this, 0, intentToUpdate, PendingIntent.FLAG_CANCEL_CURRENT);
                 alarmManager.set(AlarmManager.RTC_WAKEUP,
-                        System.currentTimeMillis() + (ALARM_HOUR * 1000), pendingToUpdate);
+                        System.currentTimeMillis() + (15 * 60 * 1000), pendingToUpdate);
 //                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime()
 //                        + (ALARM_HOUR * 1000), pendingToUpdate);
                 break;
@@ -341,10 +341,10 @@ public class MainService extends Service {
         resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher_a);
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.arbor_app_icon);
 
         NotificationCompat.Builder notification = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher_a)
+                .setSmallIcon(R.mipmap.arbor_app_icon)
                 .setLargeIcon(bitmap)
                 .setContentTitle("Arbor")
                 .setContentText(getText(R.string.content_text))
