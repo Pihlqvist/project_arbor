@@ -182,6 +182,9 @@ public class MainUIActivity extends AppCompatActivity {
         // alive = false;
 
         if (!alive) {
+            totalDistance = getIntent().getDoubleExtra("TOTALKM", 0);
+            totalStepCount = getIntent().getIntExtra("TOTALSTEPS", 0);
+            ageMillis = getIntent().getLongExtra("AGE", 0);
             setDeathView();
         } else {
 
@@ -228,7 +231,7 @@ public class MainUIActivity extends AppCompatActivity {
             if (sharedPreferences.contains("STORE_MONEY")) {
                 goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
             } else {
-                goldenPollen = 10;
+                goldenPollen = 100; // TODO 10;
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
 

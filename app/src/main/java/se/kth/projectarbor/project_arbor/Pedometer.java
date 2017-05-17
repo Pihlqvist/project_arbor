@@ -48,7 +48,7 @@ class Pedometer {
     private final static String TAG = "ARBOR_PEDOMETER";
     public final static String DISTANCE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.DISTANCE";
     public final static String STORE_BROADCAST = "se.kth.projectarbor.project_arbor.intent.STORE";
-    private final static int BUFFER_CONSTANT = 1000;  // meter before update
+    private final static int BUFFER_CONSTANT = 3; // TODO 1000;  // meter before update
 
     private double height;
     private Gender gender;
@@ -223,7 +223,7 @@ class Pedometer {
                             .putExtra("MESSAGE_TYPE", MainService.MSG_KM_DONE));
 
                     // TODO: give proper amount
-                    storeBroadcast.putExtra("MONEY", phaseNumber);
+                    storeBroadcast.putExtra("MONEY", 30); // TODO phaseNumber);
                     context.getApplicationContext().sendBroadcast(storeBroadcast);
                 }
                 stepCount += currentStepCount;

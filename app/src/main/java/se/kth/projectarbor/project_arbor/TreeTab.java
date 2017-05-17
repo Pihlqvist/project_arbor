@@ -268,6 +268,8 @@ public class TreeTab extends Fragment {
         super.onResume();
         Log.d(TAG, "RESUME");
 
+        //Log.d(TAG, "" + sharedPreferences.getBoolean("TOGGLE"));
+
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
             walkBtn.setChecked(sharedPreferences.getBoolean("TOGGLE", false));

@@ -37,7 +37,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 60 * 60;
+    public final static int ALARM_HOUR = 8; // TODO 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -174,6 +174,7 @@ public class MainService extends Service {
                     // TODO: Check if it's enough to unregister or if reset() is needed as well.
                     // Pedometer will stop updating km to MainService
                     pedometer.unregister();
+                    stopForeground(true);
                     Intent intentTreeDeath = new Intent();
                     intentTreeDeath.setAction(TREE_DEAD);
                     MainService.this.sendBroadcast(intentTreeDeath);
@@ -205,7 +206,7 @@ public class MainService extends Service {
                 sharedPreferences.edit().putBoolean("TREE_ALIVE", true);
 
                 pedometer.resetAll();
-                pedometer.register();
+                // pedometer.register();
 
                 List<Object> list = DataManager.readState(this, filename);
                 loadState(list);
@@ -338,7 +339,7 @@ public class MainService extends Service {
     // Foreground is created here
     private void startForeground() {
         // TODO: send information about weather (Fredrik)
-        Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        Intent resumeIntent = new Intent(this, NewTreeActivity.class); // CHANGED
         resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
 
@@ -480,7 +481,7 @@ public class MainService extends Service {
     // Checking is done every hour... see MSG_UPDATE_NEED
     private void showNotification(boolean treeUpdate) {
         Log.d("JOSEPH", "SHowNotification");
-        Intent resumeIntent = new Intent(this, MainUIActivity.class);
+        Intent resumeIntent = new Intent(this, NewTreeActivity.class); // Changed
         resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
         NotificationManager mNotificationManager =
@@ -533,7 +534,7 @@ public class MainService extends Service {
     public void phaseNotification(){
 
         if (tree.phaseChanged) {
-            Intent resumeIntent = new Intent(this, MainUIActivity.class);
+            Intent resumeIntent = new Intent(this, NewTreeActivity.class); // CHANGED
             resumeIntent = putTreeInformation(resumeIntent);
             PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
             NotificationManager mNotificationManager =
