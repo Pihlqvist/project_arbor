@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import se.kth.projectarbor.project_arbor.tutorial.TutorialArbor;
 import se.kth.projectarbor.project_arbor.view_objects.NewTreeClouds;
 import se.kth.projectarbor.project_arbor.weather.Environment;
 
@@ -55,6 +56,13 @@ public class NewTreeActivity extends AppCompatActivity  {
             .putExtra("MESSAGE_TYPE", MainService.MSG_RESUME_TREE_GAME));
         }
 
+
+
+ /*       if (sharedPreferences.getBoolean("FIRST_TIME_GENDER", true)) {
+            startActivity(new Intent(this, GenderHeightActivity.class));
+            sharedPreferences.edit().putBoolean("FIRST_TIME_GENDER", false).apply();
+        }*/
+
         // TODO: Check if tree is alive or not. If not, show death screen.
 
         setContentView(R.layout.activity_new_tree);
@@ -67,35 +75,49 @@ public class NewTreeActivity extends AppCompatActivity  {
             displayPromptForEnablingInternet();
         }
 
-        // If the user press this button we will save a new game state to the installation
-        // folder and start the game logic and go to the main activity view.
-        newTreeBtn = (Button) findViewById(R.id.new_tree_btn);
-        newTreeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        if (sharedPreferences.getBoolean("FIRST_TIME_TUTORIAL", true)) {
+            newTreeBtn = (Button) findViewById(R.id.new_tree_btn);
+            newTreeBtn.setOnClickListener(new View.OnClickListener() {
+                  @Override
+                  public void onClick(View v) {
+                      startActivity(new Intent(NewTreeActivity.this, GenderHeightActivity.class));
+                  }
+            });
+        } else {
 
-                // Make new tree and game settings
-                DataManager.saveState(getApplicationContext(), MainService.filename,
-                        new Tree(), new Environment.Forecast[]{}, 0.0, 0);
-                sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
-                Log.d(TAG, "new save state");
+            // If the user press this button we will save a new game state to the installation
+            // folder and start the game logic and go to the main activity view.
+            newTreeBtn = (Button) findViewById(R.id.new_tree_btn);
+            newTreeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
+                    // Make new tree and game settings
+                    DataManager.saveState(getApplicationContext(), MainService.filename,
+                            new Tree(), new Environment.Forecast[]{}, 0.0, 0);
+                    sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
+                    Log.d(TAG, "new save state");
 
-                // Start game storage
-                Intent intent = new Intent(NewTreeActivity.this, MainService.class)
-                        .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
-                PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-                alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
-                        SystemClock.elapsedRealtime() + (MainService.ALARM_HOUR * 1000), pendingIntent);
+                    sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
 
-                // Start Game
-                Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
-                        .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
-                startService(updateIntent);
-            }
-        });
+                    // Start game storage
+                    Intent intent = new Intent(NewTreeActivity.this, MainService.class)
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_UPDATE_NEED);
+                    PendingIntent pendingIntent = PendingIntent.getService(NewTreeActivity.this, 0, intent, 0);
+                    AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+                    alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
+                            SystemClock.elapsedRealtime() + (MainService.ALARM_HOUR * 1000), pendingIntent);
+
+                    // Start Game
+                    Intent updateIntent = new Intent(NewTreeActivity.this, MainService.class)
+                            .putExtra("MESSAGE_TYPE", MainService.MSG_TREE_GAME);
+                    startService(updateIntent);
+
+
+                }
+            });
+
+        }
 
     }
     private void getClouds(){

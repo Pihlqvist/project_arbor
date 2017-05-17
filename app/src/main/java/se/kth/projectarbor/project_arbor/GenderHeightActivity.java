@@ -10,6 +10,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 
+import se.kth.projectarbor.project_arbor.tutorial.TutorialArbor;
+
 public class GenderHeightActivity extends AppCompatActivity {
 
     private final static String TAG = "ARBOR_USER_INPUT";
@@ -43,7 +45,7 @@ public class GenderHeightActivity extends AppCompatActivity {
         if (sharedPreferences.contains("USER_GENDER")) {
             String current_gender = sharedPreferences.getString("USER_GENDER", "Female");
             Log.d(TAG, current_gender);
-            switch (current_gender){
+            switch (current_gender) {
                 case "Female":
                     spinner.setSelection(0);
                     break;
@@ -56,40 +58,59 @@ public class GenderHeightActivity extends AppCompatActivity {
             }
         }
 
-        if(sharedPreferences.contains("USER_HEIGHT")){
+        if (sharedPreferences.contains("USER_HEIGHT")) {
             float current_height = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
-            Log.d(TAG, current_height+"");
+            Log.d(TAG, current_height + "");
             int m = (int) Math.floor(current_height);
             meterPick.setValue(m);
-            int cm = (int) Math.round((current_height - m)*100.0);
+            int cm = (int) Math.round((current_height - m) * 100.0);
             centiMeterPick.setValue(cm);
         }
 
         //initializes the save button
-        Button saveBtn = (Button) findViewById(R.id.saveHeightGenderBtn);
-        saveBtn.setOnClickListener(new View.OnClickListener() {
+        if (sharedPreferences.getBoolean("FIRST_TIME_TUTORIAL", true)) {
+            Button saveBtn = (Button) findViewById(R.id.saveHeightGenderBtn);
+            saveBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int meter = meterPick.getValue();
+                    int centimeter = centiMeterPick.getValue();
+                    float height = (float) (meter + centimeter / 100.0);
+                    String gender = spinner.getSelectedItem().toString();
+                    sharedPreferences.edit().putString("USER_GENDER", gender).apply();
+                    sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
 
-            @Override
-            public void onClick(View v) {
-                int meter = meterPick.getValue();
-                int centimeter = centiMeterPick.getValue();
-                float height = (float) (meter + centimeter/100.0);
-                String gender = spinner.getSelectedItem().toString();
-                sharedPreferences.edit().putString("USER_GENDER", gender).apply();
-                sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
+                    startActivity(new Intent(GenderHeightActivity.this, TutorialArbor.class));
+                }
 
-                Log.d("arbor_genderHeight", "height " + gender);
+            });
+        } else {
 
-                Intent serviceIntent = new Intent(GenderHeightActivity.this, MainService.class);
-                serviceIntent.putExtra("MESSAGE_TYPE", MainService.MSG_USER_INPUT);
-                startService(serviceIntent);
+            Button saveBtn = (Button) findViewById(R.id.saveHeightGenderBtn);
+            saveBtn.setOnClickListener(new View.OnClickListener() {
 
-                onBackPressed();
-            }
+                @Override
+                public void onClick(View v) {
+                    int meter = meterPick.getValue();
+                    int centimeter = centiMeterPick.getValue();
+                    float height = (float) (meter + centimeter / 100.0);
+                    String gender = spinner.getSelectedItem().toString();
+                    sharedPreferences.edit().putString("USER_GENDER", gender).apply();
+                    sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
+
+                    Log.d("arbor_genderHeight", "height " + gender);
+
+                    Intent serviceIntent = new Intent(GenderHeightActivity.this, MainService.class);
+                    serviceIntent.putExtra("MESSAGE_TYPE", MainService.MSG_USER_INPUT);
+                    startService(serviceIntent);
+
+                    onBackPressed();
+                }
 
 
-        });
+            });
 
+        }
     }
 
 }
