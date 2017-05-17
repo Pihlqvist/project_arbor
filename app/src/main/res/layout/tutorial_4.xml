@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="15dp"
-    android:paddingBottom="15dp"
+    android:paddingBottom="10dp"
     android:paddingLeft="15dp"
     android:paddingRight="15dp">
     <ImageView
@@ -22,18 +22,18 @@
         android:layout_alignRight="@+id/whiteRectangle"
         android:layout_alignEnd="@+id/whiteRectangle"
         android:layout_alignBottom="@+id/whiteRectangle"
-        android:paddingTop="50dp"
+        android:paddingTop="30dp"
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:paddingBottom="30dp">
 
         <ImageView
             android:id="@+id/greenPhase"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="240dp"
+            android:layout_height="240dp"
             android:src="@drawable/green_phase"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="40dp"/>
+            android:layout_marginBottom="30dp"/>
 
         <TextView
             android:id="@+id/instructions"
@@ -62,7 +62,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:backgroundTint="@color/arbor_blue"
-            android:text="&lt; Previous"
+            android:text="&lt; Back"
             android:textSize="20dp"
             android:textColor="@color/colorWhite"
             android:layout_alignParentBottom="true"
