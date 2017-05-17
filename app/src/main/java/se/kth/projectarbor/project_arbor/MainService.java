@@ -121,7 +121,9 @@ public class MainService extends Service {
 
             // Start pedometer and start a foreground
             case MSG_START:
-                pedometer.resetAndRegister();
+                if (!pedometer.isRegisterd()) {
+                    pedometer.resetAndRegister();
+                }
                 // TODO: Do we need to read here ? (Fredrik)
                 // List<Object> list = DataManager.readState(this, filename);
                 // loadState(list);
@@ -258,7 +260,6 @@ public class MainService extends Service {
 
             case MSG_BOOT:
                 long now = System.currentTimeMillis();
-                SharedPreferences sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
                 long then = sharedPreferences.getLong("SHUTDOWN_TIME", now); // second argument is important
                 long interval = now - then;
                 Log.d("ARBOR_AGE", "interval millisec: " + interval);
@@ -407,6 +408,9 @@ public class MainService extends Service {
         intent.putExtra("TOTALSTEPS", pedometer.getTotalStepCount());
         intent.putExtra("AGE",
                 System.currentTimeMillis() - getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE).getLong("TREE_START_TIME", 0));
+
+        intent.putExtra("SESSION_DISTANCE", pedometer.getSessionDistance());
+        intent.putExtra("SESSION_STEPS", pedometer.getSessionStepCount());
         return intent;
     }
 
