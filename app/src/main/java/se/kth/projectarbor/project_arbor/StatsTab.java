@@ -88,7 +88,6 @@ public class StatsTab extends Fragment {
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
             DecimalFormat twoDForm = new DecimalFormat("#.0");
-            Log.d(TAG, "onReceive()");
 
             // Msgs from MainService:tree data
 
@@ -127,7 +126,6 @@ public class StatsTab extends Fragment {
 
         this.view = inflater.inflate(R.layout.fragment_stats_tab, container, false);
 
-        Log.d(TAG, "onCreateView in tree tab");
 
         setupValues();
 
@@ -152,7 +150,6 @@ public class StatsTab extends Fragment {
         Bundle extras = intent.getExtras();
 
         if (extras != null) {
-            Log.d(TAG, "Setup from Intent");
             healthTV.setText("" + extras.getInt("HP") + " HP");
             totalStepsTV.setText(String.format("%d steps", extras.getInt("TOTALSTEPS")));
             totalDistanceTV.setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
@@ -177,7 +174,6 @@ public class StatsTab extends Fragment {
     /*
     private void updateAgeView() {
         long lifespan = System.currentTimeMillis() - treeStartTime;
-        Log.d("ARBOR_LIFESPAN_SEC", "" + lifespan/1000);
         lifespan = lifespan / 1000; // TODO: Change back to lifespan / 1000 / 60 / 60 / 24;
         ageTV.setText("" + lifespan);
     }

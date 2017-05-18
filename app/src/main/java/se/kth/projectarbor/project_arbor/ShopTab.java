@@ -272,7 +272,6 @@ public class ShopTab extends Fragment {
 
     // Buy item and start animation
     private boolean purchaseItem(StoreItem item, final int color, Animation anim) {
-        Log.d("ARBOR", "purchasing");
         textReceipt.setTextColor(ColorStateList.valueOf(color));
             if(buy(item)) {
                 goldenPollenView.setText(MainUIActivity.goldenPollen + "gp");
@@ -300,7 +299,6 @@ public class ShopTab extends Fragment {
 
     // Broadcast your purchase to the main service
     private boolean buy(StoreItem item) {
-        Log.d("ARBOR","BUY ");
 
         // If enough money to buy item
         if(withdrawMoney(item.getCost())) {
@@ -333,7 +331,6 @@ public class ShopTab extends Fragment {
             iV.setColorFilter(NO_MONEY_BUTTON_TINT);
             xValue = e.getX();
             yValue = e.getY();
-            Log.d("ARBOR", ("X: " + Float.toString(xValue) + "Y: " + Float.toString(yValue)));
             return true;
         }else if(action == MotionEvent.ACTION_MOVE){
             if((Math.abs(e.getX()- xValue) > 10)){
@@ -348,7 +345,6 @@ public class ShopTab extends Fragment {
                     //sh.playNoMoney();
                 }
             }
-            Log.d("ARBOR", "CLEARED");
             iV.clearColorFilter();
             return true;
         }else if (action == MotionEvent.ACTION_CANCEL) {

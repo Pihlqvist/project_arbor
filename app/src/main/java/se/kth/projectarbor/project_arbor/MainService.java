@@ -37,7 +37,7 @@ public class MainService extends Service {
     final static String filename = "user42.dat";
 
     // Times in seconds that the alarm will take to repeat the service
-    public final static int ALARM_HOUR = 8; // TODO 60 * 60;
+    public final static int ALARM_HOUR = 60 * 60;
 
     // Messages to be used in Service. Don't use 0, it will mess up everything
     public final static int MSG_START = 1;
@@ -81,7 +81,6 @@ public class MainService extends Service {
 
     @Override
     public void onCreate() {
-        Log.d(TAG, "Service onCreate()");
 
         // Used to know whether tree is alive or not.
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", MODE_PRIVATE);
@@ -110,7 +109,6 @@ public class MainService extends Service {
         int msg = 0;
         if (intent.getExtras() != null) {
             msg = intent.getExtras().getInt("MESSAGE_TYPE", 0);
-            Log.d(TAG, "MSG: " + msg);
         }
 
         //USED TO NOTIFY
@@ -158,7 +156,6 @@ public class MainService extends Service {
                 showNotification(treeUpdate);
 
                 if (treeUpdate) {
-                    Log.d("ARBOR_MSG_UPDATE_NEED", "alive is true");
                     sendToView();
 
                 pendingIntent = PendingIntent.getService(this, 0, intent, 0);
@@ -168,7 +165,6 @@ public class MainService extends Service {
                     saveGame();
                 }
                 else {
-                    Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                     sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
                     sharedPreferences.edit().putBoolean("TOGGLE", false).apply();
                     // TODO: Check if it's enough to unregister or if reset() is needed as well.
@@ -218,7 +214,6 @@ public class MainService extends Service {
                 PendingIntent weatherPendingIntent = PendingIntent.getService(MainService.this, 1, weatherIntent, 0);
 
                 sendWeatherToView(weatherPendingIntent);
-                Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME");
 
                 break;
 
@@ -231,7 +226,6 @@ public class MainService extends Service {
                 PendingIntent weatherPendingIntentAgain = PendingIntent.getService(MainService.this, 1, weatherIntentAgain, 0);
 
                 sendWeatherToView(weatherPendingIntentAgain);
-                Log.d("ARBOR_WEATHER", "Exiting MSG_TREE_GAME Again");
 
                 break;
 
@@ -244,7 +238,6 @@ public class MainService extends Service {
 
             // Update the weather and temperature fields
             case MSG_UPDATE_WEATHER_VIEW:
-                Log.d("ARBOR_WEATHER", "Retrieved MSG_UPDATE_WEATHER_VIEW");
 
                 pendingIntent = PendingIntent.getService(this.getApplicationContext(), 1, intent, 0);
 
@@ -263,17 +256,13 @@ public class MainService extends Service {
                 long now = System.currentTimeMillis();
                 long then = sharedPreferences.getLong("SHUTDOWN_TIME", now); // second argument is important
                 long interval = now - then;
-                Log.d("ARBOR_AGE", "interval millisec: " + interval);
                 interval = interval/1000/60/60; // number of hours
-                Log.d("ARBOR_AGE", "interval: " + interval);
-                Log.d("ARBOR_AGE", "Inside case MSG_BOOT");
 
                 // Do the update as many times as needed.
                 for (int i = 0; i < interval; i++) {
                     boolean alive = tree.update();
                     if (!alive) {
                         // TODO: Insert this from deathOfTree when is merged
-                        Log.d("ARBOR_MSG_UPDATE_NEED", "alive is false");
                         sharedPreferences.edit().putBoolean("TREE_ALIVE", false).apply();
                         sharedPreferences.edit().putBoolean("TOGGLE", false).apply();
                         // TODO: Check if it's enough to unregister or if reset() is needed as well.
@@ -286,7 +275,6 @@ public class MainService extends Service {
                     }
                 }
 
-                Log.d("ARBOR_AGE", "WaterLevel: " + tree.getWaterLevel() + ", SunLevel: " + tree.getSunLevel());
                 // after reboot, save new age and buffer values
                 // (because otherwise MSG_TREE_GAME "overrides" these updated current values
                 saveGame();
@@ -432,7 +420,6 @@ public class MainService extends Service {
                 lastWeather = newWeather;
                 lastTemperature = newTemperature;
 
-                Log.d("ARBOR_WEATHER", lastWeather.toString() + ", temp=" + lastTemperature);
             }
 
             Intent intent = new Intent();
@@ -450,7 +437,6 @@ public class MainService extends Service {
             alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                     SystemClock.elapsedRealtime() + (ALARM_HOUR/4*1000), pendingIntent);
 
-            Log.d("ARBOR_WEATHER", "Exiting onPostExecute()");
         }
     }
 
@@ -480,7 +466,6 @@ public class MainService extends Service {
     // This will create a notification whenefer sun/water buffer is empty or the tree is dead
     // Checking is done every hour... see MSG_UPDATE_NEED
     private void showNotification(boolean treeUpdate) {
-        Log.d("JOSEPH", "SHowNotification");
         Intent resumeIntent = new Intent(this, NewTreeActivity.class); // Changed
         resumeIntent = putTreeInformation(resumeIntent);
         PendingIntent resumePending = PendingIntent.getActivity(this, 0, resumeIntent, 0);
@@ -489,8 +474,6 @@ public class MainService extends Service {
 
         //Create a notification when WATERBUFFER is empty
         if (tree.getWaterLevel() == 0) {
-
-            Log.d("JOSEPH", "SHowNotificationWATER");
 
             NotificationCompat.Builder waterBufferNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
@@ -503,7 +486,6 @@ public class MainService extends Service {
         //Create a notification when SUNBUFFER is empty
 
         if (tree.getSunLevel() == 0) {
-            Log.d("JOSEPH", "SHowNotificationSUN");
             NotificationCompat.Builder sunBufferNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
                     .setContentTitle("Arbor")
@@ -516,7 +498,6 @@ public class MainService extends Service {
 
         //Create a notification when TREE IS DEAD
         if (!treeUpdate) {
-            Log.d("JOSEPH", "SHowNotificationHEALTH");
             NotificationCompat.Builder treeDeadNotification = new NotificationCompat.Builder(this)
                     .setSmallIcon(R.drawable.health_icon)
                     .setContentTitle("Arbor")

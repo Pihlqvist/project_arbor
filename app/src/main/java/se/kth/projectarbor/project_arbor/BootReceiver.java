@@ -12,7 +12,6 @@ public class BootReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         SharedPreferences sharedPreferences =
                 context.getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
-        Log.d("ARBOR_AGE", "Inside boot receiver");
         if (sharedPreferences.getBoolean("FIRST_TREE", false)) {
             Intent intentToService = new Intent(context, MainService.class)
                     .putExtra("MESSAGE_TYPE", MainService.MSG_BOOT);

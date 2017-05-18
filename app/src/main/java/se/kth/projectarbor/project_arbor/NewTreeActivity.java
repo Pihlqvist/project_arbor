@@ -78,7 +78,6 @@ public class NewTreeActivity extends AppCompatActivity  {
                 DataManager.saveState(getApplicationContext(), MainService.filename,
                         new Tree(), new Environment.Forecast[]{}, 0.0, 0);
                 sharedPreferences.edit().putBoolean("FIRST_TREE", true).apply();
-                Log.d(TAG, "new save state");
 
                 sharedPreferences.edit().putLong("TREE_START_TIME", System.currentTimeMillis()).apply();
 

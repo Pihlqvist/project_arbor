@@ -91,18 +91,15 @@ public class TreeTab extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
             Bundle extras = intent.getExtras();
-            Log.d(TAG, "onReceive()");
             if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
                 stepTextView.setText(String.format("%d", extras.getInt("STEPCOUNT")));
                 distanceTextView.setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
             } else if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d(TAG, "TREE_DATA");
                 newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 if (newPhase != currentPhase) {
                     setTreePhase(newPhase);
                 }
             } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
-                Log.d("ARBOR_WEATHER", "Broadcast received");
                 // Build new weather layout depending on weather
                 Environment.Weather newWeather = (Environment.Weather) extras.get("WEATHER");
                 if (true) { // TODO: change to goodie (Fredrik)
@@ -124,7 +121,6 @@ public class TreeTab extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         this.view = inflater.inflate(R.layout.fragment_tree_tab, container, false);
-        Log.d("ARBOR", "Oncreate");
         /* // TODO: See if it works after integration
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
@@ -154,7 +150,6 @@ public class TreeTab extends Fragment {
             e.printStackTrace();
         }
         treeAnimView = new TreeView(getActivity(), currentPhase);
-        Log.d("PATRIK", "" + currentPhase);
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         int nRead;
         byte[] data = new byte[16384];
@@ -266,9 +261,6 @@ public class TreeTab extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "RESUME");
-
-        //Log.d(TAG, "" + sharedPreferences.getBoolean("TOGGLE"));
 
         // Remember toggle button state
         if (sharedPreferences.contains("TOGGLE")) {
@@ -327,7 +319,6 @@ public class TreeTab extends Fragment {
                 viewShop.setBackgroundResource(R.drawable.blue_background_3);
                 break;
             default:
-                Log.d(TAG, "no case in weather switch");
         }
 
         weatherLayout = layout;

@@ -11,7 +11,6 @@
 
             <Button
 
-                android:id="@+id/btnAbout"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:background="@color/arbor_green"
@@ -27,7 +26,6 @@
             android:layout_marginBottom="5dp">
             <Button
 
-                android:id="@+id/btnHowToPlay"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:background="@color/arbor_green"
@@ -43,7 +41,6 @@
             android:layout_marginBottom="5dp">
             <Button
 
-                android:id="@+id/btnGenderAndHeight"
                 android:layout_width="0dip"
                 android:layout_height="match_parent"
                 android:background="@color/arbor_green"
@@ -66,7 +63,6 @@
                 android:layout_gravity="center_horizontal">
 
                 <Button
-                    android:id="@+id/NO_SOUND"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@color/arbor_green"
@@ -77,7 +73,6 @@
                     android:layout_marginRight="10dp"/>
 
                 <Button
-                    android:id="@+id/SOME_SOUND"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@color/arbor_green"
@@ -88,7 +83,6 @@
                     android:layout_marginRight="10dp"/>
 
                 <Button
-                    android:id="@+id/LOUD_SOUND"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
                     android:background="@color/arbor_green"

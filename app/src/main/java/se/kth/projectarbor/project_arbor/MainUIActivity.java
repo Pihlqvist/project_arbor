@@ -62,7 +62,6 @@ public class MainUIActivity extends AppCompatActivity {
             // Msgs from MainService:tree data
 
             if (intent.getAction().equals(MainService.TREE_DATA)) {
-                Log.d("ARBOR_RECEIVER", "TREE_DATA");
 
                 treeTab.newPhase = ((Tree.Phase) extras.get("PHASE")).getPhaseNumber();
                 if (treeTab.newPhase != treeTab.currentPhase) {
@@ -83,8 +82,6 @@ public class MainUIActivity extends AppCompatActivity {
                 // Updates buffers
                 statsTab.getWaterAnim().setLevel(extras.getInt("WATER") * 10);
                 statsTab.getSunAnim().setLevel(extras.getInt("SUN") * 10);
-                Log.d("ARBOR_TREE_DATA", "Water: " + extras.getInt("WATER"));
-                Log.d("ARBOR_TREE_DATA", "Sun: " + extras.getInt("SUN"));
                 statsTab.getDistanceView().setText(String.format("%.2f", (extras.getDouble("TOTALKM")/1000)));
                 totalDistance = extras.getDouble("TOTALKM");
                 statsTab.getStepsView().setText(String.format("%d", (totalStepCount = extras.getInt("TOTALSTEPS"))));
@@ -99,7 +96,6 @@ public class MainUIActivity extends AppCompatActivity {
 
 
             } else if (intent.getAction().equals(MainService.WEATHER_DATA)) {
-                Log.d("ARBOR_RECEIVER", "WEATHER_DATA");
 
                 // Build new weatherLayout depending on weather
                 // TODO: Make sure it dose not build new, if its the same weather
@@ -124,7 +120,6 @@ public class MainUIActivity extends AppCompatActivity {
             // Msgs from Pedometer
 
             } else if (intent.getAction().equals(Pedometer.DISTANCE_BROADCAST)) {
-                Log.d("ARBOR_RECEIVER", "DISTANCE_BROADCAST");
                 treeTab.getStepView().setText(String.format("%d", extras.getInt("STEPCOUNT")));
                 treeTab.getDistanceView().setText(String.format("%.2f km",extras.getDouble("DISTANCE")/1000));
 
@@ -134,14 +129,12 @@ public class MainUIActivity extends AppCompatActivity {
 
 
             } else if (intent.getAction().equals(Pedometer.STORE_BROADCAST)) {
-                Log.d("ARBOR_RECEIVER", "STORE_BROADCAST");
                 goldenPollen = shopTab.addMoney(intent.getIntExtra("MONEY", 0));
                 shopTab.getGoldenPollenView().setText(goldenPollen + " gp");
                 treeTab.getTvPollen().setText("" + goldenPollen);
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
 
             } else if (intent.getAction().equals(MainService.TREE_DEAD)) {
-                Log.d("ARBOR_RECEIVER", "TREE_DEAD_BROADCAST");
                 setDeathView();
             }
         }
@@ -231,7 +224,7 @@ public class MainUIActivity extends AppCompatActivity {
             if (sharedPreferences.contains("STORE_MONEY")) {
                 goldenPollen = sharedPreferences.getInt("STORE_MONEY", 0);
             } else {
-                goldenPollen = 100; // TODO 10;
+                goldenPollen = 10;
                 sharedPreferences.edit().putInt("STORE_MONEY", goldenPollen).apply();
             }
 
@@ -280,10 +273,8 @@ public class MainUIActivity extends AppCompatActivity {
     }
 
     public void goToHowToPlay(View v){
-        Log.d("INTENT","howtoplay");
         Intent tutorial= new Intent(this,TutorialArbor.class);
         startActivity(tutorial);
-        Log.d("INTENT","Start");
     }
     public void goToAbout(View v){
         Intent aboutIntent = new Intent(this,AboutActivity.class);

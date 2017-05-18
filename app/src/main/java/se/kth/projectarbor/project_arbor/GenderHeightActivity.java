@@ -42,7 +42,6 @@ public class GenderHeightActivity extends AppCompatActivity {
         //setting the spinner and numberpickers
         if (sharedPreferences.contains("USER_GENDER")) {
             String current_gender = sharedPreferences.getString("USER_GENDER", "Female");
-            Log.d(TAG, current_gender);
             switch (current_gender){
                 case "Female":
                     spinner.setSelection(0);
@@ -58,7 +57,6 @@ public class GenderHeightActivity extends AppCompatActivity {
 
         if(sharedPreferences.contains("USER_HEIGHT")){
             float current_height = sharedPreferences.getFloat("USER_HEIGHT", 1.5f);
-            Log.d(TAG, current_height+"");
             int m = (int) Math.floor(current_height);
             meterPick.setValue(m);
             int cm = (int) Math.round((current_height - m)*100.0);
@@ -77,8 +75,6 @@ public class GenderHeightActivity extends AppCompatActivity {
                 String gender = spinner.getSelectedItem().toString();
                 sharedPreferences.edit().putString("USER_GENDER", gender).apply();
                 sharedPreferences.edit().putFloat("USER_HEIGHT", height).apply();
-
-                Log.d("arbor_genderHeight", "height " + gender);
 
                 Intent serviceIntent = new Intent(GenderHeightActivity.this, MainService.class);
                 serviceIntent.putExtra("MESSAGE_TYPE", MainService.MSG_USER_INPUT);

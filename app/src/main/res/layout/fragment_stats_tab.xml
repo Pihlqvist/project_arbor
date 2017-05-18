@@ -54,7 +54,6 @@
                 android:layout_marginLeft="15dp">
 
                 <ImageView
-                    android:id="@+id/ivEmptyWater"
                     android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:paddingBottom="0dp"
@@ -91,7 +90,6 @@
                 android:paddingRight="7dp"/>
 
             <FrameLayout
-                android:id="@+id/sunBufferFrame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/ivSunIcon"
@@ -99,7 +97,6 @@
                 android:layout_marginLeft="15dp">
 
                 <ImageView
-                    android:id="@+id/ivEmptySun"
                     android:layout_width="220dp"
                     android:layout_height="wrap_content"
                     android:src="@drawable/sbempty" />
