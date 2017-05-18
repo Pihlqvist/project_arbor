@@ -3,6 +3,9 @@ package se.kth.projectarbor.project_arbor;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.Context;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Environment;
@@ -43,11 +46,19 @@ public class MainUIActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    //make a private SoundHandler despite there is a method to get a copy of the reference
+    private SoundHandler sh;
     private boolean snackbarSemaphore = false;
     private Snackbar snackbar;
     public Tree.Phase phase;
     private boolean hasAnimated;
 
+    //Created a class LoopMediaPlayer just for being able to loop seamlessly
+    private LoopMediaPlayer wind;
+    private LoopMediaPlayer birdies;
+    private LoopMediaPlayer rain;
+
+    public FloatingActionButton fab;
     // Should be the golden pollen shown in game  //TODO: Fix this implementation (Fredrik)
     static int goldenPollen;
 
@@ -159,12 +170,23 @@ public class MainUIActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_ui);
         hasAnimated = false;
 
 
         // Used for handling golden pollens and boolean "alive"
         sharedPreferences = getSharedPreferences("se.kth.projectarbor.project_arbor", Context.MODE_PRIVATE);
+
+        wind = LoopMediaPlayer.create(getApplicationContext(), R.raw.wind_loop);
+        birdies = LoopMediaPlayer.create(getApplicationContext(), R.raw.birds_2);
+        rain = LoopMediaPlayer.create(getApplicationContext(), R.raw.rain_loop2);
+
+        wind.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+        birdies.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+        rain.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
+
+        setContentView(R.layout.activity_main_ui);
 
         Button btnContinue = (Button) findViewById(R.id.btn_continue_new);
         btnContinue.setOnClickListener(new View.OnClickListener() {
@@ -176,6 +198,8 @@ public class MainUIActivity extends AppCompatActivity {
                 MainUIActivity.this.finish();
             }
         });
+        //Setup a SoundHandler to load Sounds this is time critcal operation
+        sh = new SoundHandler(getApplicationContext());
 
         boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
         // For TESTING
@@ -296,7 +320,9 @@ public class MainUIActivity extends AppCompatActivity {
         boolean alive = sharedPreferences.getBoolean("TREE_ALIVE", true);
         // For TESTING
         // alive = false;
-
+        wind.onResume();
+        birdies.onResume();
+        rain.onResume();
         if (!alive) {
             setDeathView();
         }
@@ -310,6 +336,16 @@ public class MainUIActivity extends AppCompatActivity {
         findViewById(R.id.tree_death_view).setVisibility(View.VISIBLE);
         findViewById(R.id.appbar).setVisibility(View.GONE);
     }
+
+    @Override
+    public void onPause() {
+        Log.d("ARBOR", "HEJ");
+        super.onPause();
+        wind.onPause();
+        birdies.onPause();
+        rain.onPause();
+    }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -355,11 +391,108 @@ public class MainUIActivity extends AppCompatActivity {
 
 
     }
-    public void soundZERO(View v){}
-    public void soundFIFTY(View v){}
-    public void soundHUNDRED(View v){}
+    public class SoundHandler{
+        SoundPool pp;
+
+        //SoundID
+        int shopWater;
+        int shopSun;
+        int noMoney;
+
+        int sunFill;
+        int waterFill;
+
+        //Stream references
+        int shopWaterStream;
+        int shopSunStream;
+        int noMoneyStream;
+
+        int sunFillStream;
+        int waterFillStream;
+
+        float soundVolume = 1;
+        SoundHandler(Context context) {
+            soundVolume = sharedPreferences.getFloat("SOUNDVOLUME", 1);
+            pp = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
+            shopSun = pp.load(context, R.raw.shopsun_3, 1);
+            shopWater = pp.load(context, R.raw.shopwater_2, 1);
+            noMoney = pp.load(context, R.raw.nomoney_1, 1);
+            sunFill = pp.load(context, R.raw.sunloop, 1);
+            waterFill = pp.load(context, R.raw.rainsynth_2, 1);
+
+        }
+        public SoundPool getSoundPoolRef(){
+            return this.pp;
+        }
+        public void playShopWater(){
+            shopWaterStream = pp.play(shopWater, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playShopSun(){
+            shopSunStream = pp.play(shopSun, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playNoMoney(){
+            noMoneyStream = pp.play(noMoney, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playSunFill(){
+            sunFillStream = pp.play(sunFill, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playWaterFill(){
+            waterFillStream = pp.play(waterFill, soundVolume, soundVolume, 1, 0, 1);
+        }
+        public void playShopWater(int vol){
+            pp.play(shopWater, vol, vol, 1, 0, 1);
+        }
+        public void playShopSun(int vol){
+            pp.play(shopSun, vol, vol, 1, 0, 1);
+        }
+        public void pause(){
+            pp.autoPause();
+        }
+        public void resume(){
+            pp.autoResume();
+        }
+        public void release (){
+            pp.release();
+        }
+    }
+    public SoundHandler getSoundHandler (){
+        return sh;
+    }
+    public LoopMediaPlayer getWind (){
+        return wind;
+    }
+    public LoopMediaPlayer getBirdies (){
+        return birdies;
+    }
+    public LoopMediaPlayer getRain (){
+        return rain;
+    }
     @Override
     public void onBackPressed() {}
 
-
+    public void soundZERO(View view){
+        Log.d("ARBOR", "Sound: 0%");
+        this.sh.soundVolume = 0f;
+        sharedPreferences.edit().putFloat("SOUNDVOLUME", 0f).apply();
+        wind.setVolume(0f);
+        birdies.setVolume(0f);
+        rain.setVolume(0f);
+    }
+    public void soundFIFTY(View view){
+        Log.d("ARBOR", "Sound: 50%");
+        this.sh.soundVolume = 0.5f;
+        sharedPreferences.edit().putFloat("SOUNDVOLUME", 0.5f).apply();
+        wind.setVolume(0.5f);
+        birdies.setVolume(0.5f);
+        rain.setVolume(0.5f);
+    }
+    public void soundHUNDRED(View view){
+        Log.d("ARBOR", "Sound: 100%");
+        sh.soundVolume = 1f;
+        sharedPreferences.edit().putFloat("SOUNDVOLUME", 1).apply();
+        wind.setVolume(1f);
+        birdies.setVolume(1f);
+        rain.setVolume(1f);
+        Log.d("ARBOR", "" + wind + birdies);
+    }
 }

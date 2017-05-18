@@ -45,13 +45,10 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        android:tint="@android:color/black"
         android:visibility="visible"
-        app:backgroundTint="@color/cast_expanded_controller_ad_label_background_color"
-        app:elevation="4dp"
+        app:backgroundTint="@color/colorTransparent"
         app:fabSize="mini"
-        app:rippleColor="@color/cast_expanded_controller_ad_container_white_stripe_color"
-        app:srcCompat="@android:drawable/ic_menu_help" />
+        app:srcCompat="@drawable/settings_icon" />
 
 
     <RelativeLayout
