@@ -170,6 +170,7 @@ public class MainUIActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_ui);
         hasAnimated = false;
 
@@ -184,7 +185,7 @@ public class MainUIActivity extends AppCompatActivity {
         wind.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
         birdies.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
         rain.setVolume(sharedPreferences.getFloat("SOUNDVOLUME", 1));
-        super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main_ui);
 
         Button btnContinue = (Button) findViewById(R.id.btn_continue_new);
