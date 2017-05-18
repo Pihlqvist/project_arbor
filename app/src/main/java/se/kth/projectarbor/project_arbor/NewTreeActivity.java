@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -72,7 +73,13 @@ public class NewTreeActivity extends AppCompatActivity  {
         setContentView(layout);
 
         if (!isNetworkAvailable()) {
-            displayPromptForEnablingInternet();
+            displayPromptForEnablingInternetAndGps(Settings.ACTION_WIRELESS_SETTINGS);
+        }
+
+        if(!isGpsAvailable()){
+            displayPromptForEnablingInternetAndGps(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+
+
         }
 
         if (sharedPreferences.getBoolean("FIRST_TIME_TUTORIAL", true)) {
@@ -141,14 +148,30 @@ public class NewTreeActivity extends AppCompatActivity  {
 
     }
 
+    //check if GPS is enabled
+    private boolean isGpsAvailable(){
+        final LocationManager manager = (LocationManager) getSystemService( Context.LOCATION_SERVICE );
+        if ( manager.isProviderEnabled( LocationManager.GPS_PROVIDER ) ) {
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     //Display a prompt which goes to internet setting if the user click ok
-    public void displayPromptForEnablingInternet() {
+    public void displayPromptForEnablingInternetAndGps(final String action) {
+        String msg = null;
+        final AlertDialog.Builder builder =  new AlertDialog.Builder(this,android.R.style.Theme_Material_Dialog_Alert);
+        if(action.equals( Settings.ACTION_WIRELESS_SETTINGS)){
 
-        final AlertDialog.Builder builder =  new AlertDialog.Builder(this);
-        final String action = Settings.ACTION_WIRELESS_SETTINGS;
-        final String message = "Do you want open Internet Setting?";
+            msg = "Do you want to open Internet Settings?";
+        }
+        else if(action.equals(Settings.ACTION_LOCATION_SOURCE_SETTINGS)){
+            msg = "Do you want to open GPS settings?";
+        }
 
-        builder.setMessage(message)
+        builder.setMessage(msg)
                 .setPositiveButton("OK",
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface d, int id) {
