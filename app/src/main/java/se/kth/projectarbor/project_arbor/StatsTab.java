@@ -54,6 +54,9 @@ public class StatsTab extends Fragment {
     ImageView imgSun;
     ImageView phaseIcon;
 
+    //Creat a reference to the MainUIActivity.SoundHandler
+    private MainUIActivity.SoundHandler sh;
+
     private long treeStartTime;
 
     // VARIABLES AND CONSTANTS USED ONLY WHEN ANIMATION IS IMPLEMENTED
@@ -131,7 +134,12 @@ public class StatsTab extends Fragment {
 
         setupValues();
 
+        //Instantiate sh to MainUIÀctivity's SoundHandler
+        sh = ((MainUIActivity)getActivity()).getSoundHandler();
+
         /* // TODO: See if it works after intergirsh
+
+
         // Setup a filter for views
         IntentFilter filter = new IntentFilter();
         filter.addAction(Pedometer.DISTANCE_BROADCAST);
