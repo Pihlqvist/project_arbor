@@ -15,7 +15,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/arbor_app_icon"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:largeHeap="true">
         <service
             android:name=".MainService"
             android:enabled="true"
@@ -24,8 +25,7 @@
         <activity
             android:name=".MainUIActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:screenOrientation="portrait"
-            android:largeHeap="true"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".NewTreeActivity"
             android:screenOrientation="portrait"
